@@ -3,6 +3,14 @@ from flask_restful import Resource, Api, reqparse
 import os
 import werkzeug
 import glob
+import librosa
+from librosa import display
+import matplotlib.pyplot as plt
+from audiofiles import AudioFilesList, AudioFileDownload
+import numpy as np
+
+from audiopreprocess import LinearFrequencyPowerSpectrogram, LogFrequencyPowerSpectrogram, ChromaStft, ChromaCQT, \
+    ChromaCENS, Melspectrogram
 
 app = Flask(__name__)
 api = Api(app)
@@ -34,48 +42,9 @@ def get_separated_filenames():
     return separated_filenames
 
 
-class AudioFilesList(Resource):
-    def __init__(self):
-        self.parser = reqparse.RequestParser()
-
-    def get(self):
-        return AudioFiles
-
-    def post(self):
-        self.parser.add_argument("audiofile", type=werkzeug.datastructures.FileStorage, location='files')
-        self.parser.add_argument('title')
-        args = self.parser.parse_args()
-        audiofile = args.get("audiofile")
-        audiofile.save(os.path.join(MEDIA_DIR, audiofile.filename))
-        print(AudioFiles)
-        audio_keys = AudioFiles.keys()
-        print(audio_keys)
-        audio_id = int(max(audio_keys).lstrip('audio')) + 1
-        audio_id = 'audio%i' % audio_id
-        AudioFiles[audio_id] = {'title': args['title']}
-        return AudioFiles, 201
-
-
-class AudioFileDownload(Resource):
-    def __init__(self):
-        self.parser = reqparse.RequestParser()
-
-    def get(self, filename):
-        print("==> filename:{}".format(filename))
-        filename_path = os.path.join(SEPARATION_DIR, filename)
-        print(filename_path)
-        return send_from_directory(MEDIA_DIR, filename, as_attachment=True)
-
-
 class AudioSeparation(Resource):
     def __init__(self):
         self.parser = reqparse.RequestParser()
-
-    def get(self, filename):
-        print("==> filename:{}".format(filename))
-        filename_path = os.path.join(SEPARATION_DIR, filename)
-        print(filename_path)
-        return send_from_directory(SEPARATION_DIR, filename, as_attachment=True)
 
     def post(self):
         self.parser.add_argument("audiofile", type=werkzeug.datastructures.FileStorage, location='files')
@@ -100,8 +69,15 @@ class AudioSeparationDownload(Resource):
 
 api.add_resource(AudioFilesList, '/api/audiofiles')
 api.add_resource(AudioFileDownload, '/api/audiofiles/<filename>')
+
 api.add_resource(AudioSeparation, '/api/audioseparation')
 api.add_resource(AudioSeparationDownload, '/api/audioseparation/<filename>')
 
+api.add_resource(LinearFrequencyPowerSpectrogram, '/api/preprocess/linear_frequency_power_spectrogram')
+api.add_resource(LogFrequencyPowerSpectrogram, '/api/preprocess/log_frequency_power_spectrogram')
+api.add_resource(ChromaStft, '/api/preprocess/chroma_stft')
+api.add_resource(ChromaCQT, '/api/preprocess/chroma_cqt')
+api.add_resource(ChromaCENS, '/api/preprocess/chroma_cens')
+api.add_resource(Melspectrogram, '/api/preprocess/melspectrogram')
 if __name__ == '__main__':
     app.run(debug=True)
