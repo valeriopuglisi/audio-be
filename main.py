@@ -10,7 +10,8 @@ from audiofiles import AudioFilesList, AudioFileDownload
 import numpy as np
 
 from audiopreprocess import LinearFrequencyPowerSpectrogram, LogFrequencyPowerSpectrogram, ChromaStft, ChromaCQT, \
-    ChromaCENS, Melspectrogram
+    ChromaCENS, Melspectrogram, MelFrequencySpectrogram, MFCC, CompareDCTBases, RootMeanSquare, SpectralCentroid,\
+    SpectralBandwidth, SpectralContrast
 
 app = Flask(__name__)
 api = Api(app)
@@ -79,5 +80,14 @@ api.add_resource(ChromaStft, '/api/preprocess/chroma_stft')
 api.add_resource(ChromaCQT, '/api/preprocess/chroma_cqt')
 api.add_resource(ChromaCENS, '/api/preprocess/chroma_cens')
 api.add_resource(Melspectrogram, '/api/preprocess/melspectrogram')
+api.add_resource(MelFrequencySpectrogram, '/api/preprocess/melfrequencyspectrogram')
+api.add_resource(MFCC, '/api/preprocess/mfcc')
+api.add_resource(CompareDCTBases, '/api/preprocess/comparedct')
+api.add_resource(RootMeanSquare, '/api/preprocess/rms')
+api.add_resource(SpectralCentroid, '/api/preprocess/spectral_centroid')
+api.add_resource(SpectralBandwidth, '/api/preprocess/spectral_bandwidth')
+api.add_resource(SpectralContrast, '/api/preprocess/spectral_contrast')
+
+
 if __name__ == '__main__':
     app.run(debug=True)
