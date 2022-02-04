@@ -35,7 +35,7 @@ def get_separated_filenames():
     return separated_filenames
 
 
-class AudioSeparation(Resource):
+class SpeechSeparationSepformerWsj03mix(Resource):
     def __init__(self):
         self.parser = reqparse.RequestParser()
 
@@ -46,8 +46,7 @@ class AudioSeparation(Resource):
         audiofile = args.get("audiofile")
         audiofile_path = os.path.join(MEDIA_DIR, audiofile.filename)
         audiofile.save(audiofile_path)
-        model = separator.from_hparams(source="speechbrain/sepformer-wsj03mix",
-                                       savedir=os.path.join('pretrained_models', 'sepformer-wsj03mix'))
+        model = separator.from_hparams(source="speechbrain/sepformer-wsj03mix", savedir=os.path.join('pretrained_models', 'sepformer-wsj03mix'))
         est_sources = model.separate_file(path=audiofile_path)
 
         torchaudio.save(os.path.join(SEPARATION_DIR, "source1hat.wav"), est_sources[:, :, 0].detach().cpu(), 8000)

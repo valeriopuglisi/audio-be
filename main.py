@@ -7,7 +7,7 @@ import librosa
 from librosa import display
 import matplotlib.pyplot as plt
 
-from audiofeatures import AudioSeparation, AudioSeparationDownload
+from audiofeatures import SpeechSeparationSepformerWsj03mix, AudioSeparationDownload
 from audiofiles import AudioFilesList, AudioFileDownload
 import numpy as np
 
@@ -22,7 +22,7 @@ api = Api(app)
 api.add_resource(AudioFilesList, '/api/audiofiles')
 api.add_resource(AudioFileDownload, '/api/audiofiles/<filename>')
 
-api.add_resource(AudioSeparation, '/api/audioseparation')
+api.add_resource(SpeechSeparationSepformerWsj03mix, '/api/audioseparation/sepformer_wsj03mix')
 api.add_resource(AudioSeparationDownload, '/api/audioseparation/<filename>')
 
 api.add_resource(LinearFrequencyPowerSpectrogram, '/api/preprocess/linear_frequency_power_spectrogram')
