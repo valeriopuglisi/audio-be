@@ -1,3 +1,5 @@
+import librosa
+import soundfile as sf
 from speechbrain.pretrained import SepformerSeparation as separator
 import speechbrain.pretrained
 from speechbrain.pretrained import *
@@ -8,14 +10,32 @@ import werkzeug
 import glob
 from flask import send_from_directory
 from flask_restful import Resource, Api, reqparse
-
+import pathlib
 
 MEDIA_DIR = os.path.join(os.getcwd(), "media")
+AUDIO_SEPARATION_SEPFORMER_WHAMR = os.path.join(os.getcwd(), "audio_separation_sepformer_whamr")
+AUDIO_SEPARATION_SEPFORMER_WHAM = os.path.join(os.getcwd(), "audio_separation_sepformer_wham")
 ENHANCEMENT_SEPFORMER_WSJ0_DIR = os.path.join(os.getcwd(), "enhancement_sepformer_wsj0mix")
+ENHANCEMENT_SEPFORMER_WHAMR_DIR = os.path.join(os.getcwd(), "enhancement_sepformer_whamr")
+ENHANCEMENT_SEPFORMER_WHAM_DIR = os.path.join(os.getcwd(), "enhancement_sepformer_wham")
 ENHANCEMENT_METRICGANPLUS_VOICEBANK_DIR = os.path.join(os.getcwd(), "enhancement_metricganplus_voicebank")
 SEPARATION_SEPFORMER_WSJ3_DIR = os.path.join(os.getcwd(), "separation_sepformer_wsj03mix")
 SEPARATION_SEPFORMER_WSJ2_DIR = os.path.join(os.getcwd(), "separation_sepformer_wsj02mix")
 SEPARATION_WHAM_DIR = os.path.join(os.getcwd(), "separation_sepformer_wham")
+SEPARATION_WHAMR_DIR = os.path.join(os.getcwd(), "separation_sepformer_whamr")
+
+pathlib.Path(AUDIO_SEPARATION_SEPFORMER_WHAMR).mkdir(parents=True, exist_ok=True)
+pathlib.Path(AUDIO_SEPARATION_SEPFORMER_WHAM).mkdir(parents=True, exist_ok=True)
+pathlib.Path(ENHANCEMENT_SEPFORMER_WSJ0_DIR).mkdir(parents=True, exist_ok=True)
+pathlib.Path(ENHANCEMENT_SEPFORMER_WHAM_DIR).mkdir(parents=True, exist_ok=True)
+pathlib.Path(ENHANCEMENT_SEPFORMER_WHAMR_DIR).mkdir(parents=True, exist_ok=True)
+pathlib.Path(ENHANCEMENT_METRICGANPLUS_VOICEBANK_DIR).mkdir(parents=True, exist_ok=True)
+pathlib.Path(SEPARATION_WHAM_DIR).mkdir(parents=True, exist_ok=True)
+pathlib.Path(SEPARATION_WHAMR_DIR).mkdir(parents=True, exist_ok=True)
+pathlib.Path(SEPARATION_SEPFORMER_WSJ2_DIR).mkdir(parents=True, exist_ok=True)
+pathlib.Path(SEPARATION_SEPFORMER_WSJ3_DIR).mkdir(parents=True, exist_ok=True)
+
+
 # print(MEDIA_DIR)
 # print(SEPARATION_SEPFORMER_WSJ3_DIR)
 media_files = glob.glob(os.path.join(os.getcwd(), "media", "*"))
@@ -39,6 +59,97 @@ def get_filenames(_dir):
     for file in separated_filename_paths:
         separated_filenames.append(file.split("\\")[-1])
     return separated_filenames
+
+
+class AudioseparationSepformerWhamr(Resource):
+    """
+    ** SepFormer trained on WHAMR!
+    This repository provides all the necessary tools to perform audio source separation with a SepFormer model,
+    implemented with SpeechBrain, and pretrained on WHAMR! dataset,
+    which is basically a version of WSJ0-Mix dataset with environmental noise and reverberation.
+    For a better experience we encourage you to learn more about SpeechBrain.
+    The model performance is 13.7 dB SI-SNRi on the test set of WHAMR! dataset.
+    Release	Test-Set SI-SNRi	Test-Set SDRi
+    30-03-21	13.7 dB	12.7 dB
+
+    The system expects input recordings sampled at 8kHz (single channel).
+    If your signal has a different sample rate, resample it
+    (e.g, using torchaudio or sox) before using the interface.
+    """
+    def __init__(self):
+        self.parser = reqparse.RequestParser()
+
+    def post(self):
+        self.parser.add_argument("audiofile", type=werkzeug.datastructures.FileStorage, location='files')
+        self.parser.add_argument('title')
+        args = self.parser.parse_args()
+        audiofile = args.get("audiofile")
+        audiofile_path = os.path.join(MEDIA_DIR, audiofile.filename)
+        audiofile.save(audiofile_path)
+        model_path = os.path.join('pretrained_models', 'sepformer-whamr')
+        model = separator.from_hparams(source="speechbrain/sepformer-whamr", savedir=model_path)
+        est_sources = model.separate_file(path=audiofile_path)
+        torchaudio.save(os.path.join(AUDIO_SEPARATION_SEPFORMER_WHAMR, "source1hat.wav"), est_sources[:, :, 0].detach().cpu(), 8000)
+        torchaudio.save(os.path.join(AUDIO_SEPARATION_SEPFORMER_WHAMR, "source2hat.wav"), est_sources[:, :, 1].detach().cpu(), 8000)
+        separated_filenames = get_filenames(AUDIO_SEPARATION_SEPFORMER_WHAMR)
+        return separated_filenames, 201
+
+
+class AudioseparationSepformerWhamrDownload(Resource):
+    def __init__(self):
+        self.parser = reqparse.RequestParser()
+
+    def get(self, filename):
+        print("==> filename:{}".format(filename))
+        filename_path = os.path.join(AUDIO_SEPARATION_SEPFORMER_WHAMR, filename)
+        print(filename_path)
+        return send_from_directory(AUDIO_SEPARATION_SEPFORMER_WHAMR, filename, as_attachment=True)
+
+
+class AudioseparationSepformerWham(Resource):
+    """
+    ** SepFormer trained on WHAM!
+    This repository provides all the necessary tools to perform audio source separation with a SepFormer model,
+    implemented with SpeechBrain, and pretrained on WHAM! dataset,
+    which is basically a version of WSJ0-Mix dataset with environmental noise.
+    For a better experience we encourage you to learn more about SpeechBrain.
+    The model performance is 16.3 dB SI-SNRi on the test set of WHAM! dataset.
+
+    Release	Test-Set SI-SNRi	Test-Set SDRi
+    09-03-21	16.3 dB	16.7 dB
+
+    The system expects input recordings sampled at 8kHz (single channel).
+    If your signal has a different sample rate, resample it (e.g, using torchaudio or sox) before using the interface.
+    """
+    def __init__(self):
+        self.parser = reqparse.RequestParser()
+
+    def post(self):
+        self.parser.add_argument("audiofile", type=werkzeug.datastructures.FileStorage, location='files')
+        self.parser.add_argument('title')
+        args = self.parser.parse_args()
+        audiofile = args.get("audiofile")
+        audiofile_path = os.path.join(MEDIA_DIR, audiofile.filename)
+        audiofile.save(audiofile_path)
+        model_path = os.path.join('pretrained_models', 'sepformer-wham')
+        model = separator.from_hparams(source="speechbrain/sepformer-wham", savedir=model_path)
+        est_sources = model.separate_file(path=audiofile_path)
+        torchaudio.save(os.path.join(SEPARATION_SEPFORMER_WSJ2_DIR, "source1hat.wav"), est_sources[:, :, 0].detach().cpu(), 8000)
+        torchaudio.save(os.path.join(SEPARATION_SEPFORMER_WSJ2_DIR, "source2hat.wav"), est_sources[:, :, 1].detach().cpu(), 8000)
+
+        separated_filenames = get_filenames(AUDIO_SEPARATION_SEPFORMER_WHAM)
+        return separated_filenames, 201
+
+
+class AudioseparationSepformerWhamDownload(Resource):
+    def __init__(self):
+        self.parser = reqparse.RequestParser()
+
+    def get(self, filename):
+        print("==> filename:{}".format(filename))
+        filename_path = os.path.join(AUDIO_SEPARATION_SEPFORMER_WHAM, filename)
+        print(filename_path)
+        return send_from_directory(AUDIO_SEPARATION_SEPFORMER_WHAM, filename, as_attachment=True)
 
 
 class EnhancementSepformerWham(Resource):
@@ -65,9 +176,20 @@ class EnhancementSepformerWham(Resource):
         model_path = os.path.join('pretrained_models', 'sepformer-wham-enhancement')
         model = separator.from_hparams(source="speechbrain/sepformer-wham-enhancement", savedir=model_path)
         est_sources = model.separate_file(path=audiofile_path)
-        torchaudio.save(os.path.join(SEPARATION_SEPFORMER_WSJ2_DIR, "source1hat.wav"), est_sources[:, :, 0].detach().cpu(), 8000)
-        separated_filenames = get_filenames(ENHANCEMENT_SEPFORMER_WSJ0_DIR)
+        torchaudio.save(os.path.join(ENHANCEMENT_SEPFORMER_WHAM_DIR, "source1hat.wav"), est_sources[:, :, 0].detach().cpu(), 8000)
+        separated_filenames = get_filenames(ENHANCEMENT_SEPFORMER_WHAM_DIR)
         return separated_filenames, 201
+
+
+class EnhancementSepformerWhamDownload(Resource):
+    def __init__(self):
+        self.parser = reqparse.RequestParser()
+
+    def get(self, filename):
+        print("==> filename:{}".format(filename))
+        filename_path = os.path.join(ENHANCEMENT_SEPFORMER_WHAM_DIR, filename)
+        print(filename_path)
+        return send_from_directory(ENHANCEMENT_SEPFORMER_WHAM_DIR, filename, as_attachment=True)
 
 
 class EnhancementSepformerWhamr(Resource):
@@ -93,9 +215,20 @@ class EnhancementSepformerWhamr(Resource):
         model_path = os.path.join('pretrained_models', 'sepformer-whamr-enhancement')
         model = separator.from_hparams(source="speechbrain/sepformer-whamr-enhancement", savedir=model_path)
         est_sources = model.separate_file(path=audiofile_path)
-        torchaudio.save(os.path.join(SEPARATION_SEPFORMER_WSJ2_DIR, "source1hat.wav"), est_sources[:, :, 0].detach().cpu(), 8000)
-        separated_filenames = get_filenames(ENHANCEMENT_SEPFORMER_WSJ0_DIR)
+        torchaudio.save(os.path.join(ENHANCEMENT_SEPFORMER_WHAMR_DIR, "EnhancementSepformerWhamr_source1.wav"), est_sources[:, :, 0].detach().cpu(), 8000)
+        separated_filenames = get_filenames(ENHANCEMENT_SEPFORMER_WHAMR_DIR)
         return separated_filenames, 201
+
+
+class EnhancementSepformerWhamrDownload(Resource):
+    def __init__(self):
+        self.parser = reqparse.RequestParser()
+
+    def get(self, filename):
+        print("==> filename:{}".format(filename))
+        filename_path = os.path.join(ENHANCEMENT_SEPFORMER_WHAMR_DIR, filename)
+        print(filename_path)
+        return send_from_directory(ENHANCEMENT_SEPFORMER_WHAMR_DIR, filename, as_attachment=True)
 
 
 class EnhancementMetricganplusVoicebank(Resource):
@@ -130,42 +263,21 @@ class EnhancementMetricganplusVoicebank(Resource):
 
         # Add relative length tensor
         enhanced = model.enhance_batch(noisy, lengths=torch.tensor([1.]))
-
         # Saving enhanced signal on disk
-        torchaudio.save('enhanced.wav', enhanced.cpu(), 16000)
+        torchaudio.save(os.path.join(ENHANCEMENT_METRICGANPLUS_VOICEBANK_DIR, 'enhanced.wav'), enhanced.cpu(), 16000)
         separated_filenames = get_filenames(ENHANCEMENT_METRICGANPLUS_VOICEBANK_DIR)
         return separated_filenames, 201
 
 
-class SpeechSeparationSepformerWsj02mix(Resource):
-    def __init__(self):
-        self.parser = reqparse.RequestParser()
-
-    def post(self):
-        self.parser.add_argument("audiofile", type=werkzeug.datastructures.FileStorage, location='files')
-        self.parser.add_argument('title')
-        args = self.parser.parse_args()
-        audiofile = args.get("audiofile")
-        audiofile_path = os.path.join(MEDIA_DIR, audiofile.filename)
-        audiofile.save(audiofile_path)
-        model_path = os.path.join('pretrained_models', 'sepformer-wsj02mix')
-        model = separator.from_hparams(source="speechbrain/sepformer-wsj02mix", savedir=model_path)
-        est_sources = model.separate_file(path=audiofile_path)
-        torchaudio.save(os.path.join(SEPARATION_SEPFORMER_WSJ2_DIR, "source1hat.wav"), est_sources[:, :, 0].detach().cpu(), 8000)
-        torchaudio.save(os.path.join(SEPARATION_SEPFORMER_WSJ2_DIR, "source2hat.wav"), est_sources[:, :, 1].detach().cpu(), 8000)
-        separated_filenames = get_filenames(SEPARATION_SEPFORMER_WSJ2_DIR)
-        return separated_filenames, 201
-
-
-class SpeechSeparationSepformerWsj02mixDownload(Resource):
+class EnhancementMetricganplusVoicebankDownload(Resource):
     def __init__(self):
         self.parser = reqparse.RequestParser()
 
     def get(self, filename):
         print("==> filename:{}".format(filename))
-        filename_path = os.path.join(SEPARATION_SEPFORMER_WSJ2_DIR, filename)
+        filename_path = os.path.join(ENHANCEMENT_METRICGANPLUS_VOICEBANK_DIR, filename)
         print(filename_path)
-        return send_from_directory(SEPARATION_SEPFORMER_WSJ2_DIR, filename, as_attachment=True)
+        return send_from_directory(ENHANCEMENT_METRICGANPLUS_VOICEBANK_DIR, filename, as_attachment=True)
 
 
 class SpeechSeparationSepformerWham(Resource):
@@ -197,6 +309,68 @@ class SpeechSeparationSepformerWhamDownload(Resource):
         filename_path = os.path.join(SEPARATION_WHAM_DIR, filename)
         print(filename_path)
         return send_from_directory(SEPARATION_WHAM_DIR, filename, as_attachment=True)
+
+
+class SpeechSeparationSepformerWhamr(Resource):
+    def __init__(self):
+        self.parser = reqparse.RequestParser()
+
+    def post(self):
+        self.parser.add_argument("audiofile", type=werkzeug.datastructures.FileStorage, location='files')
+        self.parser.add_argument('title')
+        args = self.parser.parse_args()
+        audiofile = args.get("audiofile")
+        audiofile_path = os.path.join(MEDIA_DIR, audiofile.filename)
+        audiofile.save(audiofile_path)
+        model_path = os.path.join('pretrained_models', 'sepformer-whamr')
+        model = separator.from_hparams(source="speechbrain/sepformer-whamr", savedir=model_path)
+        est_sources = model.separate_file(path=audiofile_path)
+        torchaudio.save(os.path.join(SEPARATION_WHAMR_DIR, "source1hat.wav"), est_sources[:, :, 0].detach().cpu(), 8000)
+        torchaudio.save(os.path.join(SEPARATION_WHAMR_DIR, "source2hat.wav"), est_sources[:, :, 1].detach().cpu(), 8000)
+        separated_filenames = get_filenames(SEPARATION_WHAMR_DIR)
+        return separated_filenames, 201
+
+
+class SpeechSeparationSepformerWhamrDownload(Resource):
+    def __init__(self):
+        self.parser = reqparse.RequestParser()
+
+    def get(self, filename):
+        print("==> filename:{}".format(filename))
+        filename_path = os.path.join(SEPARATION_WHAM_DIR, filename)
+        print(filename_path)
+        return send_from_directory(SEPARATION_WHAM_DIR, filename, as_attachment=True)
+
+
+class SpeechSeparationSepformerWsj02mix(Resource):
+    def __init__(self):
+        self.parser = reqparse.RequestParser()
+
+    def post(self):
+        self.parser.add_argument("audiofile", type=werkzeug.datastructures.FileStorage, location='files')
+        self.parser.add_argument('title')
+        args = self.parser.parse_args()
+        audiofile = args.get("audiofile")
+        audiofile_path = os.path.join(MEDIA_DIR, audiofile.filename)
+        audiofile.save(audiofile_path)
+        model_path = os.path.join('pretrained_models', 'sepformer-wsj02mix')
+        model = separator.from_hparams(source="speechbrain/sepformer-wsj02mix", savedir=model_path)
+        est_sources = model.separate_file(path=audiofile_path)
+        torchaudio.save(os.path.join(SEPARATION_SEPFORMER_WSJ2_DIR, "source1hat.wav"), est_sources[:, :, 0].detach().cpu(), 8000)
+        torchaudio.save(os.path.join(SEPARATION_SEPFORMER_WSJ2_DIR, "source2hat.wav"), est_sources[:, :, 1].detach().cpu(), 8000)
+        separated_filenames = get_filenames(SEPARATION_SEPFORMER_WSJ2_DIR)
+        return separated_filenames, 201
+
+
+class SpeechSeparationSepformerWsj02mixDownload(Resource):
+    def __init__(self):
+        self.parser = reqparse.RequestParser()
+
+    def get(self, filename):
+        print("==> filename:{}".format(filename))
+        filename_path = os.path.join(SEPARATION_SEPFORMER_WSJ2_DIR, filename)
+        print(filename_path)
+        return send_from_directory(SEPARATION_SEPFORMER_WSJ2_DIR, filename, as_attachment=True)
 
 
 class SpeechSeparationSepformerWsj03mix(Resource):
@@ -242,12 +416,21 @@ class VadCrdnnLibriparty(Resource):
         audiofile = args.get("audiofile")
         audiofile_path = os.path.join(MEDIA_DIR, audiofile.filename)
         audiofile.save(audiofile_path)
+        y, sr = librosa.load(audiofile_path)
+        sr1 = 16000
+        y1 = librosa.resample(y, orig_sr=sr, target_sr=sr1)
+        filename = 'audio_vad.wav'
+        audio_path_16khz = os.path.join(MEDIA_DIR, filename)
+        sf.write(audio_path_16khz, y1, sr1)
         model_path = os.path.join('pretrained_models', 'vad-crdnn-libriparty')
         VAD = speechbrain.pretrained.VAD.from_hparams(source="speechbrain/vad-crdnn-libriparty", savedir=model_path)
-        boundaries = VAD.get_speech_segments(audiofile_path)
+        boundaries = VAD.get_speech_segments(audio_path_16khz)
         # Print the output
-        VAD.save_boundaries(boundaries)
-        return boundaries, 201
+        result_filename = 'VAD_file.txt'
+        VAD.save_boundaries(boundaries, save_path=result_filename)
+        result_file = open(result_filename)
+        lines = result_file.readlines()
+        return lines, 201
 
 
 class EmotionRecognitionWav2vec2IEMOCAP(Resource):
@@ -268,7 +451,7 @@ class EmotionRecognitionWav2vec2IEMOCAP(Resource):
                                    savedir=model_path)
         out_prob, score, index, text_lab = classifier.classify_file(audiofile_path)
         print(text_lab)
-        return [out_prob, score, index, text_lab], 201
+        return text_lab, 201
 
 
 class AsrWav2vec2CommonvoiceFr(Resource):
@@ -297,39 +480,7 @@ class AsrWav2vec2CommonvoiceFr(Resource):
         audiofile.save(audiofile_path)
         model_path = os.path.join('pretrained_models', 'asr-wav2vec2-commonvoice-fr')
         asr_model = EncoderASR.from_hparams(source="speechbrain/asr-wav2vec2-commonvoice-fr", savedir=model_path)
-        transcribed_file = asr_model.transcribe_file(audiofile)
-        return transcribed_file, 201
-
-
-class AsrCrdnnCommonvoiceFr(Resource):
-    """
-   Pipeline description
-This ASR system is composed of 2 different but linked blocks:
-
--- Tokenizer (unigram) that transforms words into subword units and trained with the train transcriptions
-    (train.tsv) of CommonVoice (FR).
--- Acoustic model (CRDNN + CTC/Attention).
-    The CRDNN architecture is made of N blocks of convolutional neural networks with
-    normalization and pooling on the frequency domain.
-    Then, a bidirectional LSTM is connected to a final DNN to obtain the final acoustic representation
-    that is given to the CTC and attention decoders.
-    The system is trained with recordings sampled at 16kHz (single channel).
-    The code will automatically normalize your audio
-    (i.e., resampling + mono channel selection) when calling transcribe_file if needed.
-    """
-    def __init__(self):
-        self.parser = reqparse.RequestParser()
-
-    def post(self):
-        self.parser.add_argument("audiofile", type=werkzeug.datastructures.FileStorage, location='files')
-        self.parser.add_argument('title')
-        args = self.parser.parse_args()
-        audiofile = args.get("audiofile")
-        audiofile_path = os.path.join(MEDIA_DIR, audiofile.filename)
-        audiofile.save(audiofile_path)
-        model_path = os.path.join('pretrained_models', 'asr-crdnn-commonvoice-fr')
-        asr_model = EncoderASR.from_hparams(source="speechbrain/asr-crdnn-commonvoice-fr", savedir=model_path)
-        transcribed_file = asr_model.transcribe_file(audiofile)
+        transcribed_file = asr_model.transcribe_file(audiofile_path)
         return transcribed_file, 201
 
 
@@ -359,7 +510,7 @@ class AsrWav2vec2CommonvoiceIt(Resource):
         audiofile.save(audiofile_path)
         model_path = os.path.join('pretrained_models', 'asr-wav2vec2-commonvoice-it')
         asr_model = EncoderASR.from_hparams(source="speechbrain/asr-wav2vec2-commonvoice-it", savedir=model_path)
-        transcribed_file = asr_model.transcribe_file(audiofile)
+        transcribed_file = asr_model.transcribe_file(audiofile_path)
         return transcribed_file, 201
 
 
@@ -398,7 +549,7 @@ class AsrWav2vec2CommonvoiceEn(Resource):
         model_path = os.path.join('pretrained_models', 'asr-wav2vec2-commonvoice-en')
         asr_model = EncoderASR.from_hparams(source="speechbrain/asr-wav2vec2-commonvoice-en", savedir=model_path)
         transcribed_file = asr_model.transcribe_file(audiofile)
-        return transcribed_file, 201
+        return transcribed_file, 200
 
 
 class AsrWav2vec2CommonvoiceRw(Resource):
@@ -435,8 +586,8 @@ class AsrWav2vec2CommonvoiceRw(Resource):
         audiofile.save(audiofile_path)
         model_path = os.path.join('pretrained_models', 'asr-wav2vec2-commonvoice-rw')
         asr_model = EncoderASR.from_hparams(source="speechbrain/asr-wav2vec2-commonvoice-rw", savedir=model_path)
-        transcribed_file = asr_model.transcribe_file(audiofile)
-        return transcribed_file, 201
+        transcribed_file = asr_model.transcribe_file(audiofile_path)
+        return transcribed_file, 200
 
 
 class AsrWav2vec2TransformerAishellMandarinChinese(Resource):
@@ -560,6 +711,38 @@ class AsrCrdnnrnnlmLibrispeechEn(Resource):
         return transcribed_file, 201
 
 
+class AsrCrdnnCommonvoiceFr(Resource):
+    """
+   Pipeline description
+This ASR system is composed of 2 different but linked blocks:
+
+-- Tokenizer (unigram) that transforms words into subword units and trained with the train transcriptions
+    (train.tsv) of CommonVoice (FR).
+-- Acoustic model (CRDNN + CTC/Attention).
+    The CRDNN architecture is made of N blocks of convolutional neural networks with
+    normalization and pooling on the frequency domain.
+    Then, a bidirectional LSTM is connected to a final DNN to obtain the final acoustic representation
+    that is given to the CTC and attention decoders.
+    The system is trained with recordings sampled at 16kHz (single channel).
+    The code will automatically normalize your audio
+    (i.e., resampling + mono channel selection) when calling transcribe_file if needed.
+    """
+    def __init__(self):
+        self.parser = reqparse.RequestParser()
+
+    def post(self):
+        self.parser.add_argument("audiofile", type=werkzeug.datastructures.FileStorage, location='files')
+        self.parser.add_argument('title')
+        args = self.parser.parse_args()
+        audiofile = args.get("audiofile")
+        audiofile_path = os.path.join(MEDIA_DIR, audiofile.filename)
+        audiofile.save(audiofile_path)
+        model_path = os.path.join('pretrained_models', 'asr-crdnn-commonvoice-fr')
+        asr_model = EncoderASR.from_hparams(source="speechbrain/asr-crdnn-commonvoice-fr", savedir=model_path)
+        transcribed_file = asr_model.transcribe_file(audiofile)
+        return transcribed_file, 201
+
+
 class AsrCrdnnCommonvoiceIt(Resource):
     """
     ** CRDNN with CTC/Attention trained on CommonVoice Italian (No LM)
@@ -595,47 +778,6 @@ class AsrCrdnnCommonvoiceIt(Resource):
         audiofile.save(audiofile_path)
         model_path = os.path.join('pretrained_models', 'asr-crdnn-commonvoice-it')
         asr_model = EncoderASR.from_hparams(source="speechbrain/asr-crdnn-commonvoice-it", savedir=model_path)
-        transcribed_file = asr_model.transcribe_file(audiofile)
-        return transcribed_file, 201
-
-
-class AsrCrdnnCommonvoiceFr(Resource):
-    """
-    ** CRDNN with CTC/Attention trained on CommonVoice French (No LM)
-    This repository provides all the necessary tools to perform automatic speech recognition
-    from an end-to-end system pretrained on CommonVoice (French Language) within SpeechBrain.
-    For a better experience, we encourage you to learn more about SpeechBrain.
-
-    The performance of the model is the following:
-
-    Release	Test CER	Test WER	GPUs
-    07-03-21	6.54	17.70	2xV100 16GB
-
-    ** Pipeline description
-    This ASR system is composed of 2 different but linked blocks:
-    1 - Tokenizer (unigram) that transforms words into subword units and trained with the train transcriptions
-    (train.tsv) of CommonVoice (FR).
-    2 - Acoustic model (CRDNN + CTC/Attention).
-    The CRDNN architecture is made of N blocks of convolutional neural networks with normalization
-    and pooling on the frequency domain.
-    Then, a bidirectional LSTM is connected to a final DNN to obtain the final acoustic representation that is given
-    to the CTC and attention decoders.
-    The system is trained with recordings sampled at 16kHz (single channel).
-    The code will automatically normalize your audio
-    (i.e., resampling + mono channel selection) when calling transcribe_file if needed.
-    """
-    def __init__(self):
-        self.parser = reqparse.RequestParser()
-
-    def post(self):
-        self.parser.add_argument("audiofile", type=werkzeug.datastructures.FileStorage, location='files')
-        self.parser.add_argument('title')
-        args = self.parser.parse_args()
-        audiofile = args.get("audiofile")
-        audiofile_path = os.path.join(MEDIA_DIR, audiofile.filename)
-        audiofile.save(audiofile_path)
-        model_path = os.path.join('pretrained_models', 'asr-crdnn-commonvoice-fr')
-        asr_model = EncoderASR.from_hparams(source="speechbrain/asr-crdnn-commonvoice-fr", savedir=model_path)
         transcribed_file = asr_model.transcribe_file(audiofile)
         return transcribed_file, 201
 
@@ -677,7 +819,7 @@ class AsrCrdnnCommonvoiceDe(Resource):
         return transcribed_file, 201
 
 
-class AsrConformerTransformerlmKsponspeech(Resource):
+class AsrConformerTransformerlmKsponspeechKorean(Resource):
     """
     ** CRDNN with CTC/Attention trained on CommonVoice 7.0 German (No LM)
     This repository provides all the necessary tools to perform automatic speech recognition from an end-to-end system pretrained on CommonVoice (German Language) within SpeechBrain. For a better experience, we encourage you to learn more about SpeechBrain. The performance of the model is the following:
@@ -697,6 +839,44 @@ class AsrConformerTransformerlmKsponspeech(Resource):
     The system is trained with recordings sampled at 16kHz (single channel).
     The code will automatically normalize your audio (i.e., resampling + mono channel selection)
     when calling transcribe_file if needed.
+    """
+
+    def __init__(self):
+        self.parser = reqparse.RequestParser()
+
+    def post(self):
+        self.parser.add_argument("audiofile", type=werkzeug.datastructures.FileStorage, location='files')
+        self.parser.add_argument('title')
+        args = self.parser.parse_args()
+        audiofile = args.get("audiofile")
+        audiofile_path = os.path.join(MEDIA_DIR, audiofile.filename)
+        audiofile.save(audiofile_path)
+        model_path = os.path.join('pretrained_models', 'asr-conformer-transformerlm-ksponspeech')
+        asr_model = EncoderASR.from_hparams(source="ddwkim/asr-conformer-transformerlm-ksponspeech", savedir=model_path)
+        transcribed_file = asr_model.transcribe_file(audiofile)
+        return transcribed_file, 201
+
+
+class AsrConformerTransformerlmLibrispeechEn(Resource):
+    """
+    ** Transformer for LibriSpeech (with Transformer LM)
+    This repository provides all the necessary tools to perform automatic speech recognition from an end-to-end
+    system pretrained on LibriSpeech (EN) within SpeechBrain. For a better experience,
+    we encourage you to learn more about SpeechBrain.
+    The performance of the model is the following:
+
+    Release	Test clean WER	Test other WER	GPUs
+    05-03-21	2.46	5.86	2xV100 32GB
+
+    ** Pipeline description
+    This ASR system is composed of 3 different but linked blocks:
+    1 - Tokenizer (unigram) that transforms words into subword units and trained with the train transcriptions of LibriSpeech.
+    Neural language model (Transformer LM) trained on the full 10M words dataset.
+    2 - Acoustic model made of a transformer encoder and a joint decoder with CTC + transformer.
+    Hence, the decoding also incorporates the CTC probabilities.
+    The system is trained with recordings sampled at 16kHz (single channel).
+    The code will automatically normalize your audio
+    (i.e., resampling + mono channel selection) when calling transcribe_file if needed.
     """
 
     def __init__(self):
@@ -750,7 +930,7 @@ class LangidCommonlanguageEcapa(Resource):
         classifier = EncoderClassifier.from_hparams(source="speechbrain/lang-id-commonlanguage_ecapa", savedir=model_path)
         out_prob, score, index, text_lab = classifier.classify_file(audiofile_path)
         print(text_lab)
-        return [out_prob, score, index, text_lab], 201
+        return text_lab, 201
 
 
 class LangidVoxLingua107Ecapa(Resource):
