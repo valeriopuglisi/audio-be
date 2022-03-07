@@ -12,6 +12,7 @@ from audiofeatures import *
 from audiofiles import *
 import numpy as np
 from audiopreprocess import *
+from utils import *
 
 app = Flask(__name__)
 api = Api(app)
@@ -19,6 +20,7 @@ api = Api(app)
 
 api.add_resource(AudioFilesList, '/api/audiofiles')
 api.add_resource(AudioFileDownload, '/api/audiofiles/<filename>')
+api.add_resource(SavePipeline, '/api/utils/save-pipeline')
 
 
 # - DEEP LEARNING SPEECH ENHANCEMENT -----------------------------------------------------------------------------------
