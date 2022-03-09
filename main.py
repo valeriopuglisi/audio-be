@@ -21,6 +21,7 @@ api = Api(app)
 api.add_resource(AudioFilesList, '/api/audiofiles')
 api.add_resource(AudioFileDownload, '/api/audiofiles/<filename>')
 api.add_resource(SavePipeline, '/api/utils/save-pipeline')
+api.add_resource(Pipelines, '/api/stored-pipelines')
 
 
 # - DEEP LEARNING SPEECH ENHANCEMENT -----------------------------------------------------------------------------------
