@@ -47,6 +47,27 @@ class Pipelines(Resource):
         self.parser = reqparse.RequestParser()
 
     def get(self):
+        pipelines_path = os.path.join(PIPELINES_PATH, 'pipelines.yaml')
+        with open(pipelines_path, 'r') as pipelines:
+            cur_yaml = yaml.safe_load(pipelines)
+            print(cur_yaml)
+        return cur_yaml, 201
 
-        pipelines = os.listdir(PIPELINES_PATH)
-        return pipelines, 201
+
+class Pipeline(Resource):
+    def __init__(self):
+        self.parser = reqparse.RequestParser()
+
+    def get(self, id):
+        print("==> id:{}".format(id))
+        pipelines_path = os.path.join(PIPELINES_PATH, 'pipelines.yaml')
+        with open(pipelines_path, 'r') as pipelines:
+            pipelines_yaml = yaml.safe_load(pipelines)
+            pipeline = pipelines_yaml[int(id)]
+            pipeline_name = pipeline['name']
+            print(pipeline_name)
+            pipeline_path = os.path.join(PIPELINES_PATH, pipeline_name + '.yml')
+            with open(pipeline_path, 'r') as pipeline:
+                pipeline_yaml = yaml.safe_load(pipeline)
+                print(pipeline_yaml)
+        return pipeline_yaml, 201
