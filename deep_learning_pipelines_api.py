@@ -1,9 +1,8 @@
 from flask_restful import Resource, Api, reqparse
-import json
 from flask import request
 import yaml
-import pathlib
-import os
+from cfg import *
+import werkzeug
 
 PIPELINES_PATH = os.path.join(os.getcwd(), "pipelines")
 pathlib.Path(PIPELINES_PATH).mkdir(parents=True, exist_ok=True)
@@ -71,3 +70,14 @@ class Pipeline(Resource):
                 pipeline_yaml = yaml.safe_load(pipeline)
                 print(pipeline_yaml)
         return pipeline_yaml, 201
+
+    def post(self, pipeline_id):
+        self.parser.add_argument("audiofile", type=werkzeug.datastructures.FileStorage, location='files')
+        self.parser.add_argument('title')
+        args = self.parser.parse_args()
+        audiofile = args.get("audiofile")
+        audiofile_path = os.path.join(MEDIA_DIR, audiofile.filename)
+        print("audiofile_path : {} ".format(audiofile_path))
+        print("audiofile_name : {} ".format(audiofile.name))
+        print("pipeline_id : {} ".format(pipeline_id))
+        audiofile.save(audiofile_path)
