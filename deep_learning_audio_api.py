@@ -37,7 +37,9 @@ class ApiAudioseparationSepformerWhamr(Resource):
         audiofile = args.get("audiofile")
         audiofile_path = os.path.join(MEDIA_DIR, audiofile.filename)
         audiofile.save(audiofile_path)
-        separated_filenames = audioseparation_sepformer_whamr(audiofile_path)
+        separated_file_paths = audioseparation_sepformer_whamr(audiofile_path)
+        separated_filenames = [os.path.split(x)[-1] for x in separated_file_paths]
+        print(separated_filenames)
         return separated_filenames, 201
 
 
@@ -64,7 +66,9 @@ class ApiAudioseparationSepformerWham(Resource):
         audiofile = args.get("audiofile")
         audiofile_path = os.path.join(MEDIA_DIR, audiofile.filename)
         audiofile.save(audiofile_path)
-        separated_filenames = audioseparation_sepformer_wham(audiofile_path)
+        separated_file_paths = audioseparation_sepformer_wham(audiofile_path)
+        separated_filenames = [os.path.split(x)[-1] for x in separated_file_paths]
+        print(separated_filenames)
         return separated_filenames, 201
 
 
@@ -91,7 +95,8 @@ class ApiEnhancementSepformerWham(Resource):
         audiofile = args.get("audiofile")
         audiofile_path = os.path.join(MEDIA_DIR, audiofile.filename)
         audiofile.save(audiofile_path)
-        separated_filenames = enhancement_sepformer_wham(audiofile_path)
+        separated_file_paths = enhancement_sepformer_wham(audiofile_path)
+        separated_filenames = [os.path.split(x)[-1] for x in separated_file_paths]
         return separated_filenames, 201
 
 
@@ -118,7 +123,9 @@ class ApiEnhancementSepformerWhamr(Resource):
         audiofile = args.get("audiofile")
         audiofile_path = os.path.join(MEDIA_DIR, audiofile.filename)
         audiofile.save(audiofile_path)
-        separated_filenames = enhancement_sepformer_whamr(audiofile_path)
+        separated_file_paths = enhancement_sepformer_whamr(audiofile_path)
+        separated_filenames = [os.path.split(x)[-1] for x in separated_file_paths]
+
         return separated_filenames, 201
 
 
@@ -145,7 +152,9 @@ class ApiEnhancementMetricganplusVoicebank(Resource):
         audiofile = args.get("audiofile")
         audiofile_path = os.path.join(MEDIA_DIR, audiofile.filename)
         audiofile.save(audiofile_path)
-        separated_filenames = enhancement_metricganplus_voicebank(audiofile_path)
+        separated_file_paths = enhancement_metricganplus_voicebank(audiofile_path)
+        separated_filenames = [os.path.split(x)[-1] for x in separated_file_paths]
+
         return separated_filenames, 201
 
 
@@ -171,7 +180,9 @@ class ApiSpeechSeparationSepformerWham(Resource):
         audiofile = args.get("audiofile")
         audiofile_path = os.path.join(MEDIA_DIR, audiofile.filename)
         audiofile.save(audiofile_path)
-        separated_filenames = speechseparation_sepformer_wham(audiofile_path)
+        separated_file_paths = speechseparation_sepformer_wham(audiofile_path)
+        separated_filenames = [os.path.split(x)[-1] for x in separated_file_paths]
+
         return separated_filenames, 201
 
 
@@ -197,7 +208,9 @@ class ApiSpeechSeparationSepformerWhamr(Resource):
         audiofile = args.get("audiofile")
         audiofile_path = os.path.join(MEDIA_DIR, audiofile.filename)
         audiofile.save(audiofile_path)
-        separated_filenames = speechseparation_sepformer_whamr(audiofile_path)
+        separated_file_paths = speechseparation_sepformer_whamr(audiofile_path)
+        separated_filenames = [os.path.split(x)[-1] for x in separated_file_paths]
+
         return separated_filenames, 201
 
 
@@ -223,7 +236,8 @@ class ApiSpeechSeparationSepformerWsj02mix(Resource):
         audiofile = args.get("audiofile")
         audiofile_path = os.path.join(MEDIA_DIR, audiofile.filename)
         audiofile.save(audiofile_path)
-        separated_filenames = speechseparation_sepformer_wsj02mix(audiofile_path)
+        separated_file_paths = speechseparation_sepformer_wsj02mix(audiofile_path)
+        separated_filenames = [os.path.split(x)[-1] for x in separated_file_paths]
         return separated_filenames, 201
 
 
@@ -249,7 +263,9 @@ class ApiSpeechSeparationSepformerWsj03mix(Resource):
         audiofile = args.get("audiofile")
         audiofile_path = os.path.join(MEDIA_DIR, audiofile.filename)
         audiofile.save(audiofile_path)
-        separated_filenames = speechseparation_sepformer_wsj03mix(audiofile_path)
+        separated_file_paths = speechseparation_sepformer_wsj03mix(audiofile_path)
+        separated_filenames = [os.path.split(x)[-1] for x in separated_file_paths]
+
         return separated_filenames, 201
 
 

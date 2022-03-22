@@ -1,11 +1,7 @@
 from flask_restful import Resource, Api, reqparse
 from flask import request
-import yaml
-from cfg import *
 import werkzeug
-
-PIPELINES_PATH = os.path.join(os.getcwd(), "pipelines")
-pathlib.Path(PIPELINES_PATH).mkdir(parents=True, exist_ok=True)
+from deep_learning_pipelines_features import *
 
 
 class SavePipeline(Resource):
@@ -71,13 +67,16 @@ class Pipeline(Resource):
                 print(pipeline_yaml)
         return pipeline_yaml, 201
 
-    def post(self, pipeline_id):
+    def post(self, id):
         self.parser.add_argument("audiofile", type=werkzeug.datastructures.FileStorage, location='files')
         self.parser.add_argument('title')
         args = self.parser.parse_args()
         audiofile = args.get("audiofile")
-        audiofile_path = os.path.join(MEDIA_DIR, audiofile.filename)
+        audiofile_name = audiofile.filename
+        audiofile_path = os.path.join(MEDIA_DIR, audiofile_name)
         print("audiofile_path : {} ".format(audiofile_path))
-        print("audiofile_name : {} ".format(audiofile.name))
-        print("pipeline_id : {} ".format(pipeline_id))
+        print("audiofile_name : {} ".format(audiofile_name))
+        print("pipeline_id : {} ".format(id))
         audiofile.save(audiofile_path)
+        pipeline = run_pipeline(audiofile_path=audiofile_path, pipeline_id=id)
+        return pipeline, 201
