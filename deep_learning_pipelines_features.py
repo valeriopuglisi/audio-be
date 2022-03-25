@@ -1,5 +1,6 @@
 import yaml
 from deep_learning_api_dict import *
+from zipfile import ZipFile
 
 
 def run_pipeline(audiofile_path, pipeline_id):
@@ -32,9 +33,12 @@ def run_pipeline(audiofile_path, pipeline_id):
                 input_file_id = int(input_file_info.split("_")[2])
                 print("- steps[input_file_step]: {}, ".format(steps[input_file_step]))
 
+                # Select input_file for the first time
                 if i == 0 :
                     step['inputFilename'] = audiofile_path
 
+                # After first step check if the file in input for the i-th step
+                # is an input file reletad to a previous step
                 if input_file_type == 'input':
                     print("- steps[input_file_step]['inputFileId']: {}, ".
                           format(steps[input_file_step]['inputFileId']))
@@ -43,16 +47,25 @@ def run_pipeline(audiofile_path, pipeline_id):
                     input_file_path = steps[input_file_step]['inputFilename']
                     print("- input_file_path: {}, ".format(input_file_path))
                     step['inputFilename'] = input_file_path
-                    step['outputFilenames'] = AudioAnalysisAPI[api]['function'](audiofile_path=input_file_path)
 
+                # Or if the input file of the i-th step is an outputfile of a  previous step
                 elif input_file_type == 'output':
                     print("- steps[input_file_step]['outputFileIds']: {}, ".
                           format(steps[input_file_step]['outputFileIds'][input_file_id]))
 
                     input_file_path = steps[input_file_step]['outputFilenames'][input_file_id]
                     step['inputFilename'] = input_file_path
-                    step['outputFilenames'] = AudioAnalysisAPI[api]['function'](audiofile_path=input_file_path)
 
+                # Check what type of task I'm doing :
+                # -- If it is a separation/enhancement task then put the results in outputFilenames
+                #    because the result is the list of file names
+
+                if step['task'] == "Speech Enhancement" or\
+                        step['task'] == "Speech Separation" or \
+                        step['task'] == "Audio Separation":
+                    step['outputFilenames'] = AudioAnalysisAPI[api]['function'](audiofile_path=input_file_path)
+                else:
+                    step['analysisResult'] = AudioAnalysisAPI[api]['function'](audiofile_path=input_file_path)
                 print("- step['inputFilename']: {}, ".format(step['inputFilename']))
                 print("- step['outputFilenames']: {}, ".format(step['outputFilenames']))
 

@@ -14,7 +14,9 @@ SEPARATION_SEPFORMER_WSJ2_DIR = os.path.join(os.getcwd(), "separation_sepformer_
 SEPARATION_WHAM_DIR = os.path.join(os.getcwd(), "separation_sepformer_wham")
 SEPARATION_WHAMR_DIR = os.path.join(os.getcwd(), "separation_sepformer_whamr")
 PIPELINES_PATH = os.path.join(os.getcwd(), "pipelines")
+REPORTS_PATH = os.path.join(os.getcwd(), "reports")
 
+pathlib.Path(REPORTS_PATH).mkdir(parents=True, exist_ok=True)
 pathlib.Path(PIPELINES_PATH).mkdir(parents=True, exist_ok=True)
 pathlib.Path(AUDIO_SEPARATION_SEPFORMER_WHAMR).mkdir(parents=True, exist_ok=True)
 pathlib.Path(AUDIO_SEPARATION_SEPFORMER_WHAM).mkdir(parents=True, exist_ok=True)
