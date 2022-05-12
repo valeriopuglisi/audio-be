@@ -1,0 +1,27 @@
+author: Valerio Francesco Puglisi
+creationTime: '2022-05-12T14:17:11.554Z'
+name: 'Enhancement and Voice Activity Detection '
+notes: Riduzione del rumore con Eliminazione delle parti non parlate
+steps:
+- api: /api/speech_enhancement/enhancement_metricganplus_voicebank
+  dataset: VoiceBank
+  inputFileId: input_0_0
+  inputFilename: valid1.wav
+  outputFileIds:
+  - output_0_0
+  outputFilenames:
+  - EnhancementMetricganplusVoicebank_valid1.wav
+  performance: PESQ=3.08 (test)
+  system: MetricGAN+
+  task: Speech Enhancement
+- api: /api/voice_activity_detection/vad_crdnn_libriparty
+  dataset: LibryParty
+  inputFileId: output_0_0
+  inputFilename: EnhancementMetricganplusVoicebank_valid1.wav
+  outputFileIds:
+  - output_1_0
+  outputFilenames:
+  - VAD_audio_vad.wav
+  performance: F-score=0.9477 (test)
+  system: CRDNN
+  task: Voice Activity Detection

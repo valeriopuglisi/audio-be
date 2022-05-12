@@ -22,6 +22,7 @@ class LinearFrequencyPowerSpectrogram(Resource):
         args = self.parser.parse_args()
         audiofile = args.get("audiofile")
         y, sr = librosa.load(audiofile)
+        print(y)
         fig, ax = plt.subplots(nrows=2, sharex=True)
         display.waveshow(y, sr=sr, ax=ax[0])
         D = librosa.amplitude_to_db(np.abs(librosa.stft(y,)), ref=np.max)

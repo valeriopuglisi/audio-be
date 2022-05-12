@@ -62,7 +62,7 @@ def run_pipeline(audiofile_path, pipeline_id):
 
                 if step['task'] == "Speech Enhancement" or\
                         step['task'] == "Speech Separation" or \
-                        step['task'] == "Audio Separation":
+                        step['task'] == "Audio Separation" or step['task'] == "Voice Activity Detection":
                     step['outputFilenames'] = AudioAnalysisAPI[api]['function'](audiofile_path=input_file_path)
                 else:
                     step['analysisResult'] = AudioAnalysisAPI[api]['function'](audiofile_path=input_file_path)

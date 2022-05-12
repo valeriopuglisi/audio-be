@@ -280,6 +280,33 @@ class ApiSpeechSeparationSepformerWsj03mixDownload(Resource):
         return send_from_directory(SEPARATION_SEPFORMER_WSJ3_DIR, filename, as_attachment=True)
 
 
+class ApiVadCrdnnLibripartyCleaned(Resource):
+    def __init__(self):
+        self.parser = reqparse.RequestParser()
+
+    def post(self):
+        self.parser.add_argument("audiofile", type=werkzeug.datastructures.FileStorage, location='files')
+        self.parser.add_argument('title')
+        args = self.parser.parse_args()
+        audiofile = args.get("audiofile")
+        audiofile_path = os.path.join(MEDIA_DIR, audiofile.filename)
+        audiofile.save(audiofile_path)
+        vad_clean_file = vad_crdnn_libriparty_cleaned(audiofile_path)
+        vad_clean_file = [os.path.split(x)[-1] for x in vad_clean_file]
+        return vad_clean_file, 201
+
+
+class ApiVadCrdnnLibripartyCleanedDownload(Resource):
+    def __init__(self):
+        self.parser = reqparse.RequestParser()
+
+    def get(self, filename):
+        print("==> filename:{}".format(filename))
+        filename_path = os.path.join(VAD_CRDNN, filename)
+        print(filename_path)
+        return send_from_directory(VAD_CRDNN, filename, as_attachment=True)
+
+
 class ApiVadCrdnnLibriparty(Resource):
     def __init__(self):
         self.parser = reqparse.RequestParser()

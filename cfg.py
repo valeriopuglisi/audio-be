@@ -3,6 +3,7 @@ import pathlib
 import glob
 
 MEDIA_DIR = os.path.join(os.getcwd(), "media")
+VAD_CRDNN = os.path.join(os.getcwd(), "voice_activity_detection_crdnn")
 AUDIO_SEPARATION_SEPFORMER_WHAMR = os.path.join(os.getcwd(), "audio_separation_sepformer_whamr")
 AUDIO_SEPARATION_SEPFORMER_WHAM = os.path.join(os.getcwd(), "audio_separation_sepformer_wham")
 ENHANCEMENT_SEPFORMER_WSJ0_DIR = os.path.join(os.getcwd(), "enhancement_sepformer_wsj0mix")
@@ -13,9 +14,12 @@ SEPARATION_SEPFORMER_WSJ3_DIR = os.path.join(os.getcwd(), "separation_sepformer_
 SEPARATION_SEPFORMER_WSJ2_DIR = os.path.join(os.getcwd(), "separation_sepformer_wsj02mix")
 SEPARATION_WHAM_DIR = os.path.join(os.getcwd(), "separation_sepformer_wham")
 SEPARATION_WHAMR_DIR = os.path.join(os.getcwd(), "separation_sepformer_whamr")
+
 PIPELINES_PATH = os.path.join(os.getcwd(), "pipelines")
 REPORTS_PATH = os.path.join(os.getcwd(), "reports")
 
+
+pathlib.Path(VAD_CRDNN).mkdir(parents=True, exist_ok=True)
 pathlib.Path(REPORTS_PATH).mkdir(parents=True, exist_ok=True)
 pathlib.Path(PIPELINES_PATH).mkdir(parents=True, exist_ok=True)
 pathlib.Path(AUDIO_SEPARATION_SEPFORMER_WHAMR).mkdir(parents=True, exist_ok=True)

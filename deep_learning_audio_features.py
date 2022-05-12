@@ -185,11 +185,9 @@ def speechseparation_sepformer_wsj03mix(audiofile_path):
     torchaudio.save(output_filename_3_path, est_sources[:, :, 2].detach().cpu(), 8000)
     separated_filenames = [output_filename_1_path, output_filename_2_path, output_filename_3_path]
     return separated_filenames
-# ------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------
 
-# ---------------------------- VOICE ACTIVITY DETECTION ---------------------------------------
-
-
+# ---------------------------- VOICE ACTIVITY DETECTION ----------------------------------------------
 def vad_crdnn_libriparty(audiofile_path):
     y, sr = librosa.load(audiofile_path)
     sr1 = 16000
@@ -206,7 +204,50 @@ def vad_crdnn_libriparty(audiofile_path):
     result_file = open(result_filename)
     lines = result_file.readlines()
     return lines
-# ------------------------------------------------------------------------
+
+
+def vad_crdnn_libriparty_cleaned(audiofile_path):
+    y, sr = librosa.load(audiofile_path)
+    sr1 = 16000
+    y1 = librosa.resample(y, orig_sr=sr, target_sr=sr1)
+    filename = 'audio_vad.wav'
+    audio_path_16khz = os.path.join(MEDIA_DIR, filename)
+
+    filename = os.path.split(audio_path_16khz)[-1]
+    output_filename = "VAD_" + filename
+    output_filename_path = os.path.join(VAD_CRDNN, output_filename)
+    sf.write(audio_path_16khz, y1, sr1)
+
+    model_path = os.path.join('pretrained_models', 'vad-crdnn-libriparty')
+    # boundaries = VAD.get_speech_segments(audio_path_16khz)
+    VAD = speechbrain.pretrained.VAD.from_hparams(source="speechbrain/vad-crdnn-libriparty", savedir=model_path)
+    # 1- Let's compute frame-level posteriors first
+    prob_chunks = VAD.get_speech_prob_file(audio_path_16khz)
+    # 2- Let's apply a threshold on top of the posteriors
+    prob_th = VAD.apply_threshold(prob_chunks).float()
+    # 3- Let's now derive the candidate speech segments
+    boundaries = VAD.get_boundaries(prob_th)
+    # 4- Apply energy VAD within each candidate speech segment (optional)
+    boundaries = VAD.energy_VAD(audio_path_16khz, boundaries)
+    # 5- Merge segments that are too close
+    boundaries = VAD.merge_close_segments(boundaries, close_th=0.250)
+    # 6- Remove segments that are too short
+    boundaries = VAD.remove_short_segments(boundaries, len_th=0.250)
+    # 7- Double-check speech segments (optional).
+    boundaries = VAD.double_check_speech_segments(boundaries, audio_path_16khz, speech_th=0.5)
+
+    waveform, sample_rate = torchaudio.load(audio_path_16khz)
+    final_waveform = torch.zeros(0)
+    for i, boundarie in enumerate(boundaries.numpy()):
+        start_cut_time = round(boundarie[0] * sample_rate)
+        end_cut_time = round(boundarie[1] * sample_rate)
+        extracted_waveform = waveform[:, start_cut_time: end_cut_time]
+        extracted_waveform = extracted_waveform.squeeze(0)
+        final_waveform = torch.cat((final_waveform, extracted_waveform), 0)
+    final_waveform = final_waveform.unsqueeze(0)
+    torchaudio.save(output_filename_path, final_waveform, sample_rate)
+    return [output_filename_path]
+# ----------------------------------------------------------------------------------------
 
 # ---------------------------- EMOTION RECOGNITION ---------------------------------------
 
@@ -224,6 +265,7 @@ def emotion_recognition__wav2vec2__iemocap(audiofile_path):
 
 
 # ---------------------------- ASR ---------------------------------------
+
 def asr__wav2vec2__commonvoice_fr(audiofile_path):
     """
      Pipeline description

@@ -83,8 +83,11 @@ api.add_resource(ApiLangidEcapaVoxLingua107,
 # ----------------------------------------------------------------------------------------------------------------------
 
 # - DEEP LEARNING VOICE ACTIVITY DETECTION -------------------------------------------------------------------------
-api.add_resource(ApiVadCrdnnLibriparty,
+api.add_resource(ApiVadCrdnnLibripartyCleaned,
                  '/api/voice_activity_detection/vad_crdnn_libriparty')
+
+api.add_resource(ApiVadCrdnnLibripartyCleanedDownload,
+                 '/api/voice_activity_detection/vad_crdnn_libriparty/<filename>')
 # ----------------------------------------------------------------------------------------------------------------------
 
 api.add_resource(ApiEmotionRecognitionWav2vec2IEMOCAP,
