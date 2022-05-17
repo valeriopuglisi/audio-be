@@ -1,12 +1,12 @@
 from deep_learning_audio_api import *
 from audiofiles import *
-import numpy as np
 from preprocess_audio_api import *
 from deep_learning_pipelines_api import *
 
 app = Flask(__name__)
 api = Api(app)
 
+api.add_resource(ApiDeepLearningFeaturesList, '/api/deep-learning-features')
 
 api.add_resource(AudioFilesList, '/api/audiofiles')
 api.add_resource(AudioFileDownload, '/api/audiofiles/<filename>')
@@ -76,10 +76,9 @@ api.add_resource(ApiAsrCrdnnrnnlmLibrispeechEn, '/api/automatic_speech_recogniti
 
 
 # - DEEP LEARNING LANGUAGE IDENTIFICATION -------------------------------------------------------------------------
-api.add_resource(ApiLangidEcapaCommonlanguage,
-                 '/api/language_id/langid_commonlanguage_ecapa')
-api.add_resource(ApiLangidEcapaVoxLingua107,
-                 '/api/language_id/langid_voxlingua107_ecapa')
+api.add_resource(ApiLangidEcapaCommonlanguage, '/api/language_id/langid_commonlanguage_ecapa')
+api.add_resource(ApiLangidEcapaVoxLingua107, '/api/language_id/langid_voxlingua107_ecapa')
+api.add_resource(ApiLangidToAsr, '/api/language_id/langid_to_asr')
 # ----------------------------------------------------------------------------------------------------------------------
 
 # - DEEP LEARNING VOICE ACTIVITY DETECTION -------------------------------------------------------------------------

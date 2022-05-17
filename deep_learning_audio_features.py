@@ -1,4 +1,3 @@
-from speechbrain.pretrained import SepformerSeparation as separator
 from speechbrain.pretrained import *
 from cfg import *
 import librosa
@@ -6,14 +5,14 @@ import speechbrain.pretrained
 import soundfile as sf
 from speechbrain.pretrained import EncoderDecoderASR
 from speechbrain.dataio.preprocess import AudioNormalizer
-from deep_learning_dict_lang_id_to_asr import *
+# from deep_learning_dict_lang_id_to_asr import lang_to_asr
 
 # ---------------------------- AUDIO SEPARATION ---------------------------------
 
 
 def audioseparation_sepformer_whamr(audiofile_path):
     model_path = os.path.join('pretrained_models', 'sepformer-whamr')
-    model = separator.from_hparams(source="speechbrain/sepformer-whamr", savedir=model_path)
+    model = SepformerSeparation.from_hparams(source="speechbrain/sepformer-whamr", savedir=model_path)
     est_sources = model.separate_file(path=audiofile_path)
     filename = os.path.split(audiofile_path)[-1]
     output_filename_1 = "AudioseparationSepformerWham_source1_" + filename
@@ -41,7 +40,7 @@ def audioseparation_sepformer_wham(audiofile_path):
         If your signal has a different sample rate, resample it (e.g, using torchaudio or sox) before using the interface.
         """
     model_path = os.path.join('pretrained_models', 'sepformer-wham')
-    model = separator.from_hparams(source="speechbrain/sepformer-wham", savedir=model_path)
+    model = SepformerSeparation.from_hparams(source="speechbrain/sepformer-wham", savedir=model_path)
     est_sources = model.separate_file(path=audiofile_path)
     filename = os.path.split(audiofile_path)[-1]
     output_filename_1 = "AudioseparationSepformerWham_source1_" + filename
@@ -68,7 +67,7 @@ def enhancement_sepformer_wham(audiofile_path):
         01-12-21	    14.35	             3.07
         """
     model_path = os.path.join('pretrained_models', 'sepformer-wham-enhancement')
-    model = separator.from_hparams(source="speechbrain/sepformer-wham-enhancement", savedir=model_path)
+    model = SepformerSeparation.from_hparams(source="speechbrain/sepformer-wham-enhancement", savedir=model_path)
     est_sources = model.separate_file(path=audiofile_path)
     filename = os.path.split(audiofile_path)[-1]
     output_filename = "EnhancementSepformerWham_" + filename
@@ -88,7 +87,7 @@ def enhancement_sepformer_whamr(audiofile_path):
         01-12-21	    10.59	                2.84
         """
     model_path = os.path.join('pretrained_models', 'sepformer-whamr-enhancement')
-    model = separator.from_hparams(source="speechbrain/sepformer-whamr-enhancement", savedir=model_path)
+    model = SepformerSeparation.from_hparams(source="speechbrain/sepformer-whamr-enhancement", savedir=model_path)
     est_sources = model.separate_file(path=audiofile_path)
     filename = os.path.split(audiofile_path)[-1]
     output_filename = "EnhancementSepformerWhamr_" + filename
@@ -129,7 +128,7 @@ def enhancement_metricganplus_voicebank(audiofile_path):
 
 def speechseparation_sepformer_wham(audiofile_path):
     model_path = os.path.join('pretrained_models', 'sepformer-wham')
-    model = separator.from_hparams(source="speechbrain/sepformer-wham", savedir=model_path)
+    model = SepformerSeparation.from_hparams(source="speechbrain/sepformer-wham", savedir=model_path)
     est_sources = model.separate_file(path=audiofile_path)
     filename = os.path.split(audiofile_path)[-1]
     output_filename_1 = "SpeechSeparationSepformerWham_source1_" + filename
@@ -144,7 +143,7 @@ def speechseparation_sepformer_wham(audiofile_path):
 
 def speechseparation_sepformer_whamr(audiofile_path):
     model_path = os.path.join('pretrained_models', 'sepformer-whamr')
-    model = separator.from_hparams(source="speechbrain/sepformer-whamr", savedir=model_path)
+    model = SepformerSeparation.from_hparams(source="speechbrain/sepformer-whamr", savedir=model_path)
     est_sources = model.separate_file(path=audiofile_path)
     filename = os.path.split(audiofile_path)[-1]
     output_filename_1 = "ApiSpeechSeparationSepformerWhamr" + "_source1_" + filename
@@ -159,7 +158,7 @@ def speechseparation_sepformer_whamr(audiofile_path):
 
 def speechseparation_sepformer_wsj02mix(audiofile_path):
     model_path = os.path.join('pretrained_models', 'sepformer-wsj02mix')
-    model = separator.from_hparams(source="speechbrain/sepformer-wsj02mix", savedir=model_path)
+    model = SepformerSeparation.from_hparams(source="speechbrain/sepformer-wsj02mix", savedir=model_path)
     est_sources = model.separate_file(path=audiofile_path)
     filename = os.path.split(audiofile_path)[-1]
     output_filename_1 = "SpeechSeparationSepformerWsj02mix_source1_" + filename
@@ -174,7 +173,7 @@ def speechseparation_sepformer_wsj02mix(audiofile_path):
 
 def speechseparation_sepformer_wsj03mix(audiofile_path):
     model_path = os.path.join('pretrained_models', 'sepformer-wsj03mix')
-    model = separator.from_hparams(source="speechbrain/sepformer-wsj03mix", savedir=model_path)
+    model = SepformerSeparation.from_hparams(source="speechbrain/sepformer-wsj03mix", savedir=model_path)
     est_sources = model.separate_file(path=audiofile_path)
     filename = os.path.split(audiofile_path)[-1]
     output_filename_1 = "SpeechSeparationSepformerWsj03mix_source1_" + filename
@@ -295,8 +294,6 @@ def asr__wav2vec2__commonvoice_it(audiofile_path):
                                                savedir="pretrained_models/asr-wav2vec2-commonvoice-it")
 
     transcribed = asr_model.transcribe_file(audiofile_path)
-
-
     return transcribed
 
 
@@ -623,6 +620,12 @@ def language_identification__ecapa__vox_lingua107(audiofile_path):
 
 
 def lang_id__to__asr(audiofile_path):
+    lang_to_asr = {
+        "it": asr__wav2vec2__commonvoice_it,
+        "en": asr__wav2vec2__commonvoice_en,
+        "fr": asr__wav2vec2__commonvoice_fr,
+    }
+
     model_path = os.path.join('pretrained_models', 'lang-id-voxlingua107-ecapa')
     language_id = EncoderClassifier.from_hparams(source="speechbrain/lang-id-voxlingua107-ecapa", savedir=model_path)
     signal = language_id.load_audio(audiofile_path)

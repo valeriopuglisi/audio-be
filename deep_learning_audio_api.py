@@ -1,7 +1,11 @@
+import json
+from pprint import pprint
+
 import werkzeug
 from flask import send_from_directory
 from flask_restful import Resource, reqparse
 from deep_learning_audio_features import *
+from deep_learning_dict_api import AudioAnalysisAPI
 
 
 def get_filenames(_dir):
@@ -10,6 +14,25 @@ def get_filenames(_dir):
     for file in separated_filename_paths:
         separated_filenames.append(file.split("\\")[-1])
     return separated_filenames
+
+
+class ApiDeepLearningFeaturesList(Resource):
+    def __init__(self):
+        self.parser = reqparse.RequestParser()
+
+    def get(self):
+        api_list = AudioAnalysisAPI
+        for dict_element in api_list.values():
+            print(type(dict_element))
+            print(dict_element)
+            try:
+                del dict_element['function']
+            except Exception as e:
+                print(e)
+            print(dict_element)
+            print()
+        dl_api_list = json.dumps(api_list)
+        return dl_api_list
 
 
 class ApiAudioseparationSepformerWhamr(Resource):
@@ -634,3 +657,5 @@ class ApiLangidToAsr(Resource):
         audiofile.save(audiofile_path)
         transcribed = lang_id__to__asr(audiofile_path)
         return transcribed, 201
+
+
