@@ -7,7 +7,7 @@ AudioAnalysisAPI = {
         "system": "CRDNN",
         "performance": "F-score=0.9477 (test)",
         "api": "/api/voice_activity_detection/vad_crdnn_libriparty",
-        "function": vad_crdnn_libriparty,
+        "function": vad_crdnn_libriparty_cleaned,
     },
     # "": {
     #         "task": "Automatic Speech Recognition",

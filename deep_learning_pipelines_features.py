@@ -1,5 +1,5 @@
 import yaml
-from deep_learning_api_dict import *
+from deep_learning_dict_api import *
 from zipfile import ZipFile
 
 

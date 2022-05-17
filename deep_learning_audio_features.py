@@ -4,6 +4,8 @@ from cfg import *
 import librosa
 import speechbrain.pretrained
 import soundfile as sf
+from speechbrain.pretrained import EncoderDecoderASR
+from speechbrain.dataio.preprocess import AudioNormalizer
 
 # ---------------------------- AUDIO SEPARATION ---------------------------------
 
@@ -188,6 +190,8 @@ def speechseparation_sepformer_wsj03mix(audiofile_path):
 # ----------------------------------------------------------------------------------------------------
 
 # ---------------------------- VOICE ACTIVITY DETECTION ----------------------------------------------
+
+
 def vad_crdnn_libriparty(audiofile_path):
     y, sr = librosa.load(audiofile_path)
     sr1 = 16000
@@ -210,10 +214,8 @@ def vad_crdnn_libriparty_cleaned(audiofile_path):
     y, sr = librosa.load(audiofile_path)
     sr1 = 16000
     y1 = librosa.resample(y, orig_sr=sr, target_sr=sr1)
-    filename = 'audio_vad.wav'
+    filename = "16khz_" + os.path.split(audiofile_path)[-1]
     audio_path_16khz = os.path.join(MEDIA_DIR, filename)
-
-    filename = os.path.split(audio_path_16khz)[-1]
     output_filename = "VAD_" + filename
     output_filename_path = os.path.join(VAD_CRDNN, output_filename)
     sf.write(audio_path_16khz, y1, sr1)
@@ -281,16 +283,20 @@ def asr__wav2vec2__commonvoice_fr(audiofile_path):
      (i.e., resampling + mono channel selection) when calling transcribe_file if needed.
      """
     model_path = os.path.join('pretrained_models', 'asr-wav2vec2-commonvoice-fr')
-    asr_model = EncoderASR.from_hparams(source="speechbrain/asr-wav2vec2-commonvoice-fr", savedir=model_path)
+    asr_model = speechbrain.pretrained.EncoderASR.from_hparams(source="speechbrain/asr-wav2vec2-commonvoice-fr", savedir=model_path)
     transcribed_file = asr_model.transcribe_file(audiofile_path)
     return transcribed_file
 
 
 def asr__wav2vec2__commonvoice_it(audiofile_path):
     model_path = os.path.join('pretrained_models', 'asr-wav2vec2-commonvoice-it')
-    asr_model = EncoderASR.from_hparams(source="speechbrain/asr-wav2vec2-commonvoice-it", savedir=model_path)
-    transcribed_file = asr_model.transcribe_file(audiofile_path)
-    return transcribed_file
+    asr_model = EncoderDecoderASR.from_hparams(source="speechbrain/asr-wav2vec2-commonvoice-it",
+                                               savedir="pretrained_models/asr-wav2vec2-commonvoice-it")
+
+    transcribed = asr_model.transcribe_file(audiofile_path)
+
+
+    return transcribed
 
 
 def asr__wav2vec2__commonvoice_en(audiofile_path):
@@ -316,7 +322,7 @@ def asr__wav2vec2__commonvoice_en(audiofile_path):
          audio (i.e., resampling + mono channel selection) when calling transcribe_file if needed.
         """
     model_path = os.path.join('pretrained_models', 'asr-wav2vec2-commonvoice-en')
-    asr_model = EncoderASR.from_hparams(source="speechbrain/asr-wav2vec2-commonvoice-en", savedir=model_path)
+    asr_model = EncoderDecoderASR.from_hparams(source="speechbrain/asr-wav2vec2-commonvoice-en", savedir=model_path)
     transcribed_file = asr_model.transcribe_file(audiofile_path)
     return transcribed_file
 
@@ -344,14 +350,14 @@ def asr__wav2vec2__commonvoice_rw(audiofile_path):
          audio (i.e., resampling + mono channel selection) when calling transcribe_file if needed.
         """
     model_path = os.path.join('pretrained_models', 'asr-wav2vec2-commonvoice-rw')
-    asr_model = EncoderASR.from_hparams(source="speechbrain/asr-wav2vec2-commonvoice-rw", savedir=model_path)
+    asr_model = EncoderDecoderASR.from_hparams(source="speechbrain/asr-wav2vec2-commonvoice-rw", savedir=model_path)
     transcribed_file = asr_model.transcribe_file(audiofile_path)
     return transcribed_file
 
 
 def asr__wav2vec2_transformer__aishell_mandarin_chinese(audiofile_path):
     model_path = os.path.join('pretrained_models', 'asr-wav2vec2-transformer-aishell')
-    asr_model = EncoderASR.from_hparams(source="speechbrain/asr-wav2vec2-transformer-aishell", savedir=model_path)
+    asr_model = EncoderDecoderASR.from_hparams(source="speechbrain/asr-wav2vec2-transformer-aishell", savedir=model_path)
     transcribed_file = asr_model.transcribe_file(audiofile_path)
     return transcribed_file
 
@@ -381,7 +387,7 @@ def asr__crdnn_transformerlm__librispeech_en(audiofile_path):
  (i.e., resampling + mono channel selection) when calling transcribe_file if needed.
  """
     model_path = os.path.join('pretrained_models', 'asr-crdnn-transformerlm-librispeech')
-    asr_model = EncoderASR.from_hparams(source="speechbrain/asr-crdnn-transformerlm-librispeech", savedir=model_path)
+    asr_model = EncoderDecoderASR.from_hparams(source="speechbrain/asr-crdnn-transformerlm-librispeech", savedir=model_path)
     transcribed_file = asr_model.transcribe_file(audiofile_path)
     return transcribed_file
 
@@ -412,7 +418,7 @@ def asr__crdnn_rnn_lm__librispeech_en(audiofile_path):
             """
 
     model_path = os.path.join('pretrained_models', 'asr-crdnn-rnnlm-librispeech')
-    asr_model = EncoderASR.from_hparams(source="speechbrain/asr-crdnn-rnnlm-librispeech", savedir=model_path)
+    asr_model = EncoderDecoderASR.from_hparams(source="speechbrain/asr-crdnn-rnnlm-librispeech", savedir=model_path)
     transcribed_file = asr_model.transcribe_file(audiofile_path)
     return transcribed_file
 
@@ -435,7 +441,7 @@ This ASR system is composed of 2 different but linked blocks:
     """
 
     model_path = os.path.join('pretrained_models', 'asr-crdnn-commonvoice-fr')
-    asr_model = EncoderASR.from_hparams(source="speechbrain/asr-crdnn-commonvoice-fr", savedir=model_path)
+    asr_model = EncoderDecoderASR.from_hparams(source="speechbrain/asr-crdnn-commonvoice-fr", savedir=model_path)
     transcribed_file = asr_model.transcribe_file(audiofile_path)
     return transcribed_file
 
@@ -464,7 +470,7 @@ def asr__crdnn__commonvoice_it(audiofile_path):
      when calling transcribe_file if needed.
     """
     model_path = os.path.join('pretrained_models', 'asr-crdnn-commonvoice-it')
-    asr_model = EncoderASR.from_hparams(source="speechbrain/asr-crdnn-commonvoice-it", savedir=model_path)
+    asr_model = EncoderDecoderASR.from_hparams(source="speechbrain/asr-crdnn-commonvoice-it", savedir=model_path)
     transcribed_file = asr_model.transcribe_file(audiofile_path)
     return transcribed_file
 
@@ -492,7 +498,7 @@ def asr__crdnn__commonvoice_de(audiofile_path):
     """
 
     model_path = os.path.join('pretrained_models', 'asr-crdnn-commonvoice-de')
-    asr_model = EncoderASR.from_hparams(source="speechbrain/asr-crdnn-commonvoice-de", savedir=model_path)
+    asr_model = EncoderDecoderASR.from_hparams(source="speechbrain/asr-crdnn-commonvoice-de", savedir=model_path)
     transcribed_file = asr_model.transcribe_file(audiofile_path)
     return transcribed_file
 
@@ -519,7 +525,7 @@ def asr__conformer_transformer_lm__ksponspeech_korean(audiofile_path):
         when calling transcribe_file if needed.
         """
     model_path = os.path.join('pretrained_models', 'asr-conformer-transformerlm-ksponspeech')
-    asr_model = EncoderASR.from_hparams(source="ddwkim/asr-conformer-transformerlm-ksponspeech", savedir=model_path)
+    asr_model = EncoderDecoderASR.from_hparams(source="ddwkim/asr-conformer-transformerlm-ksponspeech", savedir=model_path)
     transcribed_file = asr_model.transcribe_file(audiofile_path)
     return transcribed_file
 
@@ -546,7 +552,7 @@ def asr__conformer_transformer_lm__librispeech_en(audiofile_path):
      (i.e., resampling + mono channel selection) when calling transcribe_file if needed.
      """
     model_path = os.path.join('pretrained_models', 'asr-conformer-transformerlm-ksponspeech')
-    asr_model = EncoderASR.from_hparams(source="ddwkim/asr-conformer-transformerlm-ksponspeech", savedir=model_path)
+    asr_model = EncoderDecoderASR.from_hparams(source="ddwkim/asr-conformer-transformerlm-ksponspeech", savedir=model_path)
     transcribed_file = asr_model.transcribe_file(audiofile_path)
     return transcribed_file
 # ------------------------------------------------------------------------
