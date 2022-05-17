@@ -6,6 +6,7 @@ import speechbrain.pretrained
 import soundfile as sf
 from speechbrain.pretrained import EncoderDecoderASR
 from speechbrain.dataio.preprocess import AudioNormalizer
+from deep_learning_dict_lang_id_to_asr import *
 
 # ---------------------------- AUDIO SEPARATION ---------------------------------
 
@@ -619,4 +620,20 @@ def language_identification__ecapa__vox_lingua107(audiofile_path):
     prediction = language_id.classify_batch(signal)
     lang = prediction[3]
     return lang
+
+
+def lang_id__to__asr(audiofile_path):
+    model_path = os.path.join('pretrained_models', 'lang-id-voxlingua107-ecapa')
+    language_id = EncoderClassifier.from_hparams(source="speechbrain/lang-id-voxlingua107-ecapa", savedir=model_path)
+    signal = language_id.load_audio(audiofile_path)
+    prediction = language_id.classify_batch(signal)
+    label = prediction[3]
+    lang = label[0].split(":")[0]
+
+    # -----------------------------------------------------------------------------------------------------------------
+    print("Language identified: {}".format(lang))
+    transcribed = lang_to_asr[lang](audiofile_path)
+    print(transcribed)
+
+    return transcribed
 # ------------------------------------------------------------------------

@@ -618,3 +618,19 @@ class ApiLangidEcapaVoxLingua107(Resource):
         audiofile.save(audiofile_path)
         lang = language_identification__ecapa__vox_lingua107(audiofile_path)
         return lang, 201
+
+
+class ApiLangidToAsr(Resource):
+
+    def __init__(self):
+        self.parser = reqparse.RequestParser()
+
+    def post(self):
+        self.parser.add_argument("audiofile", type=werkzeug.datastructures.FileStorage, location='files')
+        self.parser.add_argument('title')
+        args = self.parser.parse_args()
+        audiofile = args.get("audiofile")
+        audiofile_path = os.path.join(MEDIA_DIR, audiofile.filename)
+        audiofile.save(audiofile_path)
+        transcribed = lang_id__to__asr(audiofile_path)
+        return transcribed, 201

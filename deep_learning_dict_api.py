@@ -223,6 +223,15 @@ AudioAnalysisAPI = {
         "function": language_identification__ecapa__vox_lingua107
     },
 
+    '/api/language_id/langid_asr': {
+            "task": "Language Identification + Automatic Speech Recognition",
+            "dataset": "VoxLingua 107",
+            "system": "ECAPA-TDNN Sentence",
+            "performance": "Accuracy=93.3% (test)",
+            "api": '/api/language_id/langid_asr',
+            "function": lang_id__to__asr
+    },
+
     # "Spoken, Language Understanding": [
     #     {
     #         task: "Spoken, Language Understanding",
