@@ -2,6 +2,7 @@ from flask_restful import Resource, Api, reqparse
 from flask import request
 import werkzeug
 from deep_learning_pipelines_features import *
+from cfg import MEDIA_DIR
 
 
 class SavePipeline(Resource):
@@ -78,5 +79,8 @@ class Pipeline(Resource):
         print("audiofile_name : {} ".format(audiofile_name))
         print("pipeline_id : {} ".format(id))
         audiofile.save(audiofile_path)
-        pipeline = run_pipeline(audiofile_path=audiofile_path, pipeline_id=id)
-        return pipeline, 201
+        steps, pipeline = run_pipeline(audiofile_path=audiofile_path, pipeline_id=id)
+        report_id = create_report(steps, pipeline)
+
+        return [pipeline, report_id], 201
+

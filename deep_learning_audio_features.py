@@ -634,9 +634,8 @@ def lang_id__to__asr(audiofile_path):
     lang = label[0].split(":")[0]
 
     # -----------------------------------------------------------------------------------------------------------------
-    print("Language identified: {}".format(lang))
     transcribed = lang_to_asr[lang](audiofile_path)
-    print(transcribed)
+    result = "Language identified: {} - {}".format(lang, transcribed)
 
-    return transcribed
+    return result
 # ------------------------------------------------------------------------

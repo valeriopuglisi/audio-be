@@ -1,6 +1,8 @@
+import os
 import yaml
-from deep_learning_dict_api import *
-from zipfile import ZipFile
+from cfg import PIPELINES_PATH
+from deep_learning_dict_api import AudioAnalysisAPI
+from report_features import create_report
 
 
 def run_pipeline(audiofile_path, pipeline_id):
@@ -59,15 +61,24 @@ def run_pipeline(audiofile_path, pipeline_id):
                 # Check what type of task I'm doing :
                 # -- If it is a separation/enhancement task then put the results in outputFilenames
                 #    because the result is the list of file names
-
+                print("==> AudioAnalysisAPI[api]: {}".format(AudioAnalysisAPI[api]))
                 if step['task'] == "Speech Enhancement" or\
                         step['task'] == "Speech Separation" or \
-                        step['task'] == "Audio Separation" or step['task'] == "Voice Activity Detection":
-                    step['outputFilenames'] = AudioAnalysisAPI[api]['function'](audiofile_path=input_file_path)
+                        step['task'] == "Audio Separation" or \
+                        step['task'] == "Voice Activity Detection":
+
+                        step['outputFilenames'] = AudioAnalysisAPI[api]['function'](audiofile_path=input_file_path)
                 else:
                     step['analysisResult'] = AudioAnalysisAPI[api]['function'](audiofile_path=input_file_path)
                 print("- step['inputFilename']: {}, ".format(step['inputFilename']))
                 print("- step['outputFilenames']: {}, ".format(step['outputFilenames']))
+            return steps, pipeline_yaml
 
-            return pipeline_yaml
+
+# audio_prova = "media/common_voice_it_17415772.wav"
+# pipeline_id = 2
+# steps, yamlr = run_pipeline(audio_prova, pipeline_id)
+# report = create_report(steps, yamlr)
+
+
 
