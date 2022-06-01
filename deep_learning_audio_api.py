@@ -163,6 +163,35 @@ class ApiEnhancementSepformerWhamrDownload(Resource):
         return send_from_directory(ENHANCEMENT_SEPFORMER_WHAMR_DIR, filename, as_attachment=True)
 
 
+class ApiEnhancementSepformerWhamr16k(Resource):
+
+    def __init__(self):
+        self.parser = reqparse.RequestParser()
+
+    def post(self):
+        self.parser.add_argument("audiofile", type=werkzeug.datastructures.FileStorage, location='files')
+        self.parser.add_argument('title')
+        args = self.parser.parse_args()
+        audiofile = args.get("audiofile")
+        audiofile_path = os.path.join(MEDIA_DIR, audiofile.filename)
+        audiofile.save(audiofile_path)
+        separated_file_paths = enhancement_sepformer_whamr_16k(audiofile_path)
+        separated_filenames = [os.path.split(x)[-1] for x in separated_file_paths]
+
+        return separated_filenames, 201
+
+
+class ApiEnhancementSepformerWhamrDownload16k(Resource):
+    def __init__(self):
+        self.parser = reqparse.RequestParser()
+
+    def get(self, filename):
+        print("==> filename:{}".format(filename))
+        filename_path = os.path.join(ENHANCEMENT_SEPFORMER_WHAMR_16k_DIR, filename)
+        print(filename_path)
+        return send_from_directory(ENHANCEMENT_SEPFORMER_WHAMR_16k_DIR, filename, as_attachment=True)
+
+
 class ApiEnhancementMetricganplusVoicebank(Resource):
 
     def __init__(self):

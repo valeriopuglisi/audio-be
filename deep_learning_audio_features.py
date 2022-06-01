@@ -96,6 +96,18 @@ def enhancement_sepformer_whamr(audiofile_path):
     return [output_filename_path]
 
 
+def enhancement_sepformer_whamr_16k(audiofile_path):
+    model_path = os.path.join('pretrained_models', 'sepformer-whamr-enhancement')
+    model = SepformerSeparation.from_hparams(source="speechbrain/sepformer-whamr16k",
+                                             savedir='pretrained_models/sepformer-whamr16k')
+    est_sources = model.separate_file(path=audiofile_path)
+    filename = os.path.split(audiofile_path)[-1]
+    output_filename = "EnhancementSepformerWhamr_16k" + filename
+    output_filename_path = os.path.join(ENHANCEMENT_SEPFORMER_WHAMR_16k_DIR, output_filename)
+    torchaudio.save(output_filename_path, est_sources[:, :, 0].detach().cpu(), 16000)
+    return [output_filename_path]
+
+
 def enhancement_metricganplus_voicebank(audiofile_path):
     """
         ** MetricGAN-trained model for Enhancement

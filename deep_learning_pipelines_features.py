@@ -61,7 +61,7 @@ def run_pipeline(audiofile_path, pipeline_id):
                 # Check what type of task I'm doing :
                 # -- If it is a separation/enhancement task then put the results in outputFilenames
                 #    because the result is the list of file names
-                print("==> AudioAnalysisAPI[api]: {}".format(AudioAnalysisAPI[api]))
+                print("==>  AudioAnalysisAPI[api]: {}".format(AudioAnalysisAPI[api]))
                 if step['task'] == "Speech Enhancement" or\
                         step['task'] == "Speech Separation" or \
                         step['task'] == "Audio Separation" or \

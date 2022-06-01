@@ -76,14 +76,14 @@ AudioAnalysisAPI = {
         "task": "Automatic Speech Recognition",
         "dataset": "CommonVoice (French)",
         "system": "wav2vec2 + CTC",
-        "performance": "WER=9.96% (test)",
+        "performance": "WER=9.96% (test), Test CER=3.19",
         "api": '/api/automatic_speech_recognition/asr_wav2vec2_commonvoice_fr',
         "function": asr__wav2vec2__commonvoice_fr,
         },
     '/api/automatic_speech_recognition/asr_wav2vec2_commonvoice_it': {
         "task": "Automatic Speech Recognition",
         "dataset": "CommonVoice (Italian)",
-        "system": "wav2vec2 + seq2seq",
+        "system": "wav2vec 2.0 with CTC/Attention",
         "performance": "WER=9.86% (test)",
         "api": '/api/automatic_speech_recognition/asr_wav2vec2_commonvoice_it',
         "function": asr__wav2vec2__commonvoice_it
@@ -137,18 +137,33 @@ AudioAnalysisAPI = {
             "task": "Speech Enhancement",
             "dataset": "WHAMR!",
             "system": "SepFormer",
-            "performance": "PESQ=3.08 (test)",
+            "performance": "SI-SNR= 10.59, PESQ=2.84 (test)",
             "api": '/api/speech_enhancement/enhancement_sepformer_whamr',
             "function": enhancement_sepformer_whamr
     },
     '/api/speech_enhancement/enhancement_sepformer_wham': {
             "task": "Speech Enhancement",
-            "dataset": "WHAM!",
+            "dataset": "WHAM!: WSJ0-Mix dataset with environmental noise and reverberation in 8k",
             "system": "SepFormer",
-            "performance": "PESQ=3.08 (test)",
+            "performance": "Test-Set SI-SNR	Test-Set= 14.35; PESQ=3.07 (test)",
+            "performance": "Test-Set SI-SNR	Test-Set= 14.35; PESQ=3.07 (test)",
             "api": '/api/speech_enhancement/enhancement_sepformer_wham',
             "function": enhancement_sepformer_wham
-        },
+    },
+    '/api/speech_enhancement/enhancement_sepformer_whamr_16k': {
+            "task": "Speech Enhancement",
+            "dataset": "WHAMR!: WSJ0-Mix dataset with environmental noise and reverberation in 16k",
+            "system": "SepFormer",
+            "description": "This repository provides all the necessary tools to perform audio source separation with a "
+                           "SepFormer model, implemented with SpeechBrain, and pretrained on WHAMR! dataset with 16k "
+                           "sampling frequency, which is basically a version of WSJ0-Mix dataset with environmental "
+                           "noise and reverberation in 16k. For a better experience we encourage you to learn more "
+                           "about SpeechBrain. The given model performance is 13.5 dB SI-SNRi on the test set of WHAMR!"
+                           " dataset.",
+            "performance": "Test-Set SI-SNRi 13.5 dB, Test-Set SDRi= 13.0 dB",
+            "api": '/api/speech_enhancement/enhancement_sepformer_whamr_16k',
+            "function": enhancement_sepformer_whamr_16k
+    },
 
     '/api/audioseparation/speech_separation_sepformer_wsj02mix': {
             "task": "Speech Separation",
@@ -225,9 +240,9 @@ AudioAnalysisAPI = {
 
     '/api/language_id/langid_asr': {
             "task": "Language Identification + Automatic Speech Recognition",
-            "dataset": "VoxLingua 107",
-            "system": "ECAPA-TDNN Sentence",
-            "performance": "Accuracy=93.3% (test)",
+            "dataset": "VoxLingua 107 for lang id and ",
+            "system": "ECAPA-TDNN Sentence + wav2vec 2.0 with CTC/Attention",
+            "performance": "Accuracy=93.3% (test) for land id and Test WER= 9.86 for ASR",
             "api": '/api/language_id/langid_asr',
             "function": lang_id__to__asr
     },

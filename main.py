@@ -2,6 +2,7 @@ from deep_learning_audio_api import *
 from audiofiles import *
 from preprocess_audio_api import *
 from deep_learning_pipelines_api import *
+from report_api import Reports, Report
 
 app = Flask(__name__)
 api = Api(app)
@@ -13,6 +14,8 @@ api.add_resource(AudioFileDownload, '/api/audiofiles/<filename>')
 api.add_resource(SavePipeline, '/api/utils/save-pipeline')
 api.add_resource(Pipelines, '/api/stored-pipelines')
 api.add_resource(Pipeline, '/api/stored-pipelines/<id>')
+api.add_resource(Reports, '/api/reports')
+api.add_resource(Report, '/api/report/<report_id>')
 
 
 # - DEEP LEARNING SPEECH ENHANCEMENT -----------------------------------------------------------------------------------
@@ -24,6 +27,11 @@ api.add_resource(ApiEnhancementSepformerWhamr,
                  '/api/speech_enhancement/enhancement_sepformer_whamr')
 api.add_resource(ApiEnhancementSepformerWhamrDownload,
                  '/api/speech_enhancement/enhancement_sepformer_whamr/<filename>')
+api.add_resource(ApiEnhancementSepformerWhamr16k,
+                 '/api/speech_enhancement/enhancement_sepformer_whamr_16k')
+api.add_resource(ApiEnhancementSepformerWhamrDownload16k,
+                 '/api/speech_enhancement/enhancement_sepformer_whamr_16k/<filename>')
+
 api.add_resource(ApiEnhancementMetricganplusVoicebank,
                  '/api/speech_enhancement/enhancement_metricganplus_voicebank')
 api.add_resource(ApiEnhancementMetricganplusVoicebankDownload,
@@ -78,7 +86,7 @@ api.add_resource(ApiAsrCrdnnrnnlmLibrispeechEn, '/api/automatic_speech_recogniti
 # - DEEP LEARNING LANGUAGE IDENTIFICATION -------------------------------------------------------------------------
 api.add_resource(ApiLangidEcapaCommonlanguage, '/api/language_id/langid_commonlanguage_ecapa')
 api.add_resource(ApiLangidEcapaVoxLingua107, '/api/language_id/langid_voxlingua107_ecapa')
-api.add_resource(ApiLangidToAsr, '/api/language_id/langid_to_asr')
+api.add_resource(ApiLangidToAsr, '/api/language_id/langid_asr')
 # ----------------------------------------------------------------------------------------------------------------------
 
 # - DEEP LEARNING VOICE ACTIVITY DETECTION -------------------------------------------------------------------------
