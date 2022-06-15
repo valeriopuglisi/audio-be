@@ -644,10 +644,12 @@ def lang_id__to__asr(audiofile_path):
     prediction = language_id.classify_batch(signal)
     label = prediction[3]
     lang = label[0].split(":")[0]
-
-    # -----------------------------------------------------------------------------------------------------------------
-    transcribed = lang_to_asr[lang](audiofile_path)
-    result = "Language identified: {} - {}".format(lang, transcribed)
-
+    try:
+        # -----------------------------------------------------------------------------------------------------------------
+        transcribed = lang_to_asr[lang](audiofile_path)
+        result = "Language identified: {} - {}".format(lang, transcribed)
+    except Exception as e:
+        print(e)
+        result = "Language identified: {} - no model available for this language".format(lang)
     return result
 # ------------------------------------------------------------------------

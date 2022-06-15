@@ -1,0 +1,7 @@
+"Automatic Speech Recognition:\n  CommonVoice DE:\n    description: a\n    path: ..\\\
+  datasets\\COMMON VOICE DE\n    references: b\n  CommonVoice EN:\n    description:\
+  \ a\n    path: ..\\datasets\\COMMON VOICE EN\n    references: b\n  CommonVoice IT:\n\
+  \    dataset_path: ..\\datasets\\COMMON VOICE IT\\it\n    description: a\n    references:\
+  \ b\n    test_file: ..\\datasets\\COMMON VOICE IT\\it\\test.tsv\nEmotion Recognition:\
+  \ {}\nLanguage Identification: {}\nSpeech Enhancement: {}\nSpeech Separation: {}\n\
+  Voice Activity Detection: {}\n"
