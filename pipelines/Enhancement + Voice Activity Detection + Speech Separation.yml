@@ -1,0 +1,41 @@
+author: Valerio Francesco Puglisi
+creationTime: '2022-05-16T15:05:29.280Z'
+name: Enhancement + Voice Activity Detection + Speech Separation
+notes: ''
+steps:
+- api: /api/speech_enhancement/enhancement_metricganplus_voicebank
+  dataset: VoiceBank
+  inputFileId: input_0_0
+  inputFilename: valid.wav
+  outputFileIds:
+  - output_0_0
+  outputFilenames:
+  - EnhancementMetricganplusVoicebank_valid.wav
+  performance: PESQ=3.08 (test)
+  system: MetricGAN+
+  task: Speech Enhancement
+- api: /api/voice_activity_detection/vad_crdnn_libriparty
+  dataset: LibryParty
+  inputFileId: output_0_0
+  inputFilename: EnhancementMetricganplusVoicebank_valid.wav
+  outputFileIds:
+  - output_1_0
+  outputFilenames:
+  - VAD_audio_vad.wav
+  performance: F-score=0.9477 (test)
+  system: CRDNN
+  task: Voice Activity Detection
+- api: /api/audioseparation/speech_separation_sepformer_wsj03mix
+  dataset: WSJ3MIX
+  inputFileId: output_1_0
+  inputFilename: VAD_audio_vad.wav
+  outputFileIds:
+  - output_2_0
+  - output_2_2
+  outputFilenames:
+  - SpeechSeparationSepformerWsj03mix_source1_VAD_audio_vad.wav
+  - SpeechSeparationSepformerWsj03mix_source2_VAD_audio_vad.wav
+  - SpeechSeparationSepformerWsj03mix_source3_VAD_audio_vad.wav
+  performance: SDRi=20.0 dB (test)
+  system: SepFormer
+  task: Speech Separation

@@ -1,0 +1,52 @@
+author: Valerio Francesco Puglisi
+creationTime: '2022-06-13T13:15:11.937Z'
+name: Comparison beetwen Speech Enhancement methods
+notes: This pipeline takes audio file in input and apply all the available neural
+  networks for speech enhancement task
+steps:
+- api: /api/speech_enhancement/enhancement_metricganplus_voicebank
+  dataset: VoiceBank
+  inputFileId: input_0_0
+  inputFilename: audio-rumore-pecussione.wav
+  outputFileIds:
+  - output_0_0
+  outputFilenames:
+  - EnhancementMetricganplusVoicebank_audio-rumore-pecussione.wav
+  performance: PESQ=3.08 (test)
+  system: MetricGAN+
+  task: Speech Enhancement
+- api: /api/speech_enhancement/enhancement_sepformer_whamr
+  dataset: WHAMR!
+  inputFileId: input_0_0
+  inputFilename: audio-rumore-pecussione.wav
+  outputFileIds:
+  - output_1_0
+  outputFilenames:
+  - EnhancementSepformerWhamr_audio-rumore-pecussione.wav
+  performance: SI-SNR= 10.59, PESQ=2.84 (test)
+  system: SepFormer
+  task: Speech Enhancement
+- api: /api/speech_enhancement/enhancement_sepformer_wham
+  dataset: 'WHAM!: WSJ0-Mix dataset with environmental noise and reverberation in
+    8k'
+  inputFileId: input_0_0
+  inputFilename: audio-rumore-pecussione.wav
+  outputFileIds:
+  - output_2_0
+  outputFilenames:
+  - EnhancementSepformerWham_audio-rumore-pecussione.wav
+  performance: "Test-Set SI-SNR\tTest-Set= 14.35; PESQ=3.07 (test)"
+  system: SepFormer
+  task: Speech Enhancement
+- api: /api/speech_enhancement/enhancement_sepformer_whamr_16k
+  dataset: 'WHAMR!: WSJ0-Mix dataset with environmental noise and reverberation in
+    16k'
+  inputFileId: input_0_0
+  inputFilename: audio-rumore-pecussione.wav
+  outputFileIds:
+  - output_3_0
+  outputFilenames:
+  - EnhancementSepformerWhamr_16kaudio-rumore-pecussione.wav
+  performance: Test-Set SI-SNRi 13.5 dB, Test-Set SDRi= 13.0 dB
+  system: SepFormer
+  task: Speech Enhancement

@@ -1,6 +1,17 @@
 0:
-  description: ''
-  name: Separazione Sorgenti
-1:
   description: Riduzione del rumore con Eliminazione delle parti non parlate
   name: 'Enhancement and Voice Activity Detection '
+1:
+  description: ''
+  name: Enhancement + Voice Activity Detection + Speech Separation
+2:
+  description: Miglioramento della voce con soppressione del silenzio e trascrizione
+  name: Enhancement + VAD + Italian ASR
+3:
+  description: Pipeline per la trascrizione dei file a singola voce
+  name: Enhancement + Voice Activity Detection + Language Identidication + Automatic
+    Speech Recognition
+4:
+  description: This pipeline takes audio file in input and apply all the available
+    neural networks for speech enhancement task
+  name: Comparison beetwen Speech Enhancement methods

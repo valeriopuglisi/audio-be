@@ -1,0 +1,36 @@
+author: Valerio Francesco Puglisi
+creationTime: '2022-05-17T10:48:21.237Z'
+name: Enhancement + VAD + Italian ASR
+notes: Miglioramento della voce con soppressione del silenzio e trascrizione
+steps:
+- api: /api/speech_enhancement/enhancement_metricganplus_voicebank
+  dataset: VoiceBank
+  inputFileId: input_0_0
+  inputFilename: common_voice_it_17415771.wav
+  outputFileIds:
+  - output_0_0
+  outputFilenames:
+  - EnhancementMetricganplusVoicebank_common_voice_it_17415771.wav
+  performance: PESQ=3.08 (test)
+  system: MetricGAN+
+  task: Speech Enhancement
+- api: /api/voice_activity_detection/vad_crdnn_libriparty
+  dataset: LibryParty
+  inputFileId: output_0_0
+  inputFilename: EnhancementMetricganplusVoicebank_common_voice_it_17415771.wav
+  outputFileIds:
+  - output_1_0
+  outputFilenames:
+  - VAD_audio_vad.wav
+  performance: F-score=0.9477 (test)
+  system: CRDNN
+  task: Voice Activity Detection
+- api: /api/automatic_speech_recognition/asr_wav2vec2_commonvoice_it
+  dataset: CommonVoice (Italian)
+  inputFileId: output_1_0
+  inputFilename: VAD_audio_vad.wav
+  outputFileIds: []
+  outputFilenames: []
+  performance: WER=9.86% (test)
+  system: wav2vec2 + seq2seq
+  task: Automatic Speech Recognition

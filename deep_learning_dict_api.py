@@ -88,6 +88,27 @@ AudioAnalysisAPI = {
         "api": '/api/automatic_speech_recognition/asr_wav2vec2_commonvoice_it',
         "function": asr__wav2vec2__commonvoice_it
         },
+    '/api/automatic_speech_recognition/asr__crdnn__commonvoice_it': {
+        "task": "Automatic Speech Recognition",
+        "dataset": "CommonVoice (Italian)",
+        "system": "CRDNN with CTC/Attention trained on CommonVoice Italian (No LM)",
+        "description": """
+            This ASR system is composed of 2 different but linked blocks:
+            Tokenizer (unigram) that transforms words into subword units and trained with the train transcriptions 
+            (train.tsv) of CommonVoice (IT).
+            Acoustic model (CRDNN + CTC/Attention). 
+            The CRDNN architecture is made of N blocks of convolutional neural networks with normalization and pooling 
+            on the frequency domain. Then, a bidirectional LSTM is connected to a final DNN to obtain the final 
+            acoustic representation that is given to the CTC and attention decoders.
+            The system is trained with recordings sampled at 16kHz (single channel). 
+            The code will automatically normalize your audio (i.e., resampling + mono channel selection) 
+            when calling transcribe_file if needed.
+        """,
+        "performance": "WER=9.86% (test)",
+        "api": '/api/automatic_speech_recognition/asr_wav2vec2_commonvoice_it',
+        "function": asr__crdnn__commonvoice_it,
+        },
+
     '/api/automatic_speech_recognition/asr_wav2vec2_commonvoice_rw': {
         "task": "Automatic Speech Recognition",
         "dataset": "CommonVoice (Kinyarwanda)",
@@ -237,7 +258,6 @@ AudioAnalysisAPI = {
         "api": '/api/language_id/langid_voxlingua107_ecapa',
         "function": language_identification__ecapa__vox_lingua107
     },
-
     '/api/language_id/langid_asr': {
             "task": "Language Identification + Automatic Speech Recognition",
             "dataset": "VoxLingua 107 for lang id and ",
@@ -246,7 +266,6 @@ AudioAnalysisAPI = {
             "api": '/api/language_id/langid_asr',
             "function": lang_id__to__asr
     },
-
     # "Spoken, Language Understanding": [
     #     {
     #         task: "Spoken, Language Understanding",
