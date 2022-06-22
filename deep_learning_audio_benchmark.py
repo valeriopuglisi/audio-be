@@ -7,7 +7,7 @@ import pandas as pd
 from pathlib import Path
 
 
-def hugging_face_evaluate_metric_on_dataset(task, dataset, model, metrics):
+def asr_evaluate_metric_on_dataset(task, dataset, model, metrics):
     predictions = []
     references = []
     result = {}
@@ -20,10 +20,10 @@ def hugging_face_evaluate_metric_on_dataset(task, dataset, model, metrics):
         wav_audiofile_path = os.path.splitext(audiofile_path)[0] + '.wav'
         reference = row[1]["sentence"].lower()
         audio_path = os.path.join(test_audio_path, "wavs", wav_audiofile_path)
-        prediction = AudioAnalysisAPI[model]['function'](audiofile_path=audio_path).lower()
+        prediction = AudioAnalysisAPI[model]['function'](audiofile_path=audio_path)
         predictions.append(prediction)
         references.append(reference)
-        print("audiofile_path: {}\n- reference: {}\n- prediction:{}\n".format(audio_path, reference, prediction))
+        # print("audiofile_path: {}\n- reference: {}\n- prediction:{}\n".format(audio_path, reference, prediction))
     for metric in metrics:
         loaded_metric = load(metric)
         # wer = load("wer")
@@ -39,15 +39,24 @@ def hugging_face_evaluate_metric_on_dataset(task, dataset, model, metrics):
 
 task = "Automatic Speech Recognition"
 dataset = "CommonVoice IT"
-models = ['/api/automatic_speech_recognition/asr_wav2vec2_commonvoice_it',
-          '/api/automatic_speech_recognition/asr__crdnn__commonvoice_it']
+models = [
+    '/api/automatic_speech_recognition/asr_wav2vec2_voxpopuli_it',
+    '/api/automatic_speech_recognition/asr_wav2vec2_commonvoice_it',
+    '/api/automatic_speech_recognition/asr__crdnn__commonvoice_it']
 metrics = ["wer", "cer"]
 
-for model in models:
-    print("===== Benchmark of model: {} dataset: {} ".format(model.split("/")[-1], dataset))
-    hugging_face_evaluate_metric_on_dataset(
+
+asr_evaluate_metric_on_dataset(
         task=task,
         dataset=dataset,
-        model=model,
+        model=models[0],
         metrics=metrics,
     )
+# for model in models:
+#     print("===== Benchmark of model: {} dataset: {} ".format(model.split("/")[-1], dataset))
+#     asr_evaluate_metric_on_dataset(
+#         task=task,
+#         dataset=dataset,
+#         model=model,
+#         metrics=metrics,
+#     )

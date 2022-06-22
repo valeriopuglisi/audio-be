@@ -21,7 +21,7 @@ class ApiDeepLearningFeaturesList(Resource):
         self.parser = reqparse.RequestParser()
 
     def get(self):
-        api_list = AudioAnalysisAPI
+        api_list = AudioAnalysisAPI.copy()
         for dict_element in api_list.values():
             print(type(dict_element))
             print(dict_element)
@@ -450,6 +450,85 @@ class ApiAsrWav2vec2CommonvoiceRw(Resource):
         audiofile.save(audiofile_path)
         transcribed_file = asr__wav2vec2__commonvoice_rw(audiofile_path)
         return transcribed_file, 200
+
+
+class ApiAsrWav2vec2VoxpopuliDe(Resource):
+
+    def __init__(self):
+        self.parser = reqparse.RequestParser()
+
+    def post(self):
+        self.parser.add_argument("audiofile", type=werkzeug.datastructures.FileStorage, location='files')
+        self.parser.add_argument('title')
+        args = self.parser.parse_args()
+        audiofile = args.get("audiofile")
+        audiofile_path = os.path.join(MEDIA_DIR, audiofile.filename)
+        audiofile.save(audiofile_path)
+        transcribed_file = asr__wav2vec2__voxpopuli_de(audiofile_path)
+        return transcribed_file, 200
+
+
+class ApiAsrWav2vec2VoxpopuliEn(Resource):
+
+    def __init__(self):
+        self.parser = reqparse.RequestParser()
+
+    def post(self):
+        self.parser.add_argument("audiofile", type=werkzeug.datastructures.FileStorage, location='files')
+        self.parser.add_argument('title')
+        args = self.parser.parse_args()
+        audiofile = args.get("audiofile")
+        audiofile_path = os.path.join(MEDIA_DIR, audiofile.filename)
+        audiofile.save(audiofile_path)
+        transcribed_file = asr__wav2vec2__voxpopuli_en(audiofile_path)
+        return transcribed_file, 200
+
+
+class ApiAsrWav2vec2VoxpopuliEs(Resource):
+
+    def __init__(self):
+        self.parser = reqparse.RequestParser()
+
+    def post(self):
+        self.parser.add_argument("audiofile", type=werkzeug.datastructures.FileStorage, location='files')
+        self.parser.add_argument('title')
+        args = self.parser.parse_args()
+        audiofile = args.get("audiofile")
+        audiofile_path = os.path.join(MEDIA_DIR, audiofile.filename)
+        audiofile.save(audiofile_path)
+        transcribed_file = asr__wav2vec2__voxpopuli_es(audiofile_path)
+        return transcribed_file, 200
+
+
+class ApiAsrWav2vec2VoxpopuliFr(Resource):
+
+    def __init__(self):
+        self.parser = reqparse.RequestParser()
+
+    def post(self):
+        self.parser.add_argument("audiofile", type=werkzeug.datastructures.FileStorage, location='files')
+        self.parser.add_argument('title')
+        args = self.parser.parse_args()
+        audiofile = args.get("audiofile")
+        audiofile_path = os.path.join(MEDIA_DIR, audiofile.filename)
+        audiofile.save(audiofile_path)
+        transcribed_file = asr__wav2vec2__voxpopuli_fr(audiofile_path)
+        return transcribed_file, 201
+
+
+class ApiAsrWav2vec2VoxpopuliIt(Resource):
+    def __init__(self):
+        self.parser = reqparse.RequestParser()
+
+    def post(self):
+        self.parser.add_argument("audiofile", type=werkzeug.datastructures.FileStorage, location='files')
+        self.parser.add_argument('title')
+        args = self.parser.parse_args()
+        audiofile = args.get("audiofile")
+        audiofile_path = os.path.join(MEDIA_DIR, audiofile.filename)
+        audiofile.save(audiofile_path)
+        transcribed_file = asr__wav2vec2__voxpopuli_it(audiofile_path)
+        return transcribed_file, 201
 
 
 class ApiAsrWav2vec2TransformerAishellMandarinChinese(Resource):

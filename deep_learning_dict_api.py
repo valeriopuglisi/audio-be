@@ -25,7 +25,6 @@ AudioAnalysisAPI = {
         "api": "/api/automatic_speech_recognition/asr_crdnntransformerlm_librispeech_en",
         "function": asr__crdnn_transformerlm__librispeech_en
         },
-
     '/api/automatic_speech_recognition/asr_crdnnrnnlm_librispeech_en': {
         "task": "Automatic Speech Recognition",
         "dataset": "LibriSpeech (English)",
@@ -64,6 +63,7 @@ AudioAnalysisAPI = {
     #     "performance": "PER=8.04% (test)",
     #     "api": ""
     #     },
+
     '/api/automatic_speech_recognition/asr_wav2vec2_commonvoice_en': {
         "task": "Automatic Speech Recognition",
         "dataset": "CommonVoice (English)",
@@ -88,14 +88,81 @@ AudioAnalysisAPI = {
         "api": '/api/automatic_speech_recognition/asr_wav2vec2_commonvoice_it',
         "function": asr__wav2vec2__commonvoice_it
         },
-    '/api/automatic_speech_recognition/asr__crdnn__commonvoice_it': {
+    '/api/automatic_speech_recognition/asr_wav2vec2_commonvoice_rw': {
         "task": "Automatic Speech Recognition",
-        "dataset": "CommonVoice (Italian)",
-        "system": "CRDNN with CTC/Attention trained on CommonVoice Italian (No LM)",
+        "dataset": "CommonVoice (Kinyarwanda)",
+        "system": "wav2vec2 + seq2seq",
+        "performance": "WER=18.91% (test)",
+        "api": '/api/automatic_speech_recognition/asr_wav2vec2_commonvoice_rw',
+        "function": asr__wav2vec2__commonvoice_rw
+        },
+
+
+    '/api/automatic_speech_recognition/asr_wav2vec2_voxpopuli_de': {
+        "task": "Automatic Speech Recognition",
+        "dataset": "Voxpopuli (Deutsch)",
+        "system": "wav2vec2 + CTC",
+        "performance": "WER=18.91% (test)",
+        "description": """
+        wav2vec 2.0 model with “Base” configuration. Pre-trained on 10k hours of unlabeled audio from VoxPopuli dataset 
+        [9] (“10k” subset, consisting of 23 languages). Fine-tuned for ASR on 282 hours of transcribed audio from “de” 
+        subset. Originally published by the authors of VoxPopuli [9] under CC BY-NC 4.0 and redistributed with the 
+        same license. [License, Source] Please refer to torchaudio.pipelines.Wav2Vec2ASRBundle() for the usage.
+        """,
+        "api": '/api/automatic_speech_recognition/asr_wav2vec2_voxpopuli_de',
+        "function": asr__wav2vec2__voxpopuli_de
+        },
+    '/api/automatic_speech_recognition/asr_wav2vec2_voxpopuli_en': {
+        "task": "Automatic Speech Recognition",
+        "dataset": "VoxPopuli (English)",
+        "system": "wav2vec2 + CTC",
+        "performance": "WER=15.69% (test)",
+        "api": '/api/automatic_speech_recognition/asr_wav2vec2_voxpopuli_en',
+        "function": asr__wav2vec2__voxpopuli_en
+        },
+    '/api/automatic_speech_recognition/asr_wav2vec2_voxpopuli_es': {
+            "task": "Automatic Speech Recognition",
+            "dataset": "VoxPopuli (Espanol)",
+            "system": "wav2vec2 + CTC",
+            "performance": "WER=15.69% (test)",
+            "api": '/api/automatic_speech_recognition/asr_wav2vec2_voxpopuli_es',
+            "function": asr__wav2vec2__voxpopuli_es
+            },
+    '/api/automatic_speech_recognition/asr_wav2vec2_voxpopuli_fr':    {
+        "task": "Automatic Speech Recognition",
+        "dataset": "VoxPopuli (French)",
+        "system": "wav2vec2 + CTC",
+        "performance": "WER=9.96% (test), Test CER=3.19",
+        "api": '/api/automatic_speech_recognition/asr_wav2vec2_commonvoice_fr',
+        "function": asr__wav2vec2__voxpopuli_fr,
+        },
+    '/api/automatic_speech_recognition/asr_wav2vec2_voxpopuli_it': {
+        "task": "Automatic Speech Recognition",
+        "dataset": "VoxPopuli (Italian)",
+        "system": "wav2vec 2.0 with CTC/Attention",
+        "performance": "WER=9.86% (test)",
+        "api": '/api/automatic_speech_recognition/asr_wav2vec2_voxpopuli_it',
+        "function": asr__wav2vec2__voxpopuli_it
+        },
+
+
+    '/api/automatic_speech_recognition/asr_wav2vec2_transformer_aishell_mandarin_chinese': {
+        "task": "Automatic Speech Recognition",
+        "dataset": "AISHELL (Mandarin)",
+        "system": "wav2vec2 + seq2seq",
+        "performance": "CER=5.58% (test)",
+        "api": '/api/automatic_speech_recognition/asr_wav2vec2_transformer_aishell_mandarin_chinese',
+        "function": asr__wav2vec2_transformer__aishell_mandarin_chinese
+        },
+
+    '/api/automatic_speech_recognition/asr_crdnn_commonvoice_fr': {
+        "task": "Automatic Speech Recognition",
+        "dataset": "CommonVoice (French)",
+        "system": "CRDNN with CTC/Attention trained on CommonVoice French (No LM)",
         "description": """
             This ASR system is composed of 2 different but linked blocks:
             Tokenizer (unigram) that transforms words into subword units and trained with the train transcriptions 
-            (train.tsv) of CommonVoice (IT).
+            (train.tsv) of CommonVoice (FR).
             Acoustic model (CRDNN + CTC/Attention). 
             The CRDNN architecture is made of N blocks of convolutional neural networks with normalization and pooling 
             on the frequency domain. Then, a bidirectional LSTM is connected to a final DNN to obtain the final 
@@ -105,26 +172,50 @@ AudioAnalysisAPI = {
             when calling transcribe_file if needed.
         """,
         "performance": "WER=9.86% (test)",
+        "api": '/api/automatic_speech_recognition/asr_wav2vec2_commonvoice_fr',
+        "function": asr__crdnn__commonvoice_fr,
+    },
+    '/api/automatic_speech_recognition/asr__crdnn__commonvoice_it': {
+        "task": "Automatic Speech Recognition",
+        "dataset": "CommonVoice (Italian)",
+        "system": "CRDNN with CTC/Attention trained on CommonVoice Italian (No LM)",
+        "description": """
+        This ASR system is composed of 2 different but linked blocks:
+        Tokenizer (unigram) that transforms words into subword units and trained with the train transcriptions 
+        (train.tsv) of CommonVoice (IT).
+        Acoustic model (CRDNN + CTC/Attention). 
+        The CRDNN architecture is made of N blocks of convolutional neural networks with normalization and pooling 
+        on the frequency domain. Then, a bidirectional LSTM is connected to a final DNN to obtain the final 
+        acoustic representation that is given to the CTC and attention decoders.
+        The system is trained with recordings sampled at 16kHz (single channel). 
+        The code will automatically normalize your audio (i.e., resampling + mono channel selection) 
+        when calling transcribe_file if needed.
+    """,
+        "performance": "WER=9.86% (test)",
         "api": '/api/automatic_speech_recognition/asr_wav2vec2_commonvoice_it',
         "function": asr__crdnn__commonvoice_it,
-        },
+    },
+    '/api/automatic_speech_recognition/asr__crdnn__commonvoice_de': {
+        "task": "Automatic Speech Recognition",
+        "dataset": "CommonVoice (Deutch)",
+        "system": "CRDNN with CTC/Attention trained on CommonVoice Italian (No LM)",
+        "description": """
+        This ASR system is composed of 2 different but linked blocks:
+        Tokenizer (unigram) that transforms words into subword units and trained with the train transcriptions 
+        (train.tsv) of CommonVoice (DE).
+        Acoustic model (CRDNN + CTC/Attention). 
+        The CRDNN architecture is made of N blocks of convolutional neural networks with normalization and pooling 
+        on the frequency domain. Then, a bidirectional LSTM is connected to a final DNN to obtain the final 
+        acoustic representation that is given to the CTC and attention decoders.
+        The system is trained with recordings sampled at 16kHz (single channel). 
+        The code will automatically normalize your audio (i.e., resampling + mono channel selection) 
+        when calling transcribe_file if needed.
+    """,
+        "performance": "WER=9.86% (test)",
+        "api": '/api/automatic_speech_recognition/asr_wav2vec2_commonvoice_de',
+        "function": asr__crdnn__commonvoice_de,
+    },
 
-    '/api/automatic_speech_recognition/asr_wav2vec2_commonvoice_rw': {
-        "task": "Automatic Speech Recognition",
-        "dataset": "CommonVoice (Kinyarwanda)",
-        "system": "wav2vec2 + seq2seq",
-        "performance": "WER=18.91% (test)",
-        "api": '/api/automatic_speech_recognition/asr_wav2vec2_commonvoice_rw',
-        "function": asr__wav2vec2__commonvoice_rw
-        },
-    '/api/automatic_speech_recognition/asr_wav2vec2_transformer_aishell_mandarin_chinese': {
-        "task": "Automatic Speech Recognition",
-        "dataset": "AISHELL (Mandarin)",
-        "system": "wav2vec2 + seq2seq",
-        "performance": "CER=5.58% (test)",
-        "api": '/api/automatic_speech_recognition/asr_wav2vec2_transformer_aishell_mandarin_chinese',
-        "function": asr__wav2vec2_transformer__aishell_mandarin_chinese
-        },
     # "":{
     #         "task": "Speech Translation",
     #         "dataset": "Fisher-callhome (spanish)",

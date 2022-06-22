@@ -1,10 +1,8 @@
 "Automatic Speech Recognition:\n  CommonVoice DE:\n    description: a\n    path: ..\\\
   datasets\\COMMON VOICE DE\n    references: b\n  CommonVoice EN:\n    description:\
-  \ a\n    path: ..\\datasets\\COMMON VOICE EN\n    references: b\n  CommonVoice IT:\n\
-  \    dataset_path: ..\\datasets\\COMMON VOICE IT\\it\n    description: \"Common\
-  \ Voice: A Massively-Multilingual Speech Corpu. \\nRosana Ardila,\\\n      \\ Megan\
-  \ Branson, Kelly Davis, Michael Henretty, Michael Kohler, Josh Meyer,Reuben\\\n\
-  \      \\ Morais, Lindsay Saunders, Francis M. Tyers, Gregor Weber \\nThe Common\
+  \ \"Common Voice: A Massively-Multilingual Speech Corpu. \\nRosana Ardila,\\\n \
+  \     \\ Megan Branson, Kelly Davis, Michael Henretty, Michael Kohler, Josh Meyer,Reuben\\\
+  \n      \\ Morais, Lindsay Saunders, Francis M. Tyers, Gregor Weber \\nThe Common\
   \ Voice\\\n      \\ corpus is a massively-multilingual collection of transcribed\
   \ speech intended\\\n      \\ for speech technology research and development. Common\
   \ Voice is designed for\\\n      \\ Automatic Speech Recognition purposes but can\
@@ -23,12 +21,43 @@
   \ (German, French, Italian, Turkish, Catalan,\\\n      \\ Slovenian, Welsh, Irish,\
   \ Breton, Tatar, Chuvash, and Kabyle). For most of\\\n      \\ these languages,\
   \ these are the first ever published results on end-to-end\\\n      \\ Automatic\
-  \ Speech Recognition.\"\n    invalidated_file: ..\\datasets\\COMMON VOICE IT\\it\\\
-  invalidated.tsv\n    other_file: ..\\datasets\\COMMON VOICE IT\\it\\other.tsv\n\
-  \    references: 'Ardila, Rosana, et al. \"Common voice: A massively-multilingual\
+  \ Speech Recognition.\"\n    invalidated_file: ..\\datasets\\cv-corpus-9.0-2022-04-27-en\\\
+  cv-corpus-9.0-2022-04-27\\en\\invalidated.tsv\n    other_file: ..\\datasets\\cv-corpus-9.0-2022-04-27-en\\\
+  cv-corpus-9.0-2022-04-27\\en\\other.tsv\n    path: ..\\datasets\\cv-corpus-9.0-2022-04-27-en\\\
+  cv-corpus-9.0-2022-04-27\\en\n    references: 'Ardila, Rosana, et al. \"Common voice:\
+  \ A massively-multilingual speech\n      corpus.\" arXiv preprint arXiv:1912.06670\
+  \ (2019).'\n    reported_file: ..\\datasets\\cv-corpus-9.0-2022-04-27-en\\cv-corpus-9.0-2022-04-27\\\
+  en\\reported.tsv\n    test_file: ..\\datasets\\cv-corpus-9.0-2022-04-27-en\\cv-corpus-9.0-2022-04-27\\\
+  en\\test.tsv\n    train_file: ..\\datasets\\cv-corpus-9.0-2022-04-27-en\\cv-corpus-9.0-2022-04-27\\\
+  en\\train.tsv\n    validated_file: ..\\datasets\\cv-corpus-9.0-2022-04-27-en\\cv-corpus-9.0-2022-04-27\\\
+  en\\validated.tsv\n  CommonVoice IT:\n    dataset_path: ..\\datasets\\cv-corpus-9.0-2022-04-27-it\\\
+  it\n    description: \"Common Voice: A Massively-Multilingual Speech Corpu. \\nRosana\
+  \ Ardila,\\\n      \\ Megan Branson, Kelly Davis, Michael Henretty, Michael Kohler,\
+  \ Josh Meyer,Reuben\\\n      \\ Morais, Lindsay Saunders, Francis M. Tyers, Gregor\
+  \ Weber \\nThe Common Voice\\\n      \\ corpus is a massively-multilingual collection\
+  \ of transcribed speech intended\\\n      \\ for speech technology research and\
+  \ development. Common Voice is designed for\\\n      \\ Automatic Speech Recognition\
+  \ purposes but can be useful in other domains (e.g.\\\n      \\ language identification).\
+  \ To achieve scale and sustainability, the Common\\\n      \\ Voice project employs\
+  \ crowdsourcing for both data collection and data validation.\\\n      \\  The most\
+  \ recent release includes 29 languages, and as of November 2019 thereare\\\n   \
+  \   \\ a total of  38 languages collecting data. Over 50,000 individuals have participated\\\
+  \n      \\ so far, resulting in 2,500 hours of collected audio.To our knowledge\
+  \ this\\\n      \\ is the largest audiocorpus in the public domain for speech recognition,\
+  \ both\\\n      \\ in terms of number of hours and number of  languages. As an example\
+  \ use case\\\n      \\ for Common Voice, we present speech recognition experiments\
+  \ using Mozilla's\\\n      \\ DeepSpeech Speech-to-Text toolkit. By applying transfer\
+  \ learning from a source\\\n      \\ English model, we find an average Character\
+  \ Error Rate improvement of 5.99\\\n      \\ +/- 5.48 for twelve target languages\
+  \ (German, French, Italian, Turkish, Catalan,\\\n      \\ Slovenian, Welsh, Irish,\
+  \ Breton, Tatar, Chuvash, and Kabyle). For most of\\\n      \\ these languages,\
+  \ these are the first ever published results on end-to-end\\\n      \\ Automatic\
+  \ Speech Recognition.\"\n    invalidated_file: ..\\datasets\\cv-corpus-9.0-2022-04-27-it\\\
+  it\\invalidated.tsv\n    other_file: ..\\datasets\\cv-corpus-9.0-2022-04-27-it\\\
+  it\\other.tsv\n    references: 'Ardila, Rosana, et al. \"Common voice: A massively-multilingual\
   \ speech\n      corpus.\" arXiv preprint arXiv:1912.06670 (2019).'\n    reported_file:\
-  \ ..\\datasets\\COMMON VOICE IT\\it\\reported.tsv\n    test_file: ..\\datasets\\\
-  COMMON VOICE IT\\it\\test.tsv\n    train_file: ..\\datasets\\COMMON VOICE IT\\it\\\
-  train.tsv\n    validated_file: ..\\datasets\\COMMON VOICE IT\\it\\validated.tsv\n\
-  Emotion Recognition: {}\nLanguage Identification: {}\nSpeech Enhancement: {}\nSpeech\
-  \ Separation: {}\nVoice Activity Detection: {}\n"
+  \ ..\\datasets\\cv-corpus-9.0-2022-04-27-it\\it\\reported.tsv\n    test_file: ..\\\
+  datasets\\cv-corpus-9.0-2022-04-27-it\\it\\test.tsv\n    train_file: ..\\datasets\\\
+  cv-corpus-9.0-2022-04-27-it\\it\\train.tsv\n    validated_file: ..\\datasets\\cv-corpus-9.0-2022-04-27-it\\\
+  it\\validated.tsv\nEmotion Recognition: {}\nLanguage Identification: {}\nSpeech\
+  \ Enhancement: {}\nSpeech Separation: {}\nVoice Activity Detection: {}\n"

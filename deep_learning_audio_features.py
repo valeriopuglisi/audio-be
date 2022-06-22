@@ -1,6 +1,7 @@
 from speechbrain.pretrained import *
 from cfg import *
 import librosa
+import torchaudio
 import speechbrain.pretrained
 import soundfile as sf
 from speechbrain.pretrained import EncoderDecoderASR
@@ -8,6 +9,26 @@ from speechbrain.dataio.preprocess import AudioNormalizer
 # from deep_learning_dict_lang_id_to_asr import lang_to_asr
 
 # ---------------------------- AUDIO SEPARATION ---------------------------------
+
+
+class GreedyCTCDecoder(torch.nn.Module):
+    def __init__(self, labels, blank=0):
+        super().__init__()
+        self.labels = labels
+        self.blank = blank
+
+    def forward(self, emission: torch.Tensor) -> str:
+        """Given a sequence emission over labels, get the best path string
+        Args:
+          emission (Tensor): Logit tensors. Shape `[num_seq, num_label]`.
+
+        Returns:
+          str: The resulting transcript
+        """
+        indices = torch.argmax(emission, dim=-1)  # [num_seq,]
+        indices = torch.unique_consecutive(indices, dim=-1)
+        indices = [i for i in indices if i != self.blank]
+        return "".join([self.labels[i] for i in indices])
 
 
 def audioseparation_sepformer_whamr(audiofile_path):
@@ -363,6 +384,166 @@ def asr__wav2vec2__commonvoice_rw(audiofile_path):
     asr_model = EncoderDecoderASR.from_hparams(source="speechbrain/asr-wav2vec2-commonvoice-rw", savedir=model_path)
     transcribed_file = asr_model.transcribe_file(audiofile_path)
     return transcribed_file
+
+
+def asr__wav2vec2__voxpopuli_en(audiofile_path):
+    """
+    wav2vec 2.0 model with “Base” configuration.
+
+    Pre-trained on 10k hours of unlabeled audio from VoxPopuli dataset [9]
+    (“10k” subset, consisting of 23 languages).
+    Fine-tuned for ASR on 91 hours of transcribed audio from “en” subset.
+    Originally published by the authors of VoxPopuli [9] under CC BY-NC 4.0
+    and redistributed with the same license. [License, Source]
+    """
+    torch.random.manual_seed(0)
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    bundle = torchaudio.pipelines.VOXPOPULI_ASR_BASE_10K_EN
+    model = bundle.get_model().to(device)
+    waveform, sample_rate = torchaudio.load(audiofile_path)
+    waveform = waveform.to(device)
+    print("Waveform shape: {} - Sample Rate: {}".format(waveform.shape, sample_rate))
+    # RESAMPLE WAVEFORM TO THE SAME SAMPLE RATE OF USED NETWORK
+    if sample_rate != bundle.sample_rate:
+        waveform = torchaudio.functional.resample(waveform, sample_rate, bundle.sample_rate)
+    print("Sample Rate:", bundle.sample_rate)
+    print("Labels:", bundle.get_labels())
+    with torch.inference_mode():
+        emission, _ = model(waveform)
+    print("Class labels:", bundle.get_labels())
+    # Now create the decoder object and decode the transcript.
+    decoder = GreedyCTCDecoder(labels=bundle.get_labels())
+    transcript = decoder(emission[0])
+    transcript = transcript.replace("|", " ").lower()
+    return transcript
+
+
+def asr__wav2vec2__voxpopuli_es(audiofile_path):
+    """
+    wav2vec 2.0 model with “Base” configuration.
+
+    Pre-trained on 10k hours of unlabeled audio from VoxPopuli dataset [9]
+    (“10k” subset, consisting of 23 languages).
+    Fine-tuned for ASR on 91 hours of transcribed audio from “es” subset.
+    Originally published by the authors of VoxPopuli [9] under CC BY-NC 4.0
+    and redistributed with the same license. [License, Source]
+    """
+    torch.random.manual_seed(0)
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    bundle = torchaudio.pipelines.VOXPOPULI_ASR_BASE_10K_ES
+    model = bundle.get_model().to(device)
+    waveform, sample_rate = torchaudio.load(audiofile_path)
+    waveform = waveform.to(device)
+    print("Waveform shape: {} - Sample Rate: {}".format(waveform.shape, sample_rate))
+    # RESAMPLE WAVEFORM TO THE SAME SAMPLE RATE OF USED NETWORK
+    if sample_rate != bundle.sample_rate:
+        waveform = torchaudio.functional.resample(waveform, sample_rate, bundle.sample_rate)
+    print("Sample Rate:", bundle.sample_rate)
+    print("Labels:", bundle.get_labels())
+    with torch.inference_mode():
+        emission, _ = model(waveform)
+    print("Class labels:", bundle.get_labels())
+    # Now create the decoder object and decode the transcript.
+    decoder = GreedyCTCDecoder(labels=bundle.get_labels())
+    transcript = decoder(emission[0])
+    transcript = transcript.replace("|", " ").lower()
+    return transcript
+
+
+def asr__wav2vec2__voxpopuli_fr(audiofile_path):
+    """
+    wav2vec 2.0 model with “Base” configuration.
+
+    Pre-trained on 10k hours of unlabeled audio from VoxPopuli dataset [9]
+    (“10k” subset, consisting of 23 languages).
+    Fine-tuned for ASR on 91 hours of transcribed audio from “fr” subset.
+    Originally published by the authors of VoxPopuli [9] under CC BY-NC 4.0
+    and redistributed with the same license. [License, Source]
+    """
+    torch.random.manual_seed(0)
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    bundle = torchaudio.pipelines.VOXPOPULI_ASR_BASE_10K_FR
+    model = bundle.get_model().to(device)
+    waveform, sample_rate = torchaudio.load(audiofile_path)
+    waveform = waveform.to(device)
+    print("Waveform shape: {} - Sample Rate: {}".format(waveform.shape, sample_rate))
+    # RESAMPLE WAVEFORM TO THE SAME SAMPLE RATE OF USED NETWORK
+    if sample_rate != bundle.sample_rate:
+        waveform = torchaudio.functional.resample(waveform, sample_rate, bundle.sample_rate)
+    print("Sample Rate:", bundle.sample_rate)
+    print("Labels:", bundle.get_labels())
+    with torch.inference_mode():
+        emission, _ = model(waveform)
+    print("Class labels:", bundle.get_labels())
+    # Now create the decoder object and decode the transcript.
+    decoder = GreedyCTCDecoder(labels=bundle.get_labels())
+    transcript = decoder(emission[0])
+    transcript = transcript.replace("|", " ").lower()
+    return transcript
+
+
+def asr__wav2vec2__voxpopuli_it(audiofile_path):
+    """
+    wav2vec 2.0 model with “Base” configuration.
+
+    Pre-trained on 10k hours of unlabeled audio from VoxPopuli dataset [9]
+    (“10k” subset, consisting of 23 languages).
+    Fine-tuned for ASR on 91 hours of transcribed audio from “it” subset.
+    Originally published by the authors of VoxPopuli [9] under CC BY-NC 4.0
+    and redistributed with the same license. [License, Source]
+    """
+    torch.random.manual_seed(0)
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    bundle = torchaudio.pipelines.VOXPOPULI_ASR_BASE_10K_IT
+    model = bundle.get_model().to(device)
+    waveform, sample_rate = torchaudio.load(audiofile_path)
+    waveform = waveform.to(device)
+    # print("Waveform shape: {} - Sample Rate: {}".format(waveform.shape, sample_rate))
+    # RESAMPLE WAVEFORM TO THE SAME SAMPLE RATE OF USED NETWORK
+    if sample_rate != bundle.sample_rate:
+        waveform = torchaudio.functional.resample(waveform, sample_rate, bundle.sample_rate)
+    # print("Sample Rate:", bundle.sample_rate)
+    # print("Labels:", bundle.get_labels())
+    with torch.inference_mode():
+        emission, _ = model(waveform)
+    # print("Class labels:", bundle.get_labels())
+    # Now create the decoder object and decode the transcript.
+    decoder = GreedyCTCDecoder(labels=bundle.get_labels())
+    transcript = decoder(emission[0])
+    transcript = transcript.replace("|", " ").lower()
+    return transcript
+
+
+def asr__wav2vec2__voxpopuli_de(audiofile_path):
+    """
+    wav2vec 2.0 model with “Base” configuration.
+
+    Pre-trained on 10k hours of unlabeled audio from VoxPopuli dataset [9]
+    (“10k” subset, consisting of 23 languages).
+    Fine-tuned for ASR on 91 hours of transcribed audio from “de” subset.
+    Originally published by the authors of VoxPopuli [9] under CC BY-NC 4.0
+    and redistributed with the same license. [License, Source]
+    """
+    torch.random.manual_seed(0)
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    bundle = torchaudio.pipelines.VOXPOPULI_ASR_BASE_10K_DE
+    model = bundle.get_model().to(device)
+    waveform, sample_rate = torchaudio.load(audiofile_path)
+    waveform = waveform.to(device)
+    # print("Waveform shape: {} - Sample Rate: {}".format(waveform.shape, sample_rate))
+    # RESAMPLE WAVEFORM TO THE SAME SAMPLE RATE OF USED NETWORK
+    if sample_rate != bundle.sample_rate:
+        waveform = torchaudio.functional.resample(waveform, sample_rate, bundle.sample_rate)
+    # print("Sample Rate:", bundle.sample_rate)
+    # print("Labels:", bundle.get_labels())
+    with torch.inference_mode():
+        emission, _ = model(waveform)
+    # print("Class labels:", bundle.get_labels())
+    # Now create the decoder object and decode the transcript.
+    decoder = GreedyCTCDecoder(labels=bundle.get_labels())
+    transcript = decoder(emission[0])
+    transcript = transcript.replace("|", " ").lower()
+    return transcript
 
 
 def asr__wav2vec2_transformer__aishell_mandarin_chinese(audiofile_path):

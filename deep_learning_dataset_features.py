@@ -31,7 +31,7 @@ def convert_common_voice_mp3_to_wav(task, dataset, input_dir, output_dir):
 
 
 _task = "Automatic Speech Recognition"
-_dataset = "CommonVoice IT"
+_dataset = "CommonVoice EN"
 _input_dir = "clips"
 _output_dir = "wavs"
 convert_common_voice_mp3_to_wav(_task, _dataset, _input_dir, _output_dir)

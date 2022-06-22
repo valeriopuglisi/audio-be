@@ -1,5 +1,6 @@
 from deep_learning_audio_api import *
 from audiofiles import *
+from deep_learning_dataset_api import *
 from preprocess_audio_api import *
 from deep_learning_pipelines_api import *
 from report_api import Reports, Report
@@ -8,7 +9,7 @@ app = Flask(__name__)
 api = Api(app)
 
 api.add_resource(ApiDeepLearningFeaturesList, '/api/deep-learning-features')
-
+api.add_resource(ApiDatasetsList, '/api/datasets')
 api.add_resource(AudioFilesList, '/api/audiofiles')
 api.add_resource(AudioFileDownload, '/api/audiofiles/<filename>')
 api.add_resource(SavePipeline, '/api/utils/save-pipeline')
@@ -73,6 +74,18 @@ api.add_resource(ApiAsrWav2vec2CommonvoiceEn,
                  '/api/automatic_speech_recognition/asr_wav2vec2_commonvoice_en')
 api.add_resource(ApiAsrWav2vec2CommonvoiceRw,
                  '/api/automatic_speech_recognition/asr_wav2vec2_commonvoice_rw')
+
+api.add_resource(ApiAsrWav2vec2VoxpopuliDe,
+                 '/api/automatic_speech_recognition/asr_wav2vec2_voxpopuli_de' )
+api.add_resource(ApiAsrWav2vec2VoxpopuliEn,
+                 '/api/automatic_speech_recognition/asr_wav2vec2_voxpopuli_en' )
+api.add_resource(ApiAsrWav2vec2VoxpopuliEs,
+                 '/api/automatic_speech_recognition/asr_wav2vec2_voxpopuli_es' )
+api.add_resource(ApiAsrWav2vec2VoxpopuliFr,
+                 '/api/automatic_speech_recognition/asr_wav2vec2_voxpopuli_fr' )
+api.add_resource(ApiAsrWav2vec2VoxpopuliIt,
+                 '/api/automatic_speech_recognition/asr_wav2vec2_voxpopuli_it' )
+
 api.add_resource(ApiAsrWav2vec2TransformerAishellMandarinChinese,
                  '/api/automatic_speech_recognition/asr_wav2vec2_transformer_aishell_mandarin_chinese')
 api.add_resource(ApiAsrConformerTransformerlmLibrispeechEn,
