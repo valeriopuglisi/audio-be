@@ -23,14 +23,10 @@ class ApiDeepLearningFeaturesList(Resource):
     def get(self):
         api_list = AudioAnalysisAPI.copy()
         for dict_element in api_list.values():
-            print(type(dict_element))
-            print(dict_element)
             try:
                 del dict_element['function']
             except Exception as e:
                 print(e)
-            print(dict_element)
-            print()
         dl_api_list = json.dumps(api_list)
         return dl_api_list
 

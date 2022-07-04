@@ -41,7 +41,6 @@ AudioAnalysisAPI = {
         "api": '/api/automatic_speech_recognition/asr_conformer_transformerlm_librispeech_en',
         "function": asr__conformer_transformer_lm__librispeech_en,
         },
-
     # "": {
     #     "task": "Automatic Speech Recognition	",
     #     "dataset": "LibriSpeech (English)",
@@ -96,8 +95,6 @@ AudioAnalysisAPI = {
         "api": '/api/automatic_speech_recognition/asr_wav2vec2_commonvoice_rw',
         "function": asr__wav2vec2__commonvoice_rw
         },
-
-
     '/api/automatic_speech_recognition/asr_wav2vec2_voxpopuli_de': {
         "task": "Automatic Speech Recognition",
         "dataset": "Voxpopuli (Deutsch)",
@@ -144,8 +141,6 @@ AudioAnalysisAPI = {
         "api": '/api/automatic_speech_recognition/asr_wav2vec2_voxpopuli_it',
         "function": asr__wav2vec2__voxpopuli_it
         },
-
-
     '/api/automatic_speech_recognition/asr_wav2vec2_transformer_aishell_mandarin_chinese': {
         "task": "Automatic Speech Recognition",
         "dataset": "AISHELL (Mandarin)",
@@ -154,7 +149,6 @@ AudioAnalysisAPI = {
         "api": '/api/automatic_speech_recognition/asr_wav2vec2_transformer_aishell_mandarin_chinese',
         "function": asr__wav2vec2_transformer__aishell_mandarin_chinese
         },
-
     '/api/automatic_speech_recognition/asr_crdnn_commonvoice_fr': {
         "task": "Automatic Speech Recognition",
         "dataset": "CommonVoice (French)",
@@ -172,7 +166,7 @@ AudioAnalysisAPI = {
             when calling transcribe_file if needed.
         """,
         "performance": "WER=9.86% (test)",
-        "api": '/api/automatic_speech_recognition/asr_wav2vec2_commonvoice_fr',
+        "api": '/api/automatic_speech_recognition/asr_crdnn_commonvoice_fr',
         "function": asr__crdnn__commonvoice_fr,
     },
     '/api/automatic_speech_recognition/asr__crdnn__commonvoice_it': {
@@ -192,13 +186,13 @@ AudioAnalysisAPI = {
         when calling transcribe_file if needed.
     """,
         "performance": "WER=9.86% (test)",
-        "api": '/api/automatic_speech_recognition/asr_wav2vec2_commonvoice_it',
+        "api": '/api/automatic_speech_recognition/asr_crdnn_commonvoice_it',
         "function": asr__crdnn__commonvoice_it,
     },
     '/api/automatic_speech_recognition/asr__crdnn__commonvoice_de': {
         "task": "Automatic Speech Recognition",
         "dataset": "CommonVoice (Deutch)",
-        "system": "CRDNN with CTC/Attention trained on CommonVoice Italian (No LM)",
+        "system": "CRDNN with CTC/Attention trained on CommonVoice Deutch (No LM)",
         "description": """
         This ASR system is composed of 2 different but linked blocks:
         Tokenizer (unigram) that transforms words into subword units and trained with the train transcriptions 
@@ -212,10 +206,9 @@ AudioAnalysisAPI = {
         when calling transcribe_file if needed.
     """,
         "performance": "WER=9.86% (test)",
-        "api": '/api/automatic_speech_recognition/asr_wav2vec2_commonvoice_de',
+        "api":'/api/automatic_speech_recognition/asr_crdnn_commonvoice_de',
         "function": asr__crdnn__commonvoice_de,
     },
-
     # "":{
     #         "task": "Speech Translation",
     #         "dataset": "Fisher-callhome (spanish)",
@@ -276,7 +269,6 @@ AudioAnalysisAPI = {
             "api": '/api/speech_enhancement/enhancement_sepformer_whamr_16k',
             "function": enhancement_sepformer_whamr_16k
     },
-
     '/api/audioseparation/speech_separation_sepformer_wsj02mix': {
             "task": "Speech Separation",
             "dataset": "WSJ2MIX",
