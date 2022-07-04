@@ -1,4 +1,4 @@
-from deep_learning_audio_features import *
+from deep_learning_features_audio import *
 
 AudioAnalysisAPI = {
     "/api/voice_activity_detection/vad_crdnn_libriparty": {

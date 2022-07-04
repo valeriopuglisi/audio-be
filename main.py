@@ -1,9 +1,9 @@
-from deep_learning_audio_api import *
+from deep_learning_api_audio import *
 from audiofiles import *
-from deep_learning_dataset_api import *
-from preprocess_audio_api import *
-from deep_learning_pipelines_api import *
-from report_api import Reports, Report
+from deep_learning_api_dataset import *
+from deep_learning_api_preprocess_audio import *
+from deep_learning_api_pipelines import *
+from deep_learning_api_report import Reports, Report
 
 app = Flask(__name__)
 api = Api(app)

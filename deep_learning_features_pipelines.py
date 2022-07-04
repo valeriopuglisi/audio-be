@@ -2,7 +2,7 @@ import os
 import yaml
 from cfg import PIPELINES_PATH
 from deep_learning_dict_api import AudioAnalysisAPI
-from report_features import create_report
+from depp_learning_features_report import create_report
 
 
 def run_pipeline(audiofile_path, pipeline_id):

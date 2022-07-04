@@ -1,7 +1,7 @@
 from flask_restful import Resource, Api, reqparse
 from flask import request
 import werkzeug
-from deep_learning_pipelines_features import *
+from deep_learning_features_pipelines import *
 from cfg import MEDIA_DIR
 
 

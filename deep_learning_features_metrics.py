@@ -1,4 +1,4 @@
-from deep_learning_audio_features import *
+from deep_learning_features_audio import *
 from deep_learning_dict_api import AudioAnalysisAPI
 from deep_learning_dict_datasets import Datasets
 import evaluate
@@ -7,7 +7,7 @@ import pandas as pd
 from pathlib import Path
 
 
-def asr_evaluate_metric_on_dataset(task, dataset, model, metrics):
+def asr_evaluate_metric_on_model_dataset(task, dataset, model, metrics):
     predictions = []
     references = []
     result = {}
@@ -46,7 +46,7 @@ models = [
 metrics = ["wer", "cer"]
 
 
-asr_evaluate_metric_on_dataset(
+asr_evaluate_metric_on_model_dataset(
         task=task,
         dataset=dataset,
         model=models[0],
