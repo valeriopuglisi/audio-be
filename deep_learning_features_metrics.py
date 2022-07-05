@@ -7,10 +7,12 @@ import pandas as pd
 from pathlib import Path
 
 
-def asr_evaluate_metric_on_model_dataset(task, dataset, model, metrics):
+def asr_evaluate_metric_on_model_dataset(task, dataset, model, metrics, n_test):
     predictions = []
     references = []
-    result = {}
+    result = {
+        "evaluation": {}
+    }
     # os.walk(dataset_path)
     test_table = pd.read_table(Datasets[task][dataset]["test_file"])
     test_audio_path = Datasets[task][dataset]["dataset_path"]
@@ -24,6 +26,8 @@ def asr_evaluate_metric_on_model_dataset(task, dataset, model, metrics):
         predictions.append(prediction)
         references.append(reference)
         # print("audiofile_path: {}\n- reference: {}\n- prediction:{}\n".format(audio_path, reference, prediction))
+        if i == n_test:
+            break
     for metric in metrics:
         loaded_metric = load(metric)
         # wer = load("wer")
@@ -31,8 +35,10 @@ def asr_evaluate_metric_on_model_dataset(task, dataset, model, metrics):
         # wer_score = wer.compute(predictions=predictions, references=references)
         print("{}: {}".format(metric, caluculated_metric))
         # print("wer_score: {}".format(wer_score))
-        result[metric] = caluculated_metric
-    params = {"model": model}
+        result['evaluation'][metric] = caluculated_metric
+    params = {"model": model,
+              "dataset": dataset,
+              "n_test": n_test}
     evaluate.save(path_or_file="./results/", **result, **params)
     return result
 
@@ -51,6 +57,7 @@ asr_evaluate_metric_on_model_dataset(
         dataset=dataset,
         model=models[0],
         metrics=metrics,
+        n_test= 3
     )
 # for model in models:
 #     print("===== Benchmark of model: {} dataset: {} ".format(model.split("/")[-1], dataset))
