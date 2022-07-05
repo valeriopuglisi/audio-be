@@ -1,6 +1,7 @@
 from deep_learning_api_audio import *
 from audiofiles import *
 from deep_learning_api_dataset import *
+from deep_learning_api_metrics import *
 from deep_learning_api_preprocess_audio import *
 from deep_learning_api_pipelines import *
 from deep_learning_api_report import Reports, Report
@@ -10,6 +11,7 @@ api = Api(app)
 
 api.add_resource(ApiDeepLearningFeaturesList, '/api/deep-learning-features')
 api.add_resource(ApiDatasetsList, '/api/datasets')
+api.add_resource(ApiMetricsList, '/api/metrics')
 api.add_resource(AudioFilesList, '/api/audiofiles')
 api.add_resource(AudioFileDownload, '/api/audiofiles/<filename>')
 api.add_resource(SavePipeline, '/api/utils/save-pipeline')
