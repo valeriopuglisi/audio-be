@@ -7,7 +7,7 @@ import pandas as pd
 from pathlib import Path
 
 
-def asr_evaluate_metric_on_model_dataset(task, dataset, model, metrics, n_test):
+def asr_evaluate_metric_with_model_on_commonvoice(task, dataset, model, metrics, n_test):
     predictions = []
     references = []
     result = {
@@ -37,8 +37,8 @@ def asr_evaluate_metric_on_model_dataset(task, dataset, model, metrics, n_test):
         # print("wer_score: {}".format(wer_score))
         result['evaluation'][metric] = caluculated_metric
     params = {"model": model,
-              "dataset": dataset,
-              "n_test": n_test}
+            "dataset": dataset,
+            "n_test": n_test}
     evaluate.save(path_or_file="./results/", **result, **params)
     return result
 
@@ -52,16 +52,16 @@ models = [
 metrics = ["wer", "cer"]
 
 
-asr_evaluate_metric_on_model_dataset(
+asr_evaluate_metric_with_model_on_commonvoice(
         task=task,
         dataset=dataset,
         model=models[0],
         metrics=metrics,
         n_test= 3
-    )
+)
 # for model in models:
 #     print("===== Benchmark of model: {} dataset: {} ".format(model.split("/")[-1], dataset))
-#     asr_evaluate_metric_on_dataset(
+#     asr_evaluate_metric_with_model_on_commonvoice(
 #         task=task,
 #         dataset=dataset,
 #         model=model,

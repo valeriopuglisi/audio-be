@@ -4,7 +4,7 @@ from deep_learning_dict_datasets import Datasets
 import pandas as pd
 import pathlib
 
-path_to_ffmpeg_exe = "C:/ffmpeg/bin/ffmpeg.exe"
+path_to_ffmpeg_exe = "/usr/local/bin/ffmpeg"
 
 
 def convert_common_voice_mp3_to_wav(task, dataset, input_dir, output_dir):
@@ -13,7 +13,7 @@ def convert_common_voice_mp3_to_wav(task, dataset, input_dir, output_dir):
     # os.walk(dataset_path)
     test_table = pd.read_table(Datasets[task][dataset]["test_file"])
     n_files_to_convert = test_table.shape[0]
-    dataset_path = Datasets[task][dataset]["dataset_path"]
+    dataset_path = Datasets[task][dataset]["path"]
     input_dir = os.path.join(dataset_path, input_dir)
     output_dir = os.path.join(dataset_path, output_dir)
     if not os.path.isdir(output_dir):
@@ -30,8 +30,20 @@ def convert_common_voice_mp3_to_wav(task, dataset, input_dir, output_dir):
         # print("output_file: {}".format(output_file))
 
 
-# _task = "Automatic Speech Recognition"
-# _dataset = "CommonVoice EN"
-# _input_dir = "clips"
-# _output_dir = "wavs"
-# convert_common_voice_mp3_to_wav(_task, _dataset, _input_dir, _output_dir)
+_task = "Automatic Speech Recognition"
+_datasets = ["CommonVoice-DE-9.0",
+            "CommonVoice-ES-9.0",
+            "CommonVoice-EN-9.0",
+            "CommonVoice-IT-9.0",
+            "CommonVoice-FR-9.0",
+            "CommonVoice-DE-10.0",
+            "CommonVoice-ES-10.0",
+            "CommonVoice-EN-10.0",
+            "CommonVoice-IT-10.0",
+            "CommonVoice-FR-10.0"]
+
+_input_dir = "clips"
+_output_dir = "wavs"
+
+for _dataset in _datasets:
+    convert_common_voice_mp3_to_wav(_task, _dataset, _input_dir, _output_dir)

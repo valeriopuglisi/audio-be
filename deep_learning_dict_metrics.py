@@ -27,7 +27,7 @@ Metrics = {
                 of 0 being a perfect score.""",
         },
         "CER": {
-                    "name": "WER: World Error Rate",
+                    "name": "CER: Character Error Rate",
                     "description": """Character error rate (CER) is a common metric of the performance of an auto-
                     matic speech recognition system. CER is similar to Word Error Rate (WER),
                     but operates on character instead of word. Please refer to docs of WER for
