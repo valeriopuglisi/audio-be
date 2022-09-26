@@ -16,6 +16,7 @@ def asr_evaluate_metric_with_model_on_commonvoice(task, dataset, model, metrics,
     # os.walk(dataset_path)
     test_table = pd.read_table(Datasets[task][dataset]["test_file"])
     test_audio_path = Datasets[task][dataset]["dataset_path"]
+    
     for i, row in enumerate(test_table.iterrows()):
         print("Benchmarking: {}/{}".format(i, test_table.shape[0]))
         audiofile_path = row[1]["path"]
@@ -40,25 +41,24 @@ def asr_evaluate_metric_with_model_on_commonvoice(task, dataset, model, metrics,
             "dataset": dataset,
             "n_test": n_test}
     evaluate.save(path_or_file="./results/", **result, **params)
-    return result
+    return result    
+    
+# task = "Automatic Speech Recognition"
+# dataset = "CommonVoice IT"
+# models = [
+#     '/api/automatic_speech_recognition/asr_wav2vec2_voxpopuli_it',
+#     '/api/automatic_speech_recognition/asr_wav2vec2_commonvoice_it',
+#     '/api/automatic_speech_recognition/asr__crdnn__commonvoice_it']
+# metrics = ["wer", "cer"]
 
+# asr_evaluate_metric_with_model_on_commonvoice(
+#         task=task,
+#         dataset=dataset,
+#         model=models[0],
+#         metrics=metrics,
+#         n_test= 3
+# )
 
-task = "Automatic Speech Recognition"
-dataset = "CommonVoice IT"
-models = [
-    '/api/automatic_speech_recognition/asr_wav2vec2_voxpopuli_it',
-    '/api/automatic_speech_recognition/asr_wav2vec2_commonvoice_it',
-    '/api/automatic_speech_recognition/asr__crdnn__commonvoice_it']
-metrics = ["wer", "cer"]
-
-
-asr_evaluate_metric_with_model_on_commonvoice(
-        task=task,
-        dataset=dataset,
-        model=models[0],
-        metrics=metrics,
-        n_test= 3
-)
 # for model in models:
 #     print("===== Benchmark of model: {} dataset: {} ".format(model.split("/")[-1], dataset))
 #     asr_evaluate_metric_with_model_on_commonvoice(
@@ -67,3 +67,32 @@ asr_evaluate_metric_with_model_on_commonvoice(
 #         model=model,
 #         metrics=metrics,
 #     )
+
+def speech_separation_evaluate_metric_with_model_on_librimix(model, dataset, metrics, n_test):
+    task = "Speech Separation"
+    predictions = []
+    references = []
+    result = {
+        "evaluation": {}
+    }
+    # os.walk(dataset_path)
+    print("dataset: {}".format(dataset))
+    # print(Datasets[task])
+    print("Datasets[task][dataset] : {}".format(Datasets[task][dataset]))
+    test_table = pd.read_table(Datasets[task][dataset])
+    print(test_table)
+    test_audio_path = Datasets[task][dataset]["dataset_path"]
+    
+    for i, row in enumerate(test_table.iterrows()):
+        print("i: {} - Row: {}".format(i, row))
+        audiofile_path = row[1]["path"]
+    return result
+
+speech_separation_models = [
+    '/api/audioseparation/speech_separation_sepformer_wsj02mix',
+    '/api/audioseparation/speech_separation_sepformer_wsj03mix'
+    ]
+speech_separation_dataset = "Libri2Mix16kMin"
+metrics = ["si-snr", "si-sdr", "pesq"]
+
+speech_separation_evaluate_metric_with_model_on_librimix(speech_separation_models[0], speech_separation_dataset, metrics[0], 10 )

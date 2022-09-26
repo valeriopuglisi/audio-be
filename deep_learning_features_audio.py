@@ -200,7 +200,7 @@ def speechseparation_sepformer_wsj02mix(audiofile_path):
     output_filename_2_path = os.path.join(SEPARATION_SEPFORMER_WSJ2_DIR, output_filename_2)
     torchaudio.save(output_filename_1_path, est_sources[:, :, 0].detach().cpu(), 8000)
     torchaudio.save(output_filename_2_path, est_sources[:, :, 1].detach().cpu(), 8000)
-    separated_filenames = [output_filename_1_path, output_filename_2]
+    separated_filenames = [output_filename_1_path, output_filename_2_path]
     return separated_filenames
 
 
