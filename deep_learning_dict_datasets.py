@@ -399,6 +399,8 @@ Datasets = {
     "Speech Separation": {
         "Libri2Mix8kMin": {
             "name": "Libri2Mix8kMin",
+            "channels":2,
+            "sample_rate": 8000,
             "path": "/storage/data_8T/datasets/audio/LibriMix/Libri2Mix/wav8k",
             "test_mix_both_file": "/storage/data_8T/datasets/audio/LibriMix/Libri2Mix/wav8k/min/metadata/mixture_test_mix_both.csv",
             "test_mix_clean_file": "/storage/data_8T/datasets/audio/LibriMix/Libri2Mix/wav8k/min/metadata/mixture_test_mix_clean.csv",
@@ -411,51 +413,10 @@ Datasets = {
             'conversation-like scenarios, we also release a sparsely overlapping version of LibriMix\'s test set.',
             "references": 'Cosentino, Joris, et al. "Librimix: An open-source dataset for generalizable speech separation." arXiv preprint arXiv:2005.11262 (2020).',
         },
-        "Libri2Mix16kMin": {
-            "name": "Libri2Mix16kMin",
-            "path": "/storage/data_8T/datasets/audio/LibriMix/Libri2Mix/wav16k",
-            "test_mix_both_file": "/storage/data_8T/datasets/audio/LibriMix/Libri2Mix/wav16k/min/metadata/mixture_test_mix_both.csv",
-            "test_mix_clean_file": "/storage/data_8T/datasets/audio/LibriMix/Libri2Mix/wav16k/min/metadata/mixture_test_mix_clean.csv",
-            "test_mix_single_file": "/storage/data_8T/datasets/audio/LibriMix/Libri2Mix/wav16k/min/metadata/mixture_test_mix_single.csv",
-            "description": 'In recent years, wsj0-2mix has become the reference dataset for single-channel speech separation. Most deep learning-based speech separation models today are benchmarked on it.' 
-            'However, recent studies have shown important performance drops when models trained on wsj0-2mix are evaluated on other, similar datasets. To address this generalization issue, we created LibriMix, an open-source alternative to wsj0-2mix, and to its noisy extension, WHAM!.' 
-            'Based on LibriSpeech, LibriMix consists of two- or three-speaker mixtures combined with ambient noise samples from WHAM!' 
-            'In order to fairly evaluate across datasets, we introduce a third test set based on VCTK for speech and WHAM! for noise.' 
-            'Our experiments show that the generalization error is smaller for models trained with LibriMix than with WHAM!, in both clean and noisy conditions. Aiming towards evaluation in more realistic,' 
-            'conversation-like scenarios, we also release a sparsely overlapping version of LibriMix\'s test set.',
-            "references": 'Cosentino, Joris, et al. "Librimix: An open-source dataset for generalizable speech separation." arXiv preprint arXiv:2005.11262 (2020).',
-        },
-        "Libri3Mix8kMin": {
-            "name": "Libri3Mix8kMin",
-            "path": "/storage/data_8T/datasets/audio/LibriMix/Libri3Mix/wav8k",
-            "test_mix_both_file": "/storage/data_8T/datasets/audio/LibriMix/Libri3Mix/wav8k/min/metadata/mixture_test_mix_both.csv",
-            "test_mix_clean_file": "/storage/data_8T/datasets/audio/LibriMix/Libri3Mix/wav8k/min/metadata/mixture_test_mix_clean.csv",
-            "test_mix_single_file": "/storage/data_8T/datasets/audio/LibriMix/Libri3Mix/wav8k/min/metadata/mixture_test_mix_single.csv",
-            "description": 'In recent years, wsj0-2mix has become the reference dataset for single-channel speech separation. Most deep learning-based speech separation models today are benchmarked on it.' 
-            'However, recent studies have shown important performance drops when models trained on wsj0-2mix are evaluated on other, similar datasets. To address this generalization issue, we created LibriMix, an open-source alternative to wsj0-2mix, and to its noisy extension, WHAM!.' 
-            'Based on LibriSpeech, LibriMix consists of two- or three-speaker mixtures combined with ambient noise samples from WHAM!' 
-            'In order to fairly evaluate across datasets, we introduce a third test set based on VCTK for speech and WHAM! for noise.' 
-            'Our experiments show that the generalization error is smaller for models trained with LibriMix than with WHAM!, in both clean and noisy conditions. Aiming towards evaluation in more realistic,' 
-            'conversation-like scenarios, we also release a sparsely overlapping version of LibriMix\'s test set.',
-            "references": 'Cosentino, Joris, et al. "Librimix: An open-source dataset for generalizable speech separation." arXiv preprint arXiv:2005.11262 (2020).',
-        },
-        "Libri3Mix16kMin": {
-            "name": "Libri3Mix16kMin",
-            "path": "/storage/data_8T/datasets/audio/LibriMix/Libri3Mix/wav16k",
-            "test_mix_both_file": "/storage/data_8T/datasets/audio/LibriMix/Libri3Mix/wav16k/min/metadata/mixture_test_mix_both.csv",
-            "test_mix_clean_file": "/storage/data_8T/datasets/audio/LibriMix/Libri3Mix/wav16k/min/metadata/mixture_test_mix_clean.csv",
-            "test_mix_single_file": "/storage/data_8T/datasets/audio/LibriMix/Libri3Mix/wav16k/min/metadata/mixture_test_mix_single.csv",
-            "description": 'In recent years, wsj0-2mix has become the reference dataset for single-channel speech separation. Most deep learning-based speech separation models today are benchmarked on it.' 
-            'However, recent studies have shown important performance drops when models trained on wsj0-2mix are evaluated on other, similar datasets. To address this generalization issue, we created LibriMix, an open-source alternative to wsj0-2mix, and to its noisy extension, WHAM!.' 
-            'Based on LibriSpeech, LibriMix consists of two- or three-speaker mixtures combined with ambient noise samples from WHAM!' 
-            'In order to fairly evaluate across datasets, we introduce a third test set based on VCTK for speech and WHAM! for noise.' 
-            'Our experiments show that the generalization error is smaller for models trained with LibriMix than with WHAM!, in both clean and noisy conditions. Aiming towards evaluation in more realistic,' 
-            'conversation-like scenarios, we also release a sparsely overlapping version of LibriMix\'s test set.',
-            "references": 'Cosentino, Joris, et al. "Librimix: An open-source dataset for generalizable speech separation." arXiv preprint arXiv:2005.11262 (2020).',
-        },
-
         "Libri2Mix8kMax": {
             "name": "Libri2Mix8kMax",
+            "channels":2,
+            "sample_rate": 8000,
             "path": "/storage/data_8T/datasets/audio/LibriMix/Libri2Mix/wav8k",
             "test_mix_both_file": "/storage/data_8T/datasets/audio/LibriMix/Libri2Mix/wav8k/max/metadata/mixture_test_mix_both.csv",
             "test_mix_clean_file": "/storage/data_8T/datasets/audio/LibriMix/Libri2Mix/wav8k/max/metadata/mixture_test_mix_clean.csv",
@@ -468,8 +429,26 @@ Datasets = {
             'conversation-like scenarios, we also release a sparsely overlapping version of LibriMix\'s test set.',
             "references": 'Cosentino, Joris, et al. "Librimix: An open-source dataset for generalizable speech separation." arXiv preprint arXiv:2005.11262 (2020).',
         },
+        "Libri2Mix16kMin": {
+            "name": "Libri2Mix16kMin",
+            "channels":2,
+            "sample_rate": 16000,
+            "path": "/storage/data_8T/datasets/audio/LibriMix/Libri2Mix/wav16k",
+            "test_mix_both_file": "/storage/data_8T/datasets/audio/LibriMix/Libri2Mix/wav16k/min/metadata/mixture_test_mix_both.csv",
+            "test_mix_clean_file": "/storage/data_8T/datasets/audio/LibriMix/Libri2Mix/wav16k/min/metadata/mixture_test_mix_clean.csv",
+            "test_mix_single_file": "/storage/data_8T/datasets/audio/LibriMix/Libri2Mix/wav16k/min/metadata/mixture_test_mix_single.csv",
+            "description": 'In recent years, wsj0-2mix has become the reference dataset for single-channel speech separation. Most deep learning-based speech separation models today are benchmarked on it.' 
+            'However, recent studies have shown important performance drops when models trained on wsj0-2mix are evaluated on other, similar datasets. To address this generalization issue, we created LibriMix, an open-source alternative to wsj0-2mix, and to its noisy extension, WHAM!.' 
+            'Based on LibriSpeech, LibriMix consists of two- or three-speaker mixtures combined with ambient noise samples from WHAM!' 
+            'In order to fairly evaluate across datasets, we introduce a third test set based on VCTK for speech and WHAM! for noise.' 
+            'Our experiments show that the generalization error is smaller for models trained with LibriMix than with WHAM!, in both clean and noisy conditions. Aiming towards evaluation in more realistic,' 
+            'conversation-like scenarios, we also release a sparsely overlapping version of LibriMix\'s test set.',
+            "references": 'Cosentino, Joris, et al. "Librimix: An open-source dataset for generalizable speech separation." arXiv preprint arXiv:2005.11262 (2020).',
+        },
         "Libri2Mix16kMax": {
             "name": "Libri2Mix16kMax",
+            "channels":2,
+            "sample_rate": 16000,
             "path": "/storage/data_8T/datasets/audio/LibriMix/Libri2Mix/wav16k",
             "test_mix_both_file": "/storage/data_8T/datasets/audio/LibriMix/Libri2Mix/wav16k/max/metadata/mixture_test_mix_both.csv",
             "test_mix_clean_file": "/storage/data_8T/datasets/audio/LibriMix/Libri2Mix/wav16k/max/metadata/mixture_test_mix_clean.csv",
@@ -482,8 +461,26 @@ Datasets = {
             'conversation-like scenarios, we also release a sparsely overlapping version of LibriMix\'s test set.',
             "references": 'Cosentino, Joris, et al. "Librimix: An open-source dataset for generalizable speech separation." arXiv preprint arXiv:2005.11262 (2020).',
         },
+        "Libri3Mix8kMin": {
+            "name": "Libri3Mix8kMin",
+            "channels":3,
+            "sample_rate": 8000,
+            "path": "/storage/data_8T/datasets/audio/LibriMix/Libri3Mix/wav8k",
+            "test_mix_both_file": "/storage/data_8T/datasets/audio/LibriMix/Libri3Mix/wav8k/min/metadata/mixture_test_mix_both.csv",
+            "test_mix_clean_file": "/storage/data_8T/datasets/audio/LibriMix/Libri3Mix/wav8k/min/metadata/mixture_test_mix_clean.csv",
+            "test_mix_single_file": "/storage/data_8T/datasets/audio/LibriMix/Libri3Mix/wav8k/min/metadata/mixture_test_mix_single.csv",
+            "description": 'In recent years, wsj0-2mix has become the reference dataset for single-channel speech separation. Most deep learning-based speech separation models today are benchmarked on it.' 
+            'However, recent studies have shown important performance drops when models trained on wsj0-2mix are evaluated on other, similar datasets. To address this generalization issue, we created LibriMix, an open-source alternative to wsj0-2mix, and to its noisy extension, WHAM!.' 
+            'Based on LibriSpeech, LibriMix consists of two- or three-speaker mixtures combined with ambient noise samples from WHAM!' 
+            'In order to fairly evaluate across datasets, we introduce a third test set based on VCTK for speech and WHAM! for noise.' 
+            'Our experiments show that the generalization error is smaller for models trained with LibriMix than with WHAM!, in both clean and noisy conditions. Aiming towards evaluation in more realistic,' 
+            'conversation-like scenarios, we also release a sparsely overlapping version of LibriMix\'s test set.',
+            "references": 'Cosentino, Joris, et al. "Librimix: An open-source dataset for generalizable speech separation." arXiv preprint arXiv:2005.11262 (2020).',
+        },
         "Libri3Mix8kMax": {
             "name": "Libri3Mix8kMax",
+            "channels":3,
+            "sample_rate": 8000,
             "path": "/storage/data_8T/datasets/audio/LibriMix/Libri3Mix/wav8k",
             "test_mix_both_file": "/storage/data_8T/datasets/audio/LibriMix/Libri3Mix/wav8k/max/metadata/mixture_test_mix_both.csv",
             "test_mix_clean_file": "/storage/data_8T/datasets/audio/LibriMix/Libri3Mix/wav8k/max/metadata/mixture_test_mix_clean.csv",
@@ -496,8 +493,26 @@ Datasets = {
             'conversation-like scenarios, we also release a sparsely overlapping version of LibriMix\'s test set.',
             "references": 'Cosentino, Joris, et al. "Librimix: An open-source dataset for generalizable speech separation." arXiv preprint arXiv:2005.11262 (2020).',
         },
+        "Libri3Mix16kMin": {
+            "name": "Libri3Mix16kMin",
+            "channels":3,
+            "sample_rate": 16000,
+            "path": "/storage/data_8T/datasets/audio/LibriMix/Libri3Mix/wav16k",
+            "test_mix_both_file": "/storage/data_8T/datasets/audio/LibriMix/Libri3Mix/wav16k/min/metadata/mixture_test_mix_both.csv",
+            "test_mix_clean_file": "/storage/data_8T/datasets/audio/LibriMix/Libri3Mix/wav16k/min/metadata/mixture_test_mix_clean.csv",
+            "test_mix_single_file": "/storage/data_8T/datasets/audio/LibriMix/Libri3Mix/wav16k/min/metadata/mixture_test_mix_single.csv",
+            "description": 'In recent years, wsj0-2mix has become the reference dataset for single-channel speech separation. Most deep learning-based speech separation models today are benchmarked on it.' 
+            'However, recent studies have shown important performance drops when models trained on wsj0-2mix are evaluated on other, similar datasets. To address this generalization issue, we created LibriMix, an open-source alternative to wsj0-2mix, and to its noisy extension, WHAM!.' 
+            'Based on LibriSpeech, LibriMix consists of two- or three-speaker mixtures combined with ambient noise samples from WHAM!' 
+            'In order to fairly evaluate across datasets, we introduce a third test set based on VCTK for speech and WHAM! for noise.' 
+            'Our experiments show that the generalization error is smaller for models trained with LibriMix than with WHAM!, in both clean and noisy conditions. Aiming towards evaluation in more realistic,' 
+            'conversation-like scenarios, we also release a sparsely overlapping version of LibriMix\'s test set.',
+            "references": 'Cosentino, Joris, et al. "Librimix: An open-source dataset for generalizable speech separation." arXiv preprint arXiv:2005.11262 (2020).',
+        },
         "Libri3Mix16kMax": {
             "name": "Libri3Mix16kMax",
+            "channels":3,
+            "sample_rate": 16000,
             "path": "/storage/data_8T/datasets/audio/LibriMix/Libri3Mix/wav16k",
             "test_mix_both_file": "/storage/data_8T/datasets/audio/LibriMix/Libri3Mix/wav16k/max/metadata/mixture_test_mix_both.csv",
             "test_mix_clean_file": "/storage/data_8T/datasets/audio/LibriMix/Libri3Mix/wav16k/max/metadata/mixture_test_mix_clean.csv",
@@ -510,6 +525,13 @@ Datasets = {
             'conversation-like scenarios, we also release a sparsely overlapping version of LibriMix\'s test set.',
             "references": 'Cosentino, Joris, et al. "Librimix: An open-source dataset for generalizable speech separation." arXiv preprint arXiv:2005.11262 (2020).',
         },
+        
+        
+       
+       
+        
+        
+        
 
     }
 }

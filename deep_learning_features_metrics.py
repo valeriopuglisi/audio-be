@@ -88,11 +88,5 @@ def speech_separation_evaluate_metric_with_model_on_librimix(model, dataset, met
         audiofile_path = row[1]["path"]
     return result
 
-speech_separation_models = [
-    '/api/audioseparation/speech_separation_sepformer_wsj02mix',
-    '/api/audioseparation/speech_separation_sepformer_wsj03mix'
-    ]
-speech_separation_dataset = "Libri2Mix16kMin"
-metrics = ["si-snr", "si-sdr", "pesq"]
 
-speech_separation_evaluate_metric_with_model_on_librimix(speech_separation_models[0], speech_separation_dataset, metrics[0], 10 )
+

@@ -241,6 +241,7 @@ AudioAnalysisAPI = {
     '/api/speech_enhancement/enhancement_sepformer_whamr': {
             "task": "Speech Enhancement",
             "dataset": "WHAMR!",
+            "sample_rate":8000,
             "system": "SepFormer",
             "performance": "SI-SNR= 10.59, PESQ=2.84 (test)",
             "api": '/api/speech_enhancement/enhancement_sepformer_whamr',
@@ -248,6 +249,7 @@ AudioAnalysisAPI = {
     },
     '/api/speech_enhancement/enhancement_sepformer_wham': {
             "task": "Speech Enhancement",
+            "sample_rate":8000,
             "dataset": "WHAM!: WSJ0-Mix dataset with environmental noise and reverberation in 8k",
             "system": "SepFormer",
             "performance": "Test-Set SI-SNR	Test-Set= 14.35; PESQ=3.07 (test)",
@@ -257,6 +259,7 @@ AudioAnalysisAPI = {
     },
     '/api/speech_enhancement/enhancement_sepformer_whamr_16k': {
             "task": "Speech Enhancement",
+            "sample_rate":16000,
             "dataset": "WHAMR!: WSJ0-Mix dataset with environmental noise and reverberation in 16k",
             "system": "SepFormer",
             "description": "This repository provides all the necessary tools to perform audio source separation with a "
@@ -271,6 +274,8 @@ AudioAnalysisAPI = {
     },
     '/api/audioseparation/speech_separation_sepformer_wsj02mix': {
             "task": "Speech Separation",
+            "sample_rate":8000,
+            "channels":2,
             "dataset": "WSJ2MIX",
             "system": "SepFormer",
             "performance": "SDRi=22.6 dB (test)",
@@ -279,6 +284,8 @@ AudioAnalysisAPI = {
         },
     '/api/audioseparation/speech_separation_sepformer_wsj03mix': {
             "task": "Speech Separation",
+            "channels":3,
+            "sample_rate":8000,
             "dataset": "WSJ3MIX",
             "system": "SepFormer",
             "performance": "SDRi=20.0 dB (test)",

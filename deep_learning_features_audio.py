@@ -129,7 +129,7 @@ def enhancement_sepformer_whamr_16k(audiofile_path):
     return [output_filename_path]
 
 
-def enhancement_metricganplus_voicebank(audiofile_path):
+def enhancement_metricganplus_voicebank(audiofile_path, sample_rate=16000):
     """
         ** MetricGAN-trained model for Enhancement
         This repository provides all the necessary tools to perform enhancement with SpeechBrain. For a better experience we encourage you to learn more about SpeechBrain. The model performance is:
@@ -152,14 +152,14 @@ def enhancement_metricganplus_voicebank(audiofile_path):
     filename = os.path.split(audiofile_path)[-1]
     output_filename = "EnhancementMetricganplusVoicebank_" + filename
     output_filename_path = os.path.join(ENHANCEMENT_METRICGANPLUS_VOICEBANK_DIR, output_filename)
-    torchaudio.save(output_filename_path, enhanced.cpu(), 16000)
+    torchaudio.save(output_filename_path, enhanced.cpu(), sample_rate)
     return [output_filename_path]
 # ------------------------------------------------------------------------
 
 # ---------------------------- SPEECH SEPARATION ---------------------------------
 
 
-def speechseparation_sepformer_wham(audiofile_path):
+def speechseparation_sepformer_wham(audiofile_path, sample_rate=8000):
     model_path = os.path.join('pretrained_models', 'sepformer-wham')
     model = SepformerSeparation.from_hparams(source="speechbrain/sepformer-wham", savedir=model_path)
     est_sources = model.separate_file(path=audiofile_path)
@@ -168,13 +168,13 @@ def speechseparation_sepformer_wham(audiofile_path):
     output_filename_2 = "SpeechSeparationSepformerWham_source2_" + filename
     output_filename_1_path = os.path.join(SEPARATION_WHAM_DIR, output_filename_1)
     output_filename_2_path = os.path.join(SEPARATION_WHAM_DIR, output_filename_2)
-    torchaudio.save(output_filename_1_path, est_sources[:, :, 0].detach().cpu(), 8000)
-    torchaudio.save(output_filename_2_path, est_sources[:, :, 1].detach().cpu(), 8000)
+    torchaudio.save(output_filename_1_path, est_sources[:, :, 0].detach().cpu(), sample_rate)
+    torchaudio.save(output_filename_2_path, est_sources[:, :, 1].detach().cpu(), sample_rate)
     separated_file_paths = [output_filename_1, output_filename_2]
     return separated_file_paths
 
 
-def speechseparation_sepformer_whamr(audiofile_path):
+def speechseparation_sepformer_whamr(audiofile_path, sample_rate=8000):
     model_path = os.path.join('pretrained_models', 'sepformer-whamr')
     model = SepformerSeparation.from_hparams(source="speechbrain/sepformer-whamr", savedir=model_path)
     est_sources = model.separate_file(path=audiofile_path)
@@ -183,13 +183,13 @@ def speechseparation_sepformer_whamr(audiofile_path):
     output_filename_2 = "ApiSpeechSeparationSepformerWhamr" + "_source2_" + filename
     output_filename_1_path = os.path.join(SEPARATION_WHAMR_DIR, output_filename_1)
     output_filename_2_path = os.path.join(SEPARATION_WHAMR_DIR, output_filename_2)
-    torchaudio.save(output_filename_1_path, est_sources[:, :, 0].detach().cpu(), 8000)
-    torchaudio.save(output_filename_2_path, est_sources[:, :, 1].detach().cpu(), 8000)
+    torchaudio.save(output_filename_1_path, est_sources[:, :, 0].detach().cpu(), sample_rate)
+    torchaudio.save(output_filename_2_path, est_sources[:, :, 1].detach().cpu(), sample_rate)
     separated_file_paths = [output_filename_1_path, output_filename_2_path]
     return separated_file_paths
 
 
-def speechseparation_sepformer_wsj02mix(audiofile_path):
+def speechseparation_sepformer_wsj02mix(audiofile_path, sample_rate=8000):
     model_path = os.path.join('pretrained_models', 'sepformer-wsj02mix')
     model = SepformerSeparation.from_hparams(source="speechbrain/sepformer-wsj02mix", savedir=model_path)
     est_sources = model.separate_file(path=audiofile_path)
@@ -198,13 +198,13 @@ def speechseparation_sepformer_wsj02mix(audiofile_path):
     output_filename_2 = "SpeechSeparationSepformerWsj02mix_source2_" + filename
     output_filename_1_path = os.path.join(SEPARATION_SEPFORMER_WSJ2_DIR, output_filename_1)
     output_filename_2_path = os.path.join(SEPARATION_SEPFORMER_WSJ2_DIR, output_filename_2)
-    torchaudio.save(output_filename_1_path, est_sources[:, :, 0].detach().cpu(), 8000)
-    torchaudio.save(output_filename_2_path, est_sources[:, :, 1].detach().cpu(), 8000)
+    torchaudio.save(output_filename_1_path, est_sources[:, :, 0].detach().cpu(), sample_rate)
+    torchaudio.save(output_filename_2_path, est_sources[:, :, 1].detach().cpu(), sample_rate)
     separated_filenames = [output_filename_1_path, output_filename_2_path]
     return separated_filenames
 
 
-def speechseparation_sepformer_wsj03mix(audiofile_path):
+def speechseparation_sepformer_wsj03mix(audiofile_path, sample_rate=8000):
     model_path = os.path.join('pretrained_models', 'sepformer-wsj03mix')
     model = SepformerSeparation.from_hparams(source="speechbrain/sepformer-wsj03mix", savedir=model_path)
     est_sources = model.separate_file(path=audiofile_path)
