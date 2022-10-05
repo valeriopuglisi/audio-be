@@ -395,6 +395,7 @@ def asr__wav2vec2__voxpopuli_en(audiofile_path):
     Fine-tuned for ASR on 91 hours of transcribed audio from “en” subset.
     Originally published by the authors of VoxPopuli [9] under CC BY-NC 4.0
     and redistributed with the same license. [License, Source]
+    WER=30.0% 
     """
     torch.random.manual_seed(0)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -427,6 +428,7 @@ def asr__wav2vec2__voxpopuli_es(audiofile_path):
     Fine-tuned for ASR on 91 hours of transcribed audio from “es” subset.
     Originally published by the authors of VoxPopuli [9] under CC BY-NC 4.0
     and redistributed with the same license. [License, Source]
+    WER= 31.4%
     """
     torch.random.manual_seed(0)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -459,6 +461,7 @@ def asr__wav2vec2__voxpopuli_fr(audiofile_path):
     Fine-tuned for ASR on 91 hours of transcribed audio from “fr” subset.
     Originally published by the authors of VoxPopuli [9] under CC BY-NC 4.0
     and redistributed with the same license. [License, Source]
+    WER=30.5%
     """
     torch.random.manual_seed(0)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -491,6 +494,7 @@ def asr__wav2vec2__voxpopuli_it(audiofile_path):
     Fine-tuned for ASR on 91 hours of transcribed audio from “it” subset.
     Originally published by the authors of VoxPopuli [9] under CC BY-NC 4.0
     and redistributed with the same license. [License, Source]
+    WER= 45.2%
     """
     torch.random.manual_seed(0)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -523,6 +527,7 @@ def asr__wav2vec2__voxpopuli_de(audiofile_path):
     Fine-tuned for ASR on 91 hours of transcribed audio from “de” subset.
     Originally published by the authors of VoxPopuli [9] under CC BY-NC 4.0
     and redistributed with the same license. [License, Source]
+    WER=29.3%
     """
     torch.random.manual_seed(0)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")

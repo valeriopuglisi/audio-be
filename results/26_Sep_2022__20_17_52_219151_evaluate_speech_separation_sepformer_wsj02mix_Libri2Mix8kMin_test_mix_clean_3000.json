@@ -1,0 +1,1 @@
+{"model": "/api/audioseparation/speech_separation_sepformer_wsj02mix", "dataset": "Libri2Mix8kMin", "n_test": 3000, "total_si_snr": "tensor(-9.9792)", "total_si_sdr": "tensor(-9.9526)", "total_snr": "tensor(-11.3625)", "total_sdr": "tensor(-4.7411)", "total_pit": "tensor(0.)", "total_wb_pesq": "tensor(0.)", "total_nb_pesq": "tensor(1.5791)", "total_stoi": "tensor(0.5272)"}
