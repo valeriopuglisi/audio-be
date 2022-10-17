@@ -3,7 +3,7 @@ import glob
 import pandas as pd
 
 
-iemocap_root_path = "data_8T/datasets/audio/IEMOCAP_full_release/"
+iemocap_root_path = "/storage/data_8T/datasets/audio/IEMOCAP_full_release"
 iemocap_audio_path = os.path.join(iemocap_root_path, "iemocap_audio_dataset.csv" )
 iemocap_dataset_session1_path = os.path.join(iemocap_root_path, "Session1")
 iemocap_dataset_session2_path = os.path.join(iemocap_root_path, "Session2")
@@ -23,6 +23,7 @@ iemocap_session_paths = [
 iemocap_audio_dictionary = {
     'session':[],
     'audio_path': [],
+    'gender':[],
     'emotion_evaluation_1': [],
     'emotion_evaluation_2': [],
     'emotion_evaluation_3': [],
@@ -47,9 +48,13 @@ for session_path in iemocap_session_paths:
                 for i,line in enumerate(lines):
                     if line.startswith("["):
                         print(i, line)
-                        wav_audio_filename = line.split("\t")[1]
+                        wav_audio_filename = line.split("\t")[1]+".wav"
+                        speaker_gender = wav_audio_filename.split("_")[-1][0]
+                        print("wav_audio_filename:", wav_audio_filename)
+                        print("speaker_gender:", speaker_gender)
                         wav_audio_emotion = line.split("\t")[2]
                         session_impro_sentence_path = os.path.join(session_impro_sentence_dir_path, wav_audio_filename)
+                        iemocap_audio_dictionary['gender'].append(speaker_gender) 
                         iemocap_audio_dictionary['session'].append(session_path.split("/")[-1]) 
                         iemocap_audio_dictionary['audio_path'].append(session_impro_sentence_path) 
                         iemocap_audio_dictionary['emotion_evaluation_1'].append(wav_audio_emotion)
@@ -61,7 +66,7 @@ for session_path in iemocap_session_paths:
                         print()
 
 df = pd.DataFrame(iemocap_audio_dictionary)
-df.to_csv(iemocap_audio_path, index=True)           
+df.to_csv(iemocap_audio_path, index=False)           
 
     
 
