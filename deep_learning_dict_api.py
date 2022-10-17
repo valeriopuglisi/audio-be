@@ -17,7 +17,7 @@ AudioAnalysisAPI = {
         "api": '/api/automatic_speech_recognition/asr_wav2vec2_transformer_aishell_mandarin_chinese',
         "function": asr__wav2vec2_transformer__aishell_mandarin_chinese
     },
-    '/api/automatic_speech_recognition/asr_wav2vec2_voxpopuli_de': {
+    "/api/automatic_speech_recognition/asr_wav2vec2_voxpopuli_de": {
         "task": "Automatic Speech Recognition",
         "dataset": "Voxpopuli (Deutsch)",
         "system": "wav2vec2 + CTC",

@@ -332,7 +332,6 @@ Datasets = {
                 'We are also releasing Kaldi scripts that make it easy to build these systems.',
             "references": 'Panayotov, Vassil, et al. "Librispeech: an asr corpus based on public domain audio books." 2015 IEEE international conference on acoustics, speech and signal processing (ICASSP). IEEE, 2015.',
         },
-
         "Voxpopuli-DE":{
             "name": "Voxpopuli-DE", 
             "path": "/storage/data_8T/datasets/audio/voxpopuli/transcribed_data/de",
@@ -369,7 +368,6 @@ Datasets = {
             "description": 'We introduce VoxPopuli, a large-scale multilingual corpus providing 400K hours of unlabeled speech data in 23 languages. It is the largest open data to date for unsupervised representation learning as well as semi-supervised learning. VoxPopuli also contains 1.8K hours of transcribed speeches in 15 languages and their aligned oral interpretations into 15 target languages totaling 17.3K hours. We provide speech recognition (ASR) baselines and validate the versatility of VoxPopuli unlabeled data in semi-supervised ASR and speech-to-text translation under challenging out-of-domain settings. The corpus is available at https://github.com/facebookresearch/voxpopuli.',
             "references": 'Wang, Changhan, et al. "Voxpopuli: A large-scale multilingual speech corpus for representation learning, semi-supervised learning and interpretation." arXiv preprint arXiv:2101.00390 (2021).',
         },
-
         "Voxpopuli-IT": {
             "name": "Voxpopuli-IT",
             "path": "/storage/data_8T/datasets/audio/voxpopuli/transcribed_data/it",
@@ -378,15 +376,53 @@ Datasets = {
             "other_file": "/storage/data_8T/datasets/audio/voxpopuli/transcribed_data/it/other.tsv",
             "description": 'We introduce VoxPopuli, a large-scale multilingual corpus providing 400K hours of unlabeled speech data in 23 languages. It is the largest open data to date for unsupervised representation learning as well as semi-supervised learning. VoxPopuli also contains 1.8K hours of transcribed speeches in 15 languages and their aligned oral interpretations into 15 target languages totaling 17.3K hours. We provide speech recognition (ASR) baselines and validate the versatility of VoxPopuli unlabeled data in semi-supervised ASR and speech-to-text translation under challenging out-of-domain settings. The corpus is available at https://github.com/facebookresearch/voxpopuli.',
             "references": 'Wang, Changhan, et al. "Voxpopuli: A large-scale multilingual speech corpus for representation learning, semi-supervised learning and interpretation." arXiv preprint arXiv:2101.00390 (2021).',
-        },
-
-        
+        },   
     },
     "Emotion Recognition":{
-
+        "IEMOCAP":{
+            "name": "IEMOCAP",
+            "path": "/storage/data_8T/datasets/audio/IEMOCAP_full_release/iemocap_audio_dataset.csv",
+            "description": """The Interactive Emotional Dyadic Motion Capture (IEMOCAP) database is an acted,
+             multimodal and multispeaker database, recently collected at SAIL lab at USC. 
+             It contains approximately 12 hours of audiovisual data, including video, speech, motion capture of face,
+             text transcriptions. It consists of dyadic sessions where actors perform improvisations or scripted scenarios, 
+             specifically selected to elicit emotional expressions. 
+             IEMOCAP database is annotated by multiple annotators into categorical labels,
+             such as anger, happiness, sadness, neutrality, as well as dimensional labels such as valence, 
+             activation and dominance. The detailed motion capture information, the interactive setting to 
+             elicit authentic emotions, 
+             and the size of the database make this corpus a valuable addition to the existing databases in the community 
+             for the study and modeling of multimodal and expressive human communication."""
+        }
     },
     "Language Identification":{
-
+        "VoxLingua107":{
+            "name": "VoxLingua107",
+            "path": "/storage/data_8T/datasets/audio/voxlingua_107",
+            "description": """TVoxLingua107 is a speech dataset for training spoken language identification models. 
+            The dataset consists of short speech segments automatically extracted from YouTube videos and labeled according the language of the video title and description, with some post-processing steps to filter out false positives.
+            VoxLingua107 contains data for 107 languages. 
+            The total amount of speech in the training set is 6628 hours. 
+            The average amount of data per language is 62 hours. 
+            However, the real amount per language varies a lot. 
+            There is also a seperate development set containing 1609 speech segments from 33 languages,
+            validated by at least two volunteers to really contain the given language.
+            For more information, see the paper Jörgen Valk, Tanel Alumäe. V
+            oxLingua107: a Dataset for Spoken Language Recognition. Proc. SLT 2021.
+            Why
+            VoxLingua107 can be used for training spoken language recognition models that work well with real-world, varying speech data. 
+            You can try a demo system trained on this dataset here.
+            How
+            We extracted audio data from YouTube videos that are retrieved using language-specific s
+            earch phrases (random phrases from Wikipedia of the particular language). 
+            If the language of the video title and description matched with the language of the search phrase, 
+            the audio in the video was deemed likely to be in that particular language.
+            This allowed to collect large amounts of somewhat noisy data relatively cheaply. 
+            Speech/non-speech detection and speaker diarization was used to segment the videos into short 
+            sentence-like utterances. A data-driven post-filtering step was applied to remove clips that were 
+            very different from other clips in this language's dataset, and thus likely not in the given language. ùDue to the automatic data collection process, there are still clips in the dataset that are not in the given language or contain non-speech (around 2% overall),
+            see for example the Yiddish or Latin samples below."""
+        }
     },
     
     "Voice Activity Detection":{
@@ -524,14 +560,7 @@ Datasets = {
             'Our experiments show that the generalization error is smaller for models trained with LibriMix than with WHAM!, in both clean and noisy conditions. Aiming towards evaluation in more realistic,' 
             'conversation-like scenarios, we also release a sparsely overlapping version of LibriMix\'s test set.',
             "references": 'Cosentino, Joris, et al. "Librimix: An open-source dataset for generalizable speech separation." arXiv preprint arXiv:2005.11262 (2020).',
-        },
-        
-        
-       
-       
-        
-        
-        
+        },  
 
     }
 }
