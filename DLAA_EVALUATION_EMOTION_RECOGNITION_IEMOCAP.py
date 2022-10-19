@@ -37,6 +37,11 @@ def emotion_recognition_evaluate_metric_with_model_on_IEMOCAP(task, dataset, mod
     }
     # os.walk(dataset_path)
     test_table = pd.read_csv(Datasets[task][dataset]["path"])
+    print("test_table.shape:{}".format(test_table.shape))
+
+    test_table = test_table[test_table.emotion_evaluation_1 != "xxx"]
+    print("test_table.shape:{}".format(test_table.shape))
+
     tot_sample = test_table.shape[0]
     if n_test is None:
         n_test = tot_sample
