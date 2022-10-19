@@ -1,0 +1,1 @@
+{"model": "/api/language_id/langid_commonlanguage_ecapa", "dataset": "VoxLingua107", "tot_sample": 5, "accuracy": "tensor(0.9074)"}

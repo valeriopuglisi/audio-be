@@ -1,0 +1,1 @@
+{"model": "/api/emotion_recognition/wav2vec2_IEMOCAP", "dataset": "IEMOCAP", "n_test": 1, "n_test_done": 1, "accuracy": "tensor(0.)"}
