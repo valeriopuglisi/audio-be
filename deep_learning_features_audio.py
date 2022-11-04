@@ -4,6 +4,11 @@ import librosa
 import torchaudio
 import speechbrain.pretrained
 import soundfile as sf
+from transformers import Wav2Vec2FeatureExtractor, Data2VecAudioForXVector
+from datasets import load_dataset
+import torch
+import torchaudio
+import torchaudio.functional as TAF
 from speechbrain.pretrained import EncoderDecoderASR
 from speechbrain.dataio.preprocess import AudioNormalizer
 # from deep_learning_dict_lang_id_to_asr import lang_to_asr
@@ -72,8 +77,8 @@ def audioseparation_sepformer_wham(audiofile_path):
     torchaudio.save(output_filename_2_path, est_sources[:, :, 1].detach().cpu(), 8000)
     return [output_filename_1_path, output_filename_2_path]
 
-# ------------------------------------------------------------------------
-# ---------------------------- AUDIO ENHANCEMENT ---------------------------------
+# ------------------------------------------------------------------------------------------------------------------------
+# ---------------------------- AUDIO ENHANCEMENT -------------------------------------------------------------------------
 
 
 def enhancement_sepformer_wham(audiofile_path):
@@ -296,10 +301,10 @@ def emotion_recognition__wav2vec2__iemocap(audiofile_path):
                                savedir=model_path)
     out_prob, score, index, text_lab = classifier.classify_file(audiofile_path)
     return text_lab
-# ------------------------------------------------------------------------
+# -----------------------------------------------------------------------------------------
 
 
-# ---------------------------- ASR ---------------------------------------
+# ---------------------------- ASR --------------------------------------------------------
 
 def asr__wav2vec2__commonvoice_fr(audiofile_path):
     """
@@ -839,3 +844,120 @@ def lang_id__to__asr(audiofile_path):
         result = "Language identified: {} - no model available for this language".format(lang)
     return result
 # ------------------------------------------------------------------------
+
+
+
+def speaker_verification__Data2VecAudioForXVector__librispeech_en(audiofile1_path, audiofile2_path, threshold):
+    """
+    Data2VecAudio Model with an XVector feature extraction head on top for tasks like Speaker Verification.
+
+    Data2VecAudio was proposed in data2vec: A General Framework for Self-supervised Learning in Speech, 
+    Vision and Language by Alexei Baevski, Wei-Ning Hsu, Qiantong Xu, Arun Babu, Jiatao Gu and Michael Auli.
+
+    This model inherits from PreTrainedModel. Check the superclass documentation for the generic methods the library implements for all 
+    its model (such as downloading or saving etc.).
+
+    This model is a PyTorch torch.nn.Module sub-class. Use it as a regular PyTorch Module and refer to the PyTorch documentation for all
+    matter related to general usage and behavior.
+        """
+    source_1_waveform, sample_rate_1 = torchaudio.load(audiofile1_path)
+    source_2_waveform, sample_rate_2 = torchaudio.load(audiofile2_path)
+    resample_rate = 16000
+    if sample_rate_1 != resample_rate and sample_rate_1 != sample_rate_2:
+        source_1_waveform = TAF.resample(source_1_waveform, sample_rate_1, resample_rate)
+        source_2_waveform = TAF.resample(source_2_waveform, sample_rate_1, resample_rate)
+    audio_files = [source_1_waveform, source_2_waveform]
+    feature_extractor = Wav2Vec2FeatureExtractor.from_pretrained("hf-internal-testing/tiny-random-data2vec-xvector")
+    model = Data2VecAudioForXVector.from_pretrained("hf-internal-testing/tiny-random-data2vec-xvector")
+    inputs = feature_extractor(audio_files, sampling_rate=resampling_rate, return_tensors="pt", padding=True)
+
+    with torch.no_grad():
+        embeddings = model(**inputs).embeddings
+    embeddings = torch.nn.functional.normalize(embeddings, dim=-1).cpu()
+
+    # the resulting embeddings can be used for cosine similarity-based retrieval
+    cosine_sim = torch.nn.CosineSimilarity(dim=-1)
+    similarity = cosine_sim(embeddings[0], embeddings[1])
+    threshold = threshold # the optimal threshold is dataset-dependent
+
+    if similarity < threshold:
+        return "Speakers are not the same! Similarity:{}".format(round(similarity.item(), 2))
+    else:
+        return "Speakers are the same! Similarity:{}".format(round(similarity.item(), 2))
+
+
+def speaker_verification__Wav2Vec2ForXVector__wav2vec2-base-superb-sv(audiofile1_path, audiofile2_path, threshold):
+    """
+    Wav2Vec2 Model with an XVector feature extraction head on top for tasks like Speaker Verification.
+    Wav2Vec2 was proposed in wav2vec 2.0: A Framework for Self-Supervised Learning of Speech Representations by Alexei Baevski,
+    Henry Zhou, Abdelrahman Mohamed, Michael Auli.
+    This model inherits from PreTrainedModel. Check the superclass documentation for the generic methods the library implements for all its model 
+    (such as downloading or saving etc.).
+    This model is a PyTorch torch.nn.Module sub-class. Use it as a regular PyTorch Module and refer to the PyTorch documentation for all matter related 
+    to general usage and behavior.
+    """
+    source_1_waveform, sample_rate_1 = torchaudio.load(audiofile1_path)
+    source_2_waveform, sample_rate_2 = torchaudio.load(audiofile2_path)
+    resample_rate = 16000
+    if sample_rate_1 != resample_rate and sample_rate_1 != sample_rate_2:
+        source_1_waveform = TAF.resample(source_1_waveform, sample_rate_1, resample_rate)
+        source_2_waveform = TAF.resample(source_2_waveform, sample_rate_1, resample_rate)
+    audio_files = [source_1_waveform, source_2_waveform]
+    feature_extractor = Wav2Vec2FeatureExtractor.from_pretrained("anton-l/wav2vec2-base-superb-sv")
+    model = Wav2Vec2ForXVector.from_pretrained("anton-l/wav2vec2-base-superb-sv")
+
+    # audio file is decoded on the fly
+    inputs = feature_extractor(audio_files, sampling_rate=resample_rate, return_tensors="pt", padding=True)
+    with torch.no_grad():
+        embeddings = model(**inputs).embeddings
+
+    embeddings = torch.nn.functional.normalize(embeddings, dim=-1).cpu()
+
+    # the resulting embeddings can be used for cosine similarity-based retrieval
+    cosine_sim = torch.nn.CosineSimilarity(dim=-1)
+    similarity = cosine_sim(embeddings[0], embeddings[1])
+    threshold = 0.7  # the optimal threshold is dataset-dependent
+    if similarity < threshold:
+        return "Speakers are not the same! Similarity:{}".format(round(similarity.item(), 2))
+    else:
+        return "Speakers are the same! Similarity:{}".format(round(similarity.item(), 2))
+
+
+
+def speaker_verification__Wav2Vec2ConformerForXVector__wav2vec2-conformer-xvector(audiofile1_path, audiofile2_path, threshold):
+    """
+    Wav2Vec2Conformer Model with an XVector feature extraction head on top for tasks like Speaker Verification.
+
+    Wav2Vec2Conformer was proposed in wav2vec 2.0: A Framework for Self-Supervised Learning of Speech Representations by Alexei Baevski, Henry Zhou, Abdelrahman Mohamed, Michael Auli.
+
+    This model inherits from PreTrainedModel. Check the superclass documentation for the generic methods the library implements for all its model (such as downloading or saving etc.).
+
+    This model is a PyTorch nn.Module sub-class. Use it as a regular PyTorch Module and refer to the PyTorch documentation for all matter related to general usage and behavior.
+    """
+    source_1_waveform, sample_rate_1 = torchaudio.load(audiofile1_path)
+    source_2_waveform, sample_rate_2 = torchaudio.load(audiofile2_path)
+    resample_rate = 16000
+    if sample_rate_1 != resample_rate and sample_rate_1 != sample_rate_2:
+        source_1_waveform = TAF.resample(source_1_waveform, sample_rate_1, resample_rate)
+        source_2_waveform = TAF.resample(source_2_waveform, sample_rate_1, resample_rate)
+    audio_files = [source_1_waveform, source_2_waveform]
+    feature_extractor = Wav2Vec2FeatureExtractor.from_pretrained("hf-internal-testing/wav2vec2-conformer-xvector")
+    model = Wav2Vec2ConformerForXVector.from_pretrained("hf-internal-testing/wav2vec2-conformer-xvector")
+
+    # audio file is decoded on the fly
+    inputs = feature_extractor(audio_files, sampling_rate=resample_rate, return_tensors="pt", padding=True)
+    with torch.no_grad():
+        embeddings = model(**inputs).embeddings
+
+    embeddings = torch.nn.functional.normalize(embeddings, dim=-1).cpu()
+
+    # the resulting embeddings can be used for cosine similarity-based retrieval
+    cosine_sim = torch.nn.CosineSimilarity(dim=-1)
+    similarity = cosine_sim(embeddings[0], embeddings[1])
+    threshold = 0.7  # the optimal threshold is dataset-dependent
+    if similarity < threshold:
+        return "Speakers are not the same! Similarity:{}".format(round(similarity.item(), 2))
+    else:
+        return "Speakers are the same! Similarity:{}".format(round(similarity.item(), 2))
+
+     
