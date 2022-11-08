@@ -763,3 +763,72 @@ class ApiLangidToAsr(Resource):
         return transcribed, 201
 
 
+
+class ApiSpeakerVerificationData2VecAudioForXVectorLibrispeechEn(Resource):
+
+    def __init__(self):
+        self.parser = reqparse.RequestParser()
+
+    def post(self):
+        self.parser.add_argument("audiofile1", type=werkzeug.datastructures.FileStorage, location='files')
+        self.parser.add_argument("audiofile2", type=werkzeug.datastructures.FileStorage, location='files')
+        self.parser.add_argument('threshold')
+        self.parser.add_argument('title1')
+        self.parser.add_argument('title2')
+        args = self.parser.parse_args()
+        audiofile1 = args.get("audiofile1")
+        audiofile_path1 = os.path.join(MEDIA_DIR, audiofile1.filename)
+        audiofile1.save(audiofile_path1)
+        audiofile2 = args.get("audiofile")
+        audiofile_path2 = os.path.join(MEDIA_DIR, audiofile2.filename)
+        audiofile2.save(audiofile_path2)
+        threshold = args.get("threshold")
+        result = speaker_verification__Data2VecAudioForXVector__librispeech_en(audiofile_path1, audiofile_path2, threshold)
+        return result, 201
+
+
+class ApiSpeakerVerificationWav2Vec2ForXVectorWav2Vec2BaseSuperbSv(Resource):
+
+    def __init__(self):
+        self.parser = reqparse.RequestParser()
+
+    def post(self):
+        self.parser.add_argument("audiofile1", type=werkzeug.datastructures.FileStorage, location='files')
+        self.parser.add_argument("audiofile2", type=werkzeug.datastructures.FileStorage, location='files')
+        self.parser.add_argument('threshold')
+        self.parser.add_argument('title1')
+        self.parser.add_argument('title2')
+        args = self.parser.parse_args()
+        audiofile1 = args.get("audiofile1")
+        audiofile_path1 = os.path.join(MEDIA_DIR, audiofile1.filename)
+        audiofile1.save(audiofile_path1)
+        audiofile2 = args.get("audiofile")
+        audiofile_path2 = os.path.join(MEDIA_DIR, audiofile2.filename)
+        audiofile2.save(audiofile_path2)
+        threshold = args.get("threshold")
+        result = speaker_verification__Wav2Vec2ForXVector__wav2vec2_base_superb_sv(audiofile_path1, audiofile_path2, threshold)
+        return result, 201
+
+
+class ApiSpeakerVerificationWav2Vec2ConformerForXVector(Resource):
+
+    def __init__(self):
+        self.parser = reqparse.RequestParser()
+
+    def post(self):
+        self.parser.add_argument("audiofile1", type=werkzeug.datastructures.FileStorage, location='files')
+        self.parser.add_argument("audiofile2", type=werkzeug.datastructures.FileStorage, location='files')
+        self.parser.add_argument('threshold')
+        self.parser.add_argument('title1')
+        self.parser.add_argument('title2')
+        args = self.parser.parse_args()
+        audiofile1 = args.get("audiofile1")
+        audiofile_path1 = os.path.join(MEDIA_DIR, audiofile1.filename)
+        audiofile1.save(audiofile_path1)
+        audiofile2 = args.get("audiofile")
+        audiofile_path2 = os.path.join(MEDIA_DIR, audiofile2.filename)
+        audiofile2.save(audiofile_path2)
+        threshold = args.get("threshold")
+        result = speaker_verification__Wav2Vec2ConformerForXVector__wav2vec_conformer_xvector(audiofile_path1, audiofile_path2, threshold)
+        return result, 201
+

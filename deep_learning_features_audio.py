@@ -4,7 +4,7 @@ import librosa
 import torchaudio
 import speechbrain.pretrained
 import soundfile as sf
-from transformers import Wav2Vec2FeatureExtractor, Data2VecAudioForXVector
+from transformers import Wav2Vec2FeatureExtractor, Data2VecAudioForXVector, Wav2Vec2ForXVector, Wav2Vec2ConformerForXVector
 from datasets import load_dataset
 import torch
 import torchaudio
@@ -866,10 +866,13 @@ def speaker_verification__Data2VecAudioForXVector__librispeech_en(audiofile1_pat
     if sample_rate_1 != resample_rate and sample_rate_1 != sample_rate_2:
         source_1_waveform = TAF.resample(source_1_waveform, sample_rate_1, resample_rate)
         source_2_waveform = TAF.resample(source_2_waveform, sample_rate_1, resample_rate)
+    
+    source_1_waveform = source_1_waveform.squeeze().numpy()
+    source_2_waveform = source_2_waveform.squeeze().numpy()
     audio_files = [source_1_waveform, source_2_waveform]
     feature_extractor = Wav2Vec2FeatureExtractor.from_pretrained("hf-internal-testing/tiny-random-data2vec-xvector")
     model = Data2VecAudioForXVector.from_pretrained("hf-internal-testing/tiny-random-data2vec-xvector")
-    inputs = feature_extractor(audio_files, sampling_rate=resampling_rate, return_tensors="pt", padding=True)
+    inputs = feature_extractor(audio_files, sampling_rate=resample_rate, return_tensors="pt", padding=True)
 
     with torch.no_grad():
         embeddings = model(**inputs).embeddings
@@ -886,7 +889,7 @@ def speaker_verification__Data2VecAudioForXVector__librispeech_en(audiofile1_pat
         return "Speakers are the same! Similarity:{}".format(round(similarity.item(), 2))
 
 
-def speaker_verification__Wav2Vec2ForXVector__wav2vec2-base-superb-sv(audiofile1_path, audiofile2_path, threshold):
+def speaker_verification__Wav2Vec2ForXVector__wav2vec2_base_superb_sv(audiofile1_path, audiofile2_path, threshold):
     """
     Wav2Vec2 Model with an XVector feature extraction head on top for tasks like Speaker Verification.
     Wav2Vec2 was proposed in wav2vec 2.0: A Framework for Self-Supervised Learning of Speech Representations by Alexei Baevski,
@@ -902,6 +905,8 @@ def speaker_verification__Wav2Vec2ForXVector__wav2vec2-base-superb-sv(audiofile1
     if sample_rate_1 != resample_rate and sample_rate_1 != sample_rate_2:
         source_1_waveform = TAF.resample(source_1_waveform, sample_rate_1, resample_rate)
         source_2_waveform = TAF.resample(source_2_waveform, sample_rate_1, resample_rate)
+    source_1_waveform = source_1_waveform.squeeze().numpy()
+    source_2_waveform = source_2_waveform.squeeze().numpy()
     audio_files = [source_1_waveform, source_2_waveform]
     feature_extractor = Wav2Vec2FeatureExtractor.from_pretrained("anton-l/wav2vec2-base-superb-sv")
     model = Wav2Vec2ForXVector.from_pretrained("anton-l/wav2vec2-base-superb-sv")
@@ -924,7 +929,7 @@ def speaker_verification__Wav2Vec2ForXVector__wav2vec2-base-superb-sv(audiofile1
 
 
 
-def speaker_verification__Wav2Vec2ConformerForXVector__wav2vec2-conformer-xvector(audiofile1_path, audiofile2_path, threshold):
+def speaker_verification__Wav2Vec2ConformerForXVector__wav2vec_conformer_xvector(audiofile1_path, audiofile2_path, threshold):
     """
     Wav2Vec2Conformer Model with an XVector feature extraction head on top for tasks like Speaker Verification.
 
@@ -940,6 +945,8 @@ def speaker_verification__Wav2Vec2ConformerForXVector__wav2vec2-conformer-xvecto
     if sample_rate_1 != resample_rate and sample_rate_1 != sample_rate_2:
         source_1_waveform = TAF.resample(source_1_waveform, sample_rate_1, resample_rate)
         source_2_waveform = TAF.resample(source_2_waveform, sample_rate_1, resample_rate)
+    source_1_waveform = source_1_waveform.squeeze().numpy()
+    source_2_waveform = source_2_waveform.squeeze().numpy()
     audio_files = [source_1_waveform, source_2_waveform]
     feature_extractor = Wav2Vec2FeatureExtractor.from_pretrained("hf-internal-testing/wav2vec2-conformer-xvector")
     model = Wav2Vec2ConformerForXVector.from_pretrained("hf-internal-testing/wav2vec2-conformer-xvector")

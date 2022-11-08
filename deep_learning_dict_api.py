@@ -251,20 +251,20 @@ AudioAnalysisAPI = {
             "function": speechseparation_sepformer_wham
         },
     '/api/audioseparation/speech_separation_sepformer_whamr': {
-            "task": "Speech Separation",
-            "dataset": "WHAMR!",
-            "system": "SepFormer",
-            "performance": "SDRi= 14.0 dB (test)",
-            "api": '/api/audioseparation/speech_separation_sepformer_whamr',
-            "function": speechseparation_sepformer_whamr
+        "task": "Speech Separation",
+        "dataset": "WHAMR!",
+        "system": "SepFormer",
+        "performance": "SDRi= 14.0 dB (test)",
+        "api": '/api/audioseparation/speech_separation_sepformer_whamr',
+        "function": speechseparation_sepformer_whamr
         },
     '/api/emotion_recognition/wav2vec2_IEMOCAP': {
-            "task": "Emotion Recognition",
-            "dataset": "IEMOCAP",
-            "system": "wav2vec",
-            "performance": "Accuracy=79.8% (test)",
-            "api": '/api/emotion_recognition/wav2vec2_IEMOCAP',
-            "function": emotion_recognition__wav2vec2__iemocap
+        "task": "Emotion Recognition",
+        "dataset": "IEMOCAP",
+        "system": "wav2vec",
+        "performance": "Accuracy=79.8% (test)",
+        "api": '/api/emotion_recognition/wav2vec2_IEMOCAP',
+        "function": emotion_recognition__wav2vec2__iemocap
     },
     '/api/language_id/langid_commonlanguage_ecapa': {
         "task": "Language Identification",
@@ -283,11 +283,36 @@ AudioAnalysisAPI = {
         "function": language_identification__ecapa__vox_lingua107
     },
     '/api/language_id/langid_asr': {
-            "task": "Language Identification + Automatic Speech Recognition",
-            "dataset": "VoxLingua 107 for lang id and ",
-            "system": "ECAPA-TDNN Sentence + wav2vec 2.0 with CTC/Attention",
-            "performance": "Accuracy=93.3% (test) for land id and Test WER= 9.86 for ASR",
-            "api": '/api/language_id/langid_asr',
-            "function": lang_id__to__asr
+        "task": "Language Identification + Automatic Speech Recognition",
+        "dataset": "VoxLingua 107 for lang id and ",
+        "system": "ECAPA-TDNN Sentence + wav2vec 2.0 with CTC/Attention",
+        "performance": "Accuracy=93.3% (test) for land id and Test WER= 9.86 for ASR",
+        "api": '/api/language_id/langid_asr',
+        "function": lang_id__to__asr
+    },
+    '/api/speaker_verification/speaker_verification__Data2VecAudioForXVector__librispeech_en':{
+        "task": "Speaker Verification",
+        "dataset": "Librispeech English",
+        "system": "Data2VecAudioForXVectorn",
+        "performance": "Accuracy=93.3% (test) for land id and Test WER= 9.86 for ASR",
+        "api": '/api/speaker_verification/speaker_verification__Data2VecAudioForXVector__librispeech_en',
+        "function": speaker_verification__Data2VecAudioForXVector__librispeech_en
+    },
+    '/api/speaker_verification/speaker_verification__Wav2Vec2ForXVector__wav2vec2_base_superb_sv':{
+        "task": "Speaker Verification",
+        "dataset": "Librispeech English",
+        "system": "Wav2Vec2ForXVector",
+        "performance": "Accuracy=93.3% (test) for land id and Test WER= 9.86 for ASR",
+        "api": '/api/speaker_verification/speaker_verification__Wav2Vec2ForXVector__wav2vec2_base_superb_sv',
+        "function": speaker_verification__Wav2Vec2ForXVector__wav2vec2_base_superb_sv
+    
+    },
+    '/api/speaker_verification/speaker_verification__Wav2Vec2ConformerForXVector__wav2vec_conformer_xvector':{
+        "task": "Speaker Verification",
+        "dataset": "Librispeech English",
+        "system": "Wav2Vec2ConformerForXVecto",
+        "performance": "Accuracy=93.3% (test) for land id and Test WER= 9.86 for ASR",
+        "api": '/api/speaker_verification/speaker_verification__Wav2Vec2ConformerForXVector__wav2vec_conformer_xvector',
+        "function": speaker_verification__Wav2Vec2ConformerForXVector__wav2vec_conformer_xvector
     },
 }

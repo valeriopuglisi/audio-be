@@ -23,78 +23,45 @@ api.add_resource(Report, '/api/report/<report_id>')
 
 
 # - DEEP LEARNING SPEECH ENHANCEMENT -----------------------------------------------------------------------------------
-api.add_resource(ApiEnhancementSepformerWham,
-                 '/api/speech_enhancement/enhancement_sepformer_wham')
-api.add_resource(ApiEnhancementSepformerWhamDownload,
-                 '/api/speech_enhancement/enhancement_sepformer_wham/<filename>')
-api.add_resource(ApiEnhancementSepformerWhamr,
-                 '/api/speech_enhancement/enhancement_sepformer_whamr')
-api.add_resource(ApiEnhancementSepformerWhamrDownload,
-                 '/api/speech_enhancement/enhancement_sepformer_whamr/<filename>')
-api.add_resource(ApiEnhancementSepformerWhamr16k,
-                 '/api/speech_enhancement/enhancement_sepformer_whamr_16k')
-api.add_resource(ApiEnhancementSepformerWhamrDownload16k,
-                 '/api/speech_enhancement/enhancement_sepformer_whamr_16k/<filename>')
-
-api.add_resource(ApiEnhancementMetricganplusVoicebank,
-                 '/api/speech_enhancement/enhancement_metricganplus_voicebank')
-api.add_resource(ApiEnhancementMetricganplusVoicebankDownload,
-                 '/api/speech_enhancement/enhancement_metricganplus_voicebank/<filename>')
+api.add_resource(ApiEnhancementSepformerWham,'/api/speech_enhancement/enhancement_sepformer_wham')
+api.add_resource(ApiEnhancementSepformerWhamDownload,'/api/speech_enhancement/enhancement_sepformer_wham/<filename>')
+api.add_resource(ApiEnhancementSepformerWhamr,'/api/speech_enhancement/enhancement_sepformer_whamr')
+api.add_resource(ApiEnhancementSepformerWhamrDownload,'/api/speech_enhancement/enhancement_sepformer_whamr/<filename>')
+api.add_resource(ApiEnhancementSepformerWhamr16k,'/api/speech_enhancement/enhancement_sepformer_whamr_16k')
+api.add_resource(ApiEnhancementSepformerWhamrDownload16k,'/api/speech_enhancement/enhancement_sepformer_whamr_16k/<filename>')
+api.add_resource(ApiEnhancementMetricganplusVoicebank,'/api/speech_enhancement/enhancement_metricganplus_voicebank')
+api.add_resource(ApiEnhancementMetricganplusVoicebankDownload,'/api/speech_enhancement/enhancement_metricganplus_voicebank/<filename>')
 # ----------------------------------------------------------------------------------------------------------------------
 
 
 # - DEEP LEARNING SPEECH SEPARATION ------------------------------------------------------------------------------------
-api.add_resource(ApiSpeechSeparationSepformerWham,
-                 '/api/audioseparation/speech_separation_sepformer_wham')
-api.add_resource(ApiSpeechSeparationSepformerWhamDownload,
-                 '/api/audioseparation/speech_separation_sepformer_wham/<filename>')
-api.add_resource(ApiSpeechSeparationSepformerWhamr,
-                 '/api/audioseparation/speech_separation_sepformer_whamr')
-api.add_resource(ApiSpeechSeparationSepformerWhamrDownload,
-                 '/api/audioseparation/speech_separation_sepformer_whamr/<filename>')
-api.add_resource(ApiSpeechSeparationSepformerWsj02mix,
-                 '/api/audioseparation/speech_separation_sepformer_wsj02mix')
-api.add_resource(ApiSpeechSeparationSepformerWsj02mixDownload,
-                 '/api/audioseparation/speech_separation_sepformer_wsj02mix/<filename>')
-api.add_resource(ApiSpeechSeparationSepformerWsj03mix,
-                 '/api/audioseparation/speech_separation_sepformer_wsj03mix')
-api.add_resource(ApiSpeechSeparationSepformerWsj03mixDownload,
-                 '/api/audioseparation/speech_separation_sepformer_wsj03mix/<filename>')
+api.add_resource(ApiSpeechSeparationSepformerWham,'/api/audioseparation/speech_separation_sepformer_wham')
+api.add_resource(ApiSpeechSeparationSepformerWhamDownload,'/api/audioseparation/speech_separation_sepformer_wham/<filename>')
+api.add_resource(ApiSpeechSeparationSepformerWhamr,'/api/audioseparation/speech_separation_sepformer_whamr')
+api.add_resource(ApiSpeechSeparationSepformerWhamrDownload,'/api/audioseparation/speech_separation_sepformer_whamr/<filename>')
+api.add_resource(ApiSpeechSeparationSepformerWsj02mix,'/api/audioseparation/speech_separation_sepformer_wsj02mix')
+api.add_resource(ApiSpeechSeparationSepformerWsj02mixDownload,'/api/audioseparation/speech_separation_sepformer_wsj02mix/<filename>')
+api.add_resource(ApiSpeechSeparationSepformerWsj03mix,'/api/audioseparation/speech_separation_sepformer_wsj03mix')
+api.add_resource(ApiSpeechSeparationSepformerWsj03mixDownload,'/api/audioseparation/speech_separation_sepformer_wsj03mix/<filename>')
 # ----------------------------------------------------------------------------------------------------------------------
 
 # - DEEP LEARNING AUTOMATIC SPEECH RECOGNITION -------------------------------------------------------------------------
-api.add_resource(ApiAsrCrdnnCommonvoiceIt,
-                 '/api/automatic_speech_recognition/asr_crdnn_commonvoice_it')
-api.add_resource(ApiAsrCrdnnCommonvoiceFr,
-                 '/api/automatic_speech_recognition/asr_crdnn_commonvoice_fr')
-api.add_resource(ApiAsrCrdnnCommonvoiceDe,
-                 '/api/automatic_speech_recognition/asr_crdnn_commonvoice_de')
-api.add_resource(ApiAsrWav2vec2CommonvoiceIt,
-                 '/api/automatic_speech_recognition/asr_wav2vec2_commonvoice_it')
-api.add_resource(ApiAsrWav2vec2CommonvoiceFr,
-                 '/api/automatic_speech_recognition/asr_wav2vec2_commonvoice_fr')
-api.add_resource(ApiAsrWav2vec2CommonvoiceEn,
-                 '/api/automatic_speech_recognition/asr_wav2vec2_commonvoice_en')
-api.add_resource(ApiAsrWav2vec2CommonvoiceRw,
-                 '/api/automatic_speech_recognition/asr_wav2vec2_commonvoice_rw')
+api.add_resource(ApiAsrCrdnnCommonvoiceIt,'/api/automatic_speech_recognition/asr_crdnn_commonvoice_it')
+api.add_resource(ApiAsrCrdnnCommonvoiceFr,'/api/automatic_speech_recognition/asr_crdnn_commonvoice_fr')
+api.add_resource(ApiAsrCrdnnCommonvoiceDe,'/api/automatic_speech_recognition/asr_crdnn_commonvoice_de')
+api.add_resource(ApiAsrWav2vec2CommonvoiceIt,'/api/automatic_speech_recognition/asr_wav2vec2_commonvoice_it')
+api.add_resource(ApiAsrWav2vec2CommonvoiceFr,'/api/automatic_speech_recognition/asr_wav2vec2_commonvoice_fr')
+api.add_resource(ApiAsrWav2vec2CommonvoiceEn,'/api/automatic_speech_recognition/asr_wav2vec2_commonvoice_en')
+api.add_resource(ApiAsrWav2vec2CommonvoiceRw,'/api/automatic_speech_recognition/asr_wav2vec2_commonvoice_rw')
+api.add_resource(ApiAsrWav2vec2VoxpopuliDe,'/api/automatic_speech_recognition/asr_wav2vec2_voxpopuli_de' )
+api.add_resource(ApiAsrWav2vec2VoxpopuliEn,'/api/automatic_speech_recognition/asr_wav2vec2_voxpopuli_en' )
+api.add_resource(ApiAsrWav2vec2VoxpopuliEs,'/api/automatic_speech_recognition/asr_wav2vec2_voxpopuli_es' )
+api.add_resource(ApiAsrWav2vec2VoxpopuliFr,'/api/automatic_speech_recognition/asr_wav2vec2_voxpopuli_fr' )
+api.add_resource(ApiAsrWav2vec2VoxpopuliIt,'/api/automatic_speech_recognition/asr_wav2vec2_voxpopuli_it' )
 
-api.add_resource(ApiAsrWav2vec2VoxpopuliDe,
-                 '/api/automatic_speech_recognition/asr_wav2vec2_voxpopuli_de' )
-api.add_resource(ApiAsrWav2vec2VoxpopuliEn,
-                 '/api/automatic_speech_recognition/asr_wav2vec2_voxpopuli_en' )
-api.add_resource(ApiAsrWav2vec2VoxpopuliEs,
-                 '/api/automatic_speech_recognition/asr_wav2vec2_voxpopuli_es' )
-api.add_resource(ApiAsrWav2vec2VoxpopuliFr,
-                 '/api/automatic_speech_recognition/asr_wav2vec2_voxpopuli_fr' )
-api.add_resource(ApiAsrWav2vec2VoxpopuliIt,
-                 '/api/automatic_speech_recognition/asr_wav2vec2_voxpopuli_it' )
-
-api.add_resource(ApiAsrWav2vec2TransformerAishellMandarinChinese,
-                 '/api/automatic_speech_recognition/asr_wav2vec2_transformer_aishell_mandarin_chinese')
-api.add_resource(ApiAsrConformerTransformerlmLibrispeechEn,
-                 '/api/automatic_speech_recognition/asr_conformer_transformerlm_librispeech_en')
-api.add_resource(ApiAsrCrdnntransformerlmLibrispeechEn,
-                 '/api/automatic_speech_recognition/asr_crdnntransformerlm_librispeech_en')
+api.add_resource(ApiAsrWav2vec2TransformerAishellMandarinChinese,'/api/automatic_speech_recognition/asr_wav2vec2_transformer_aishell_mandarin_chinese')
+api.add_resource(ApiAsrConformerTransformerlmLibrispeechEn,'/api/automatic_speech_recognition/asr_conformer_transformerlm_librispeech_en')
+api.add_resource(ApiAsrCrdnntransformerlmLibrispeechEn,'/api/automatic_speech_recognition/asr_crdnntransformerlm_librispeech_en')
 api.add_resource(ApiAsrCrdnnrnnlmLibrispeechEn, '/api/automatic_speech_recognition/asr_crdnnrnnlm_librispeech_en' )
 # ----------------------------------------------------------------------------------------------------------------------
 
@@ -105,16 +72,19 @@ api.add_resource(ApiLangidEcapaVoxLingua107, '/api/language_id/langid_voxlingua1
 api.add_resource(ApiLangidToAsr, '/api/language_id/langid_asr')
 # ----------------------------------------------------------------------------------------------------------------------
 
-# - DEEP LEARNING VOICE ACTIVITY DETECTION -------------------------------------------------------------------------
-api.add_resource(ApiVadCrdnnLibripartyCleaned,
-                 '/api/voice_activity_detection/vad_crdnn_libriparty')
 
-api.add_resource(ApiVadCrdnnLibripartyCleanedDownload,
-                 '/api/voice_activity_detection/vad_crdnn_libriparty/<filename>')
+# - DEEP LEARNING SPEAKER VERIFICATION ---------------------------------------------------------------------------------
+api.add_resource(ApiSpeakerVerificationData2VecAudioForXVectorLibrispeechEn, '/api/speaker_verification/speaker_verification__Data2VecAudioForXVector__librispeech_en')
+api.add_resource(ApiSpeakerVerificationWav2Vec2ForXVectorWav2Vec2BaseSuperbSv, '/api/speaker_verification/speaker_verification__Wav2Vec2ForXVector__wav2vec2_base_superb_sv')
+api.add_resource(ApiSpeakerVerificationWav2Vec2ConformerForXVector, '/api/speaker_verification/speaker_verification__Wav2Vec2ConformerForXVector__wav2vec_conformer_xvector')
 # ----------------------------------------------------------------------------------------------------------------------
 
-api.add_resource(ApiEmotionRecognitionWav2vec2IEMOCAP,
-                 '/api/emotion_recognition/wav2vec2_IEMOCAP')
+
+# - DEEP LEARNING VOICE ACTIVITY DETECTION -------------------------------------------------------------------------
+api.add_resource(ApiVadCrdnnLibripartyCleaned,'/api/voice_activity_detection/vad_crdnn_libriparty')
+api.add_resource(ApiVadCrdnnLibripartyCleanedDownload,'/api/voice_activity_detection/vad_crdnn_libriparty/<filename>')
+# ----------------------------------------------------------------------------------------------------------------------
+api.add_resource(ApiEmotionRecognitionWav2vec2IEMOCAP,'/api/emotion_recognition/wav2vec2_IEMOCAP')
 # ----------------------------------------------------------------------------------------------------------------------
 
 # - LIBROSA AUDIO FEATURES EXTRACTION ----------------------------------------------------------------------------------
@@ -132,7 +102,6 @@ api.add_resource(SpectralCentroid, '/api/preprocess/spectral_centroid')
 api.add_resource(SpectralBandwidth, '/api/preprocess/spectral_bandwidth')
 api.add_resource(SpectralContrast, '/api/preprocess/spectral_contrast')
 # ----------------------------------------------------------------------------------------------------------------------
-
 
 if __name__ == '__main__':
     app.run(debug=True, port=65000)
