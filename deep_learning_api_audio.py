@@ -770,20 +770,20 @@ class ApiSpeakerVerificationData2VecAudioForXVectorLibrispeechEn(Resource):
         self.parser = reqparse.RequestParser()
 
     def post(self):
-        self.parser.add_argument("audiofile1", type=werkzeug.datastructures.FileStorage, location='files')
-        self.parser.add_argument("audiofile2", type=werkzeug.datastructures.FileStorage, location='files')
+        self.parser.add_argument("audiofile", type=werkzeug.datastructures.FileStorage, location='files')
         self.parser.add_argument('threshold')
-        self.parser.add_argument('title1')
-        self.parser.add_argument('title2')
+        self.parser.add_argument('title')
         args = self.parser.parse_args()
-        audiofile1 = args.get("audiofile1")
-        audiofile_path1 = os.path.join(MEDIA_DIR, audiofile1.filename)
-        audiofile1.save(audiofile_path1)
-        audiofile2 = args.get("audiofile")
-        audiofile_path2 = os.path.join(MEDIA_DIR, audiofile2.filename)
-        audiofile2.save(audiofile_path2)
+        audiofile= args.get("audiofile")
+        audiofile_path= os.path.join(MEDIA_DIR, audiofile.filename)
+        audiofile.save(audiofile_path)
         threshold = args.get("threshold")
-        result = speaker_verification__Data2VecAudioForXVector__librispeech_en(audiofile_path1, audiofile_path2, threshold)
+        if len(os.listdir(SPEAKER_VERIFICATION_DATASET)) == 0 :
+            return "No data in speaker verification dataset",201
+        else:
+            for audiofile in os.listdir(SPEAKER_VERIFICATION_DATASET):
+                audiofile_path2 = os.path.join(SPEAKER_VERIFICATION_DATASET, audiofile)
+                result = result + "audiofile=" + audiofile + " :" + speaker_verification__Wav2Vec2ForXVector__wav2vec2_base_superb_sv(audiofile_path, audiofile_path2, threshold)+"\n"
         return result, 201
 
 
@@ -793,20 +793,21 @@ class ApiSpeakerVerificationWav2Vec2ForXVectorWav2Vec2BaseSuperbSv(Resource):
         self.parser = reqparse.RequestParser()
 
     def post(self):
-        self.parser.add_argument("audiofile1", type=werkzeug.datastructures.FileStorage, location='files')
-        self.parser.add_argument("audiofile2", type=werkzeug.datastructures.FileStorage, location='files')
+        result = ""
+        self.parser.add_argument("audiofile", type=werkzeug.datastructures.FileStorage, location='files')
         self.parser.add_argument('threshold')
-        self.parser.add_argument('title1')
-        self.parser.add_argument('title2')
+        self.parser.add_argument('title')
         args = self.parser.parse_args()
-        audiofile1 = args.get("audiofile1")
-        audiofile_path1 = os.path.join(MEDIA_DIR, audiofile1.filename)
-        audiofile1.save(audiofile_path1)
-        audiofile2 = args.get("audiofile")
-        audiofile_path2 = os.path.join(MEDIA_DIR, audiofile2.filename)
-        audiofile2.save(audiofile_path2)
+        audiofile = args.get("audiofile")
+        audiofile_path = os.path.join(MEDIA_DIR, audiofile.filename)
+        audiofile.save(audiofile_path)
         threshold = args.get("threshold")
-        result = speaker_verification__Wav2Vec2ForXVector__wav2vec2_base_superb_sv(audiofile_path1, audiofile_path2, threshold)
+        if len(os.listdir(SPEAKER_VERIFICATION_DATASET)) == 0 :
+            return "No data in speaker verification dataset",201
+        else:
+            for audiofile in os.listdir(SPEAKER_VERIFICATION_DATASET):
+                audiofile_path2 = os.path.join(SPEAKER_VERIFICATION_DATASET, audiofile)
+                result = result + "audiofile=" + audiofile + " :" + speaker_verification__Wav2Vec2ForXVector__wav2vec2_base_superb_sv(audiofile_path, audiofile_path2, threshold)+"\n"
         return result, 201
 
 
@@ -816,19 +817,18 @@ class ApiSpeakerVerificationWav2Vec2ConformerForXVector(Resource):
         self.parser = reqparse.RequestParser()
 
     def post(self):
-        self.parser.add_argument("audiofile1", type=werkzeug.datastructures.FileStorage, location='files')
-        self.parser.add_argument("audiofile2", type=werkzeug.datastructures.FileStorage, location='files')
+        self.parser.add_argument("audiofile", type=werkzeug.datastructures.FileStorage, location='files')
         self.parser.add_argument('threshold')
         self.parser.add_argument('title1')
-        self.parser.add_argument('title2')
         args = self.parser.parse_args()
-        audiofile1 = args.get("audiofile1")
-        audiofile_path1 = os.path.join(MEDIA_DIR, audiofile1.filename)
-        audiofile1.save(audiofile_path1)
-        audiofile2 = args.get("audiofile")
-        audiofile_path2 = os.path.join(MEDIA_DIR, audiofile2.filename)
-        audiofile2.save(audiofile_path2)
+        audiofile = args.get("audiofile")
+        audiofile_path = os.path.join(MEDIA_DIR, audiofile.filename)
+        audiofile.save(audiofile_path)
         threshold = args.get("threshold")
-        result = speaker_verification__Wav2Vec2ConformerForXVector__wav2vec_conformer_xvector(audiofile_path1, audiofile_path2, threshold)
+        if len(os.listdir(SPEAKER_VERIFICATION_DATASET)) == 0 :
+            return "No data in speaker verification dataset",201
+        else:
+            for audiofile in os.listdir(SPEAKER_VERIFICATION_DATASET):
+                audiofile_path2 = os.path.join(SPEAKER_VERIFICATION_DATASET, audiofile)
+                result = result + "audiofile=" + audiofile + " :" + speaker_verification__Wav2Vec2ForXVector__wav2vec2_base_superb_sv(audiofile_path, audiofile_path2, threshold)+"\n"
         return result, 201
-
