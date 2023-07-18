@@ -18,3 +18,4 @@ pipelines/*
 _sample_data/*
 voice_activity_detection_crdnn/*
 __pycache__/
+venv/
