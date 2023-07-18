@@ -4,6 +4,11 @@ import librosa
 import torchaudio
 import speechbrain.pretrained
 import soundfile as sf
+from transformers import Wav2Vec2FeatureExtractor, Data2VecAudioForXVector, Wav2Vec2ForXVector, Wav2Vec2ConformerForXVector
+from datasets import load_dataset
+import torch
+import torchaudio
+import torchaudio.functional as TAF
 from speechbrain.pretrained import EncoderDecoderASR
 from speechbrain.dataio.preprocess import AudioNormalizer
 # from deep_learning_dict_lang_id_to_asr import lang_to_asr
@@ -33,7 +38,7 @@ class GreedyCTCDecoder(torch.nn.Module):
 
 def audioseparation_sepformer_whamr(audiofile_path):
     model_path = os.path.join('pretrained_models', 'sepformer-whamr')
-    model = SepformerSeparation.from_hparams(source="speechbrain/sepformer-whamr", savedir=model_path)
+    model = SepformerSeparation.from_hparams(source="speechbrain/sepformer-whamr", savedir=model_path, run_opts={"device":"cuda"})
     est_sources = model.separate_file(path=audiofile_path)
     filename = os.path.split(audiofile_path)[-1]
     output_filename_1 = "AudioseparationSepformerWham_source1_" + filename
@@ -61,7 +66,7 @@ def audioseparation_sepformer_wham(audiofile_path):
         If your signal has a different sample rate, resample it (e.g, using torchaudio or sox) before using the interface.
         """
     model_path = os.path.join('pretrained_models', 'sepformer-wham')
-    model = SepformerSeparation.from_hparams(source="speechbrain/sepformer-wham", savedir=model_path)
+    model = SepformerSeparation.from_hparams(source="speechbrain/sepformer-wham", savedir=model_path, run_opts={"device":"cuda"})
     est_sources = model.separate_file(path=audiofile_path)
     filename = os.path.split(audiofile_path)[-1]
     output_filename_1 = "AudioseparationSepformerWham_source1_" + filename
@@ -72,8 +77,8 @@ def audioseparation_sepformer_wham(audiofile_path):
     torchaudio.save(output_filename_2_path, est_sources[:, :, 1].detach().cpu(), 8000)
     return [output_filename_1_path, output_filename_2_path]
 
-# ------------------------------------------------------------------------
-# ---------------------------- AUDIO ENHANCEMENT ---------------------------------
+# ------------------------------------------------------------------------------------------------------------------------
+# ---------------------------- AUDIO ENHANCEMENT -------------------------------------------------------------------------
 
 
 def enhancement_sepformer_wham(audiofile_path):
@@ -88,7 +93,7 @@ def enhancement_sepformer_wham(audiofile_path):
         01-12-21	    14.35	             3.07
         """
     model_path = os.path.join('pretrained_models', 'sepformer-wham-enhancement')
-    model = SepformerSeparation.from_hparams(source="speechbrain/sepformer-wham-enhancement", savedir=model_path)
+    model = SepformerSeparation.from_hparams(source="speechbrain/sepformer-wham-enhancement", savedir=model_path, run_opts={"device":"cuda"})
     est_sources = model.separate_file(path=audiofile_path)
     filename = os.path.split(audiofile_path)[-1]
     output_filename = "EnhancementSepformerWham_" + filename
@@ -108,7 +113,7 @@ def enhancement_sepformer_whamr(audiofile_path):
         01-12-21	    10.59	                2.84
         """
     model_path = os.path.join('pretrained_models', 'sepformer-whamr-enhancement')
-    model = SepformerSeparation.from_hparams(source="speechbrain/sepformer-whamr-enhancement", savedir=model_path)
+    model = SepformerSeparation.from_hparams(source="speechbrain/sepformer-whamr-enhancement", savedir=model_path, run_opts={"device":"cuda"})
     est_sources = model.separate_file(path=audiofile_path)
     filename = os.path.split(audiofile_path)[-1]
     output_filename = "EnhancementSepformerWhamr_" + filename
@@ -119,8 +124,7 @@ def enhancement_sepformer_whamr(audiofile_path):
 
 def enhancement_sepformer_whamr_16k(audiofile_path):
     model_path = os.path.join('pretrained_models', 'sepformer-whamr-enhancement')
-    model = SepformerSeparation.from_hparams(source="speechbrain/sepformer-whamr16k",
-                                             savedir='pretrained_models/sepformer-whamr16k')
+    model = SepformerSeparation.from_hparams(source="speechbrain/sepformer-whamr16k", savedir='pretrained_models/sepformer-whamr16k', run_opts={"device":"cuda"})
     est_sources = model.separate_file(path=audiofile_path)
     filename = os.path.split(audiofile_path)[-1]
     output_filename = "EnhancementSepformerWhamr_16k" + filename
@@ -129,7 +133,7 @@ def enhancement_sepformer_whamr_16k(audiofile_path):
     return [output_filename_path]
 
 
-def enhancement_metricganplus_voicebank(audiofile_path):
+def enhancement_metricganplus_voicebank(audiofile_path, sample_rate=16000):
     """
         ** MetricGAN-trained model for Enhancement
         This repository provides all the necessary tools to perform enhancement with SpeechBrain. For a better experience we encourage you to learn more about SpeechBrain. The model performance is:
@@ -143,7 +147,7 @@ def enhancement_metricganplus_voicebank(audiofile_path):
         Make sure your input tensor is compliant with the expected sampling rate if you use enhance_batch as in the example.
         """
     model_path = os.path.join('pretrained_models', 'metricgan-plus-voicebank')
-    model = SpectralMaskEnhancement.from_hparams(source="speechbrain/metricgan-plus-voicebank", savedir=model_path)
+    model = SpectralMaskEnhancement.from_hparams(source="speechbrain/metricgan-plus-voicebank", savedir=model_path, run_opts={"device":"cuda"})
     # Load and add fake batch dimension
     noisy = model.load_audio(audiofile_path).unsqueeze(0)
     # Add relative length tensor
@@ -152,61 +156,61 @@ def enhancement_metricganplus_voicebank(audiofile_path):
     filename = os.path.split(audiofile_path)[-1]
     output_filename = "EnhancementMetricganplusVoicebank_" + filename
     output_filename_path = os.path.join(ENHANCEMENT_METRICGANPLUS_VOICEBANK_DIR, output_filename)
-    torchaudio.save(output_filename_path, enhanced.cpu(), 16000)
+    torchaudio.save(output_filename_path, enhanced.cpu(), sample_rate)
     return [output_filename_path]
 # ------------------------------------------------------------------------
 
 # ---------------------------- SPEECH SEPARATION ---------------------------------
 
 
-def speechseparation_sepformer_wham(audiofile_path):
+def speechseparation_sepformer_wham(audiofile_path, sample_rate=8000):
     model_path = os.path.join('pretrained_models', 'sepformer-wham')
-    model = SepformerSeparation.from_hparams(source="speechbrain/sepformer-wham", savedir=model_path)
+    model = SepformerSeparation.from_hparams(source="speechbrain/sepformer-wham", savedir=model_path, run_opts={"device":"cuda"})
     est_sources = model.separate_file(path=audiofile_path)
     filename = os.path.split(audiofile_path)[-1]
     output_filename_1 = "SpeechSeparationSepformerWham_source1_" + filename
     output_filename_2 = "SpeechSeparationSepformerWham_source2_" + filename
     output_filename_1_path = os.path.join(SEPARATION_WHAM_DIR, output_filename_1)
     output_filename_2_path = os.path.join(SEPARATION_WHAM_DIR, output_filename_2)
-    torchaudio.save(output_filename_1_path, est_sources[:, :, 0].detach().cpu(), 8000)
-    torchaudio.save(output_filename_2_path, est_sources[:, :, 1].detach().cpu(), 8000)
+    torchaudio.save(output_filename_1_path, est_sources[:, :, 0].detach().cpu(), sample_rate)
+    torchaudio.save(output_filename_2_path, est_sources[:, :, 1].detach().cpu(), sample_rate)
     separated_file_paths = [output_filename_1, output_filename_2]
     return separated_file_paths
 
 
-def speechseparation_sepformer_whamr(audiofile_path):
+def speechseparation_sepformer_whamr(audiofile_path, sample_rate=8000):
     model_path = os.path.join('pretrained_models', 'sepformer-whamr')
-    model = SepformerSeparation.from_hparams(source="speechbrain/sepformer-whamr", savedir=model_path)
+    model = SepformerSeparation.from_hparams(source="speechbrain/sepformer-whamr", savedir=model_path, run_opts={"device":"cuda"})
     est_sources = model.separate_file(path=audiofile_path)
     filename = os.path.split(audiofile_path)[-1]
     output_filename_1 = "ApiSpeechSeparationSepformerWhamr" + "_source1_" + filename
     output_filename_2 = "ApiSpeechSeparationSepformerWhamr" + "_source2_" + filename
     output_filename_1_path = os.path.join(SEPARATION_WHAMR_DIR, output_filename_1)
     output_filename_2_path = os.path.join(SEPARATION_WHAMR_DIR, output_filename_2)
-    torchaudio.save(output_filename_1_path, est_sources[:, :, 0].detach().cpu(), 8000)
-    torchaudio.save(output_filename_2_path, est_sources[:, :, 1].detach().cpu(), 8000)
+    torchaudio.save(output_filename_1_path, est_sources[:, :, 0].detach().cpu(), sample_rate)
+    torchaudio.save(output_filename_2_path, est_sources[:, :, 1].detach().cpu(), sample_rate)
     separated_file_paths = [output_filename_1_path, output_filename_2_path]
     return separated_file_paths
 
 
-def speechseparation_sepformer_wsj02mix(audiofile_path):
+def speechseparation_sepformer_wsj02mix(audiofile_path, sample_rate=8000):
     model_path = os.path.join('pretrained_models', 'sepformer-wsj02mix')
-    model = SepformerSeparation.from_hparams(source="speechbrain/sepformer-wsj02mix", savedir=model_path)
+    model = SepformerSeparation.from_hparams(source="speechbrain/sepformer-wsj02mix", savedir=model_path, run_opts={"device":"cuda"})
     est_sources = model.separate_file(path=audiofile_path)
     filename = os.path.split(audiofile_path)[-1]
     output_filename_1 = "SpeechSeparationSepformerWsj02mix_source1_" + filename
     output_filename_2 = "SpeechSeparationSepformerWsj02mix_source2_" + filename
     output_filename_1_path = os.path.join(SEPARATION_SEPFORMER_WSJ2_DIR, output_filename_1)
     output_filename_2_path = os.path.join(SEPARATION_SEPFORMER_WSJ2_DIR, output_filename_2)
-    torchaudio.save(output_filename_1_path, est_sources[:, :, 0].detach().cpu(), 8000)
-    torchaudio.save(output_filename_2_path, est_sources[:, :, 1].detach().cpu(), 8000)
-    separated_filenames = [output_filename_1_path, output_filename_2]
+    torchaudio.save(output_filename_1_path, est_sources[:, :, 0].detach().cpu(), sample_rate)
+    torchaudio.save(output_filename_2_path, est_sources[:, :, 1].detach().cpu(), sample_rate)
+    separated_filenames = [output_filename_1_path, output_filename_2_path]
     return separated_filenames
 
 
-def speechseparation_sepformer_wsj03mix(audiofile_path):
+def speechseparation_sepformer_wsj03mix(audiofile_path, sample_rate=8000):
     model_path = os.path.join('pretrained_models', 'sepformer-wsj03mix')
-    model = SepformerSeparation.from_hparams(source="speechbrain/sepformer-wsj03mix", savedir=model_path)
+    model = SepformerSeparation.from_hparams(source="speechbrain/sepformer-wsj03mix", savedir=model_path, run_opts={"device":"cuda"})
     est_sources = model.separate_file(path=audiofile_path)
     filename = os.path.split(audiofile_path)[-1]
     output_filename_1 = "SpeechSeparationSepformerWsj03mix_source1_" + filename
@@ -223,8 +227,6 @@ def speechseparation_sepformer_wsj03mix(audiofile_path):
 # ----------------------------------------------------------------------------------------------------
 
 # ---------------------------- VOICE ACTIVITY DETECTION ----------------------------------------------
-
-
 def vad_crdnn_libriparty(audiofile_path):
     y, sr = librosa.load(audiofile_path)
     sr1 = 16000
@@ -233,7 +235,7 @@ def vad_crdnn_libriparty(audiofile_path):
     audio_path_16khz = os.path.join(MEDIA_DIR, filename)
     sf.write(audio_path_16khz, y1, sr1)
     model_path = os.path.join('pretrained_models', 'vad-crdnn-libriparty')
-    VAD = speechbrain.pretrained.VAD.from_hparams(source="speechbrain/vad-crdnn-libriparty", savedir=model_path)
+    VAD = speechbrain.pretrained.VAD.from_hparams(source="speechbrain/vad-crdnn-libriparty", savedir=model_path, run_opts={"device":"cuda"})
     boundaries = VAD.get_speech_segments(audio_path_16khz)
     # Print the output
     result_filename = 'VAD_file.txt'
@@ -296,10 +298,10 @@ def emotion_recognition__wav2vec2__iemocap(audiofile_path):
                                savedir=model_path)
     out_prob, score, index, text_lab = classifier.classify_file(audiofile_path)
     return text_lab
-# ------------------------------------------------------------------------
+# -----------------------------------------------------------------------------------------
 
 
-# ---------------------------- ASR ---------------------------------------
+# ---------------------------- ASR --------------------------------------------------------
 
 def asr__wav2vec2__commonvoice_fr(audiofile_path):
     """
@@ -316,16 +318,14 @@ def asr__wav2vec2__commonvoice_fr(audiofile_path):
      (i.e., resampling + mono channel selection) when calling transcribe_file if needed.
      """
     model_path = os.path.join('pretrained_models', 'asr-wav2vec2-commonvoice-fr')
-    asr_model = speechbrain.pretrained.EncoderASR.from_hparams(source="speechbrain/asr-wav2vec2-commonvoice-fr", savedir=model_path)
+    asr_model = speechbrain.pretrained.EncoderASR.from_hparams(source="speechbrain/asr-wav2vec2-commonvoice-fr", savedir=model_path, run_opts={"device":"cuda"})
     transcribed_file = asr_model.transcribe_file(audiofile_path)
     return transcribed_file
 
 
 def asr__wav2vec2__commonvoice_it(audiofile_path):
     model_path = os.path.join('pretrained_models', 'asr-wav2vec2-commonvoice-it')
-    asr_model = EncoderDecoderASR.from_hparams(source="speechbrain/asr-wav2vec2-commonvoice-it",
-                                               savedir="pretrained_models/asr-wav2vec2-commonvoice-it")
-
+    asr_model = EncoderDecoderASR.from_hparams(source="speechbrain/asr-wav2vec2-commonvoice-it", savedir="pretrained_models/asr-wav2vec2-commonvoice-it", run_opts={"device":"cuda"})
     transcribed = asr_model.transcribe_file(audiofile_path)
     return transcribed
 
@@ -353,7 +353,7 @@ def asr__wav2vec2__commonvoice_en(audiofile_path):
          audio (i.e., resampling + mono channel selection) when calling transcribe_file if needed.
         """
     model_path = os.path.join('pretrained_models', 'asr-wav2vec2-commonvoice-en')
-    asr_model = EncoderDecoderASR.from_hparams(source="speechbrain/asr-wav2vec2-commonvoice-en", savedir=model_path)
+    asr_model = EncoderDecoderASR.from_hparams(source="speechbrain/asr-wav2vec2-commonvoice-en", savedir=model_path, run_opts={"device":"cuda"})
     transcribed_file = asr_model.transcribe_file(audiofile_path)
     return transcribed_file
 
@@ -381,7 +381,7 @@ def asr__wav2vec2__commonvoice_rw(audiofile_path):
          audio (i.e., resampling + mono channel selection) when calling transcribe_file if needed.
         """
     model_path = os.path.join('pretrained_models', 'asr-wav2vec2-commonvoice-rw')
-    asr_model = EncoderDecoderASR.from_hparams(source="speechbrain/asr-wav2vec2-commonvoice-rw", savedir=model_path)
+    asr_model = EncoderDecoderASR.from_hparams(source="speechbrain/asr-wav2vec2-commonvoice-rw", savedir=model_path, run_opts={"device":"cuda"})
     transcribed_file = asr_model.transcribe_file(audiofile_path)
     return transcribed_file
 
@@ -395,6 +395,7 @@ def asr__wav2vec2__voxpopuli_en(audiofile_path):
     Fine-tuned for ASR on 91 hours of transcribed audio from “en” subset.
     Originally published by the authors of VoxPopuli [9] under CC BY-NC 4.0
     and redistributed with the same license. [License, Source]
+    WER=30.0% 
     """
     torch.random.manual_seed(0)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -427,6 +428,7 @@ def asr__wav2vec2__voxpopuli_es(audiofile_path):
     Fine-tuned for ASR on 91 hours of transcribed audio from “es” subset.
     Originally published by the authors of VoxPopuli [9] under CC BY-NC 4.0
     and redistributed with the same license. [License, Source]
+    WER= 31.4%
     """
     torch.random.manual_seed(0)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -459,6 +461,7 @@ def asr__wav2vec2__voxpopuli_fr(audiofile_path):
     Fine-tuned for ASR on 91 hours of transcribed audio from “fr” subset.
     Originally published by the authors of VoxPopuli [9] under CC BY-NC 4.0
     and redistributed with the same license. [License, Source]
+    WER=30.5%
     """
     torch.random.manual_seed(0)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -491,6 +494,7 @@ def asr__wav2vec2__voxpopuli_it(audiofile_path):
     Fine-tuned for ASR on 91 hours of transcribed audio from “it” subset.
     Originally published by the authors of VoxPopuli [9] under CC BY-NC 4.0
     and redistributed with the same license. [License, Source]
+    WER= 45.2%
     """
     torch.random.manual_seed(0)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -523,6 +527,7 @@ def asr__wav2vec2__voxpopuli_de(audiofile_path):
     Fine-tuned for ASR on 91 hours of transcribed audio from “de” subset.
     Originally published by the authors of VoxPopuli [9] under CC BY-NC 4.0
     and redistributed with the same license. [License, Source]
+    WER=29.3%
     """
     torch.random.manual_seed(0)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -548,7 +553,7 @@ def asr__wav2vec2__voxpopuli_de(audiofile_path):
 
 def asr__wav2vec2_transformer__aishell_mandarin_chinese(audiofile_path):
     model_path = os.path.join('pretrained_models', 'asr-wav2vec2-transformer-aishell')
-    asr_model = EncoderDecoderASR.from_hparams(source="speechbrain/asr-wav2vec2-transformer-aishell", savedir=model_path)
+    asr_model = EncoderDecoderASR.from_hparams(source="speechbrain/asr-wav2vec2-transformer-aishell", savedir=model_path, run_opts={"device":"cuda"})
     transcribed_file = asr_model.transcribe_file(audiofile_path)
     return transcribed_file
 
@@ -578,7 +583,7 @@ def asr__crdnn_transformerlm__librispeech_en(audiofile_path):
  (i.e., resampling + mono channel selection) when calling transcribe_file if needed.
  """
     model_path = os.path.join('pretrained_models', 'asr-crdnn-transformerlm-librispeech')
-    asr_model = EncoderDecoderASR.from_hparams(source="speechbrain/asr-crdnn-transformerlm-librispeech", savedir=model_path)
+    asr_model = EncoderDecoderASR.from_hparams(source="speechbrain/asr-crdnn-transformerlm-librispeech", savedir=model_path, run_opts={"device":"cuda"})
     transcribed_file = asr_model.transcribe_file(audiofile_path)
     return transcribed_file
 
@@ -609,7 +614,7 @@ def asr__crdnn_rnn_lm__librispeech_en(audiofile_path):
             """
 
     model_path = os.path.join('pretrained_models', 'asr-crdnn-rnnlm-librispeech')
-    asr_model = EncoderDecoderASR.from_hparams(source="speechbrain/asr-crdnn-rnnlm-librispeech", savedir=model_path)
+    asr_model = EncoderDecoderASR.from_hparams(source="speechbrain/asr-crdnn-rnnlm-librispeech", savedir=model_path, run_opts={"device":"cuda"})
     transcribed_file = asr_model.transcribe_file(audiofile_path)
     return transcribed_file
 
@@ -632,7 +637,7 @@ This ASR system is composed of 2 different but linked blocks:
     """
 
     model_path = os.path.join('pretrained_models', 'asr-crdnn-commonvoice-fr')
-    asr_model = EncoderDecoderASR.from_hparams(source="speechbrain/asr-crdnn-commonvoice-fr", savedir=model_path)
+    asr_model = EncoderDecoderASR.from_hparams(source="speechbrain/asr-crdnn-commonvoice-fr", savedir=model_path, run_opts={"device":"cuda"})
     transcribed_file = asr_model.transcribe_file(audiofile_path)
     return transcribed_file
 
@@ -661,7 +666,7 @@ def asr__crdnn__commonvoice_it(audiofile_path):
      when calling transcribe_file if needed.
     """
     model_path = os.path.join('pretrained_models', 'asr-crdnn-commonvoice-it')
-    asr_model = EncoderDecoderASR.from_hparams(source="speechbrain/asr-crdnn-commonvoice-it", savedir=model_path)
+    asr_model = EncoderDecoderASR.from_hparams(source="speechbrain/asr-crdnn-commonvoice-it", savedir=model_path, run_opts={"device":"cuda"})
     transcribed_file = asr_model.transcribe_file(audiofile_path)
     return transcribed_file
 
@@ -689,7 +694,7 @@ def asr__crdnn__commonvoice_de(audiofile_path):
     """
 
     model_path = os.path.join('pretrained_models', 'asr-crdnn-commonvoice-de')
-    asr_model = EncoderDecoderASR.from_hparams(source="speechbrain/asr-crdnn-commonvoice-de", savedir=model_path)
+    asr_model = EncoderDecoderASR.from_hparams(source="speechbrain/asr-crdnn-commonvoice-de", savedir=model_path, run_opts={"device":"cuda"})
     transcribed_file = asr_model.transcribe_file(audiofile_path)
     return transcribed_file
 
@@ -716,7 +721,7 @@ def asr__conformer_transformer_lm__ksponspeech_korean(audiofile_path):
         when calling transcribe_file if needed.
         """
     model_path = os.path.join('pretrained_models', 'asr-conformer-transformerlm-ksponspeech')
-    asr_model = EncoderDecoderASR.from_hparams(source="ddwkim/asr-conformer-transformerlm-ksponspeech", savedir=model_path)
+    asr_model = EncoderDecoderASR.from_hparams(source="ddwkim/asr-conformer-transformerlm-ksponspeech", savedir=model_path, run_opts={"device":"cuda"})
     transcribed_file = asr_model.transcribe_file(audiofile_path)
     return transcribed_file
 
@@ -743,7 +748,7 @@ def asr__conformer_transformer_lm__librispeech_en(audiofile_path):
      (i.e., resampling + mono channel selection) when calling transcribe_file if needed.
      """
     model_path = os.path.join('pretrained_models', 'asr-conformer-transformerlm-ksponspeech')
-    asr_model = EncoderDecoderASR.from_hparams(source="ddwkim/asr-conformer-transformerlm-ksponspeech", savedir=model_path)
+    asr_model = EncoderDecoderASR.from_hparams(source="ddwkim/asr-conformer-transformerlm-ksponspeech", savedir=model_path, run_opts={"device":"cuda"})
     transcribed_file = asr_model.transcribe_file(audiofile_path)
     return transcribed_file
 # ------------------------------------------------------------------------
@@ -773,7 +778,7 @@ def language_identification__ecapa__commonlanguage(audiofile_path):
 
     """
     model_path = os.path.join('pretrained_models', 'lang-id-commonlanguage_ecapa')
-    classifier = EncoderClassifier.from_hparams(source="speechbrain/lang-id-commonlanguage_ecapa", savedir=model_path)
+    classifier = EncoderClassifier.from_hparams(source="speechbrain/lang-id-commonlanguage_ecapa", savedir=model_path, run_opts={"device":"cuda"})
     out_prob, score, index, text_lab = classifier.classify_file(audiofile_path)
     print(text_lab)
     return text_lab
@@ -804,7 +809,7 @@ def language_identification__ecapa__vox_lingua107(audiofile_path):
     Urdu, Uzbek, Vietnamese, Waray, Yiddish, Yoruba, Mandarin Chinese).
     """
     model_path = os.path.join('pretrained_models', 'lang-id-voxlingua107-ecapa')
-    language_id = EncoderClassifier.from_hparams(source="speechbrain/lang-id-voxlingua107-ecapa", savedir=model_path)
+    language_id = EncoderClassifier.from_hparams(source="speechbrain/lang-id-voxlingua107-ecapa", savedir=model_path, run_opts={"device":"cuda"})
     # Download Thai language sample from Omniglot and cvert to suitable form
     signal = language_id.load_audio(audiofile_path)
     prediction = language_id.classify_batch(signal)
@@ -820,7 +825,7 @@ def lang_id__to__asr(audiofile_path):
     }
 
     model_path = os.path.join('pretrained_models', 'lang-id-voxlingua107-ecapa')
-    language_id = EncoderClassifier.from_hparams(source="speechbrain/lang-id-voxlingua107-ecapa", savedir=model_path)
+    language_id = EncoderClassifier.from_hparams(source="speechbrain/lang-id-voxlingua107-ecapa", savedir=model_path, run_opts={"device":"cuda"})
     signal = language_id.load_audio(audiofile_path)
     prediction = language_id.classify_batch(signal)
     label = prediction[3]
@@ -834,3 +839,127 @@ def lang_id__to__asr(audiofile_path):
         result = "Language identified: {} - no model available for this language".format(lang)
     return result
 # ------------------------------------------------------------------------
+
+
+
+def speaker_verification__Data2VecAudioForXVector__librispeech_en(audiofile1_path, audiofile2_path, threshold):
+    """
+    Data2VecAudio Model with an XVector feature extraction head on top for tasks like Speaker Verification.
+
+    Data2VecAudio was proposed in data2vec: A General Framework for Self-supervised Learning in Speech, 
+    Vision and Language by Alexei Baevski, Wei-Ning Hsu, Qiantong Xu, Arun Babu, Jiatao Gu and Michael Auli.
+
+    This model inherits from PreTrainedModel. Check the superclass documentation for the generic methods the library implements for all 
+    its model (such as downloading or saving etc.).
+
+    This model is a PyTorch torch.nn.Module sub-class. Use it as a regular PyTorch Module and refer to the PyTorch documentation for all
+    matter related to general usage and behavior.
+        """
+    source_1_waveform, sample_rate_1 = torchaudio.load(audiofile1_path)
+    source_2_waveform, sample_rate_2 = torchaudio.load(audiofile2_path)
+    resample_rate = 16000
+    if sample_rate_1 != resample_rate and sample_rate_1 != sample_rate_2:
+        source_1_waveform = TAF.resample(source_1_waveform, sample_rate_1, resample_rate)
+        source_2_waveform = TAF.resample(source_2_waveform, sample_rate_1, resample_rate)
+    
+    source_1_waveform = source_1_waveform.squeeze().numpy()
+    source_2_waveform = source_2_waveform.squeeze().numpy()
+    audio_files = [source_1_waveform, source_2_waveform]
+    feature_extractor = Wav2Vec2FeatureExtractor.from_pretrained("hf-internal-testing/tiny-random-data2vec-xvector")
+    model = Data2VecAudioForXVector.from_pretrained("hf-internal-testing/tiny-random-data2vec-xvector")
+    inputs = feature_extractor(audio_files, sampling_rate=resample_rate, return_tensors="pt", padding=True)
+
+    with torch.no_grad():
+        embeddings = model(**inputs).embeddings
+    embeddings = torch.nn.functional.normalize(embeddings, dim=-1).cpu()
+
+    # the resulting embeddings can be used for cosine similarity-based retrieval
+    cosine_sim = torch.nn.CosineSimilarity(dim=-1)
+    similarity = cosine_sim(embeddings[0], embeddings[1])
+    threshold = threshold # the optimal threshold is dataset-dependent
+
+    if similarity < threshold:
+        return "Speakers are not the same! Similarity:{}".format(round(similarity.item(), 2))
+    else:
+        return "Speakers are the same! Similarity:{}".format(round(similarity.item(), 2))
+
+
+def speaker_verification__Wav2Vec2ForXVector__wav2vec2_base_superb_sv(audiofile1_path, audiofile2_path, threshold):
+    """
+    Wav2Vec2 Model with an XVector feature extraction head on top for tasks like Speaker Verification.
+    Wav2Vec2 was proposed in wav2vec 2.0: A Framework for Self-Supervised Learning of Speech Representations by Alexei Baevski,
+    Henry Zhou, Abdelrahman Mohamed, Michael Auli.
+    This model inherits from PreTrainedModel. Check the superclass documentation for the generic methods the library implements for all its model 
+    (such as downloading or saving etc.).
+    This model is a PyTorch torch.nn.Module sub-class. Use it as a regular PyTorch Module and refer to the PyTorch documentation for all matter related 
+    to general usage and behavior.
+    """
+    source_1_waveform, sample_rate_1 = torchaudio.load(audiofile1_path)
+    source_2_waveform, sample_rate_2 = torchaudio.load(audiofile2_path)
+    resample_rate = 16000
+    if sample_rate_1 != resample_rate and sample_rate_1 != sample_rate_2:
+        source_1_waveform = TAF.resample(source_1_waveform, sample_rate_1, resample_rate)
+        source_2_waveform = TAF.resample(source_2_waveform, sample_rate_1, resample_rate)
+    source_1_waveform = source_1_waveform.squeeze().numpy()
+    source_2_waveform = source_2_waveform.squeeze().numpy()
+    audio_files = [source_1_waveform, source_2_waveform]
+    feature_extractor = Wav2Vec2FeatureExtractor.from_pretrained("anton-l/wav2vec2-base-superb-sv")
+    model = Wav2Vec2ForXVector.from_pretrained("anton-l/wav2vec2-base-superb-sv")
+
+    # audio file is decoded on the fly
+    inputs = feature_extractor(audio_files, sampling_rate=resample_rate, return_tensors="pt", padding=True)
+    with torch.no_grad():
+        embeddings = model(**inputs).embeddings
+
+    embeddings = torch.nn.functional.normalize(embeddings, dim=-1).cpu()
+
+    # the resulting embeddings can be used for cosine similarity-based retrieval
+    cosine_sim = torch.nn.CosineSimilarity(dim=-1)
+    similarity = cosine_sim(embeddings[0], embeddings[1])
+    threshold = 0.7  # the optimal threshold is dataset-dependent
+    if similarity < threshold:
+        return "Speakers are not the same! Similarity:{}".format(round(similarity.item(), 2))
+    else:
+        return "Speakers are the same! Similarity:{}".format(round(similarity.item(), 2))
+
+
+
+def speaker_verification__Wav2Vec2ConformerForXVector__wav2vec_conformer_xvector(audiofile1_path, audiofile2_path, threshold):
+    """
+    Wav2Vec2Conformer Model with an XVector feature extraction head on top for tasks like Speaker Verification.
+
+    Wav2Vec2Conformer was proposed in wav2vec 2.0: A Framework for Self-Supervised Learning of Speech Representations by Alexei Baevski, Henry Zhou, Abdelrahman Mohamed, Michael Auli.
+
+    This model inherits from PreTrainedModel. Check the superclass documentation for the generic methods the library implements for all its model (such as downloading or saving etc.).
+
+    This model is a PyTorch nn.Module sub-class. Use it as a regular PyTorch Module and refer to the PyTorch documentation for all matter related to general usage and behavior.
+    """
+    source_1_waveform, sample_rate_1 = torchaudio.load(audiofile1_path)
+    source_2_waveform, sample_rate_2 = torchaudio.load(audiofile2_path)
+    resample_rate = 16000
+    if sample_rate_1 != resample_rate and sample_rate_1 != sample_rate_2:
+        source_1_waveform = TAF.resample(source_1_waveform, sample_rate_1, resample_rate)
+        source_2_waveform = TAF.resample(source_2_waveform, sample_rate_1, resample_rate)
+    source_1_waveform = source_1_waveform.squeeze().numpy()
+    source_2_waveform = source_2_waveform.squeeze().numpy()
+    audio_files = [source_1_waveform, source_2_waveform]
+    feature_extractor = Wav2Vec2FeatureExtractor.from_pretrained("hf-internal-testing/wav2vec2-conformer-xvector")
+    model = Wav2Vec2ConformerForXVector.from_pretrained("hf-internal-testing/wav2vec2-conformer-xvector")
+
+    # audio file is decoded on the fly
+    inputs = feature_extractor(audio_files, sampling_rate=resample_rate, return_tensors="pt", padding=True)
+    with torch.no_grad():
+        embeddings = model(**inputs).embeddings
+
+    embeddings = torch.nn.functional.normalize(embeddings, dim=-1).cpu()
+
+    # the resulting embeddings can be used for cosine similarity-based retrieval
+    cosine_sim = torch.nn.CosineSimilarity(dim=-1)
+    similarity = cosine_sim(embeddings[0], embeddings[1])
+    threshold = 0.7  # the optimal threshold is dataset-dependent
+    if similarity < threshold:
+        return "Speakers are not the same! Similarity:{}".format(round(similarity.item(), 2))
+    else:
+        return "Speakers are the same! Similarity:{}".format(round(similarity.item(), 2))
+
+     

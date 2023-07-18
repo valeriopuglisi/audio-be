@@ -763,3 +763,74 @@ class ApiLangidToAsr(Resource):
         return transcribed, 201
 
 
+
+class ApiSpeakerVerificationData2VecAudioForXVectorLibrispeechEn(Resource):
+
+    def __init__(self):
+        self.parser = reqparse.RequestParser()
+
+    def post(self):
+        result=""
+        self.parser.add_argument("audiofile", type=werkzeug.datastructures.FileStorage, location='files')
+        self.parser.add_argument('threshold')
+        self.parser.add_argument('title')
+        args = self.parser.parse_args()
+        audiofile= args.get("audiofile")
+        audiofile_path= os.path.join(MEDIA_DIR, audiofile.filename)
+        audiofile.save(audiofile_path)
+        threshold = args.get("threshold")
+        if len(os.listdir(SPEAKER_VERIFICATION_DATASET)) == 0 :
+            return "No data in speaker verification dataset",201
+        else:
+            for audiofile in os.listdir(SPEAKER_VERIFICATION_DATASET):
+                audiofile_path2 = os.path.join(SPEAKER_VERIFICATION_DATASET, audiofile)
+                result = result + "audiofile=" + audiofile + " :" + speaker_verification__Wav2Vec2ForXVector__wav2vec2_base_superb_sv(audiofile_path, audiofile_path2, threshold)+"\n"
+        return result, 201
+
+
+class ApiSpeakerVerificationWav2Vec2ForXVectorWav2Vec2BaseSuperbSv(Resource):
+
+    def __init__(self):
+        self.parser = reqparse.RequestParser()
+
+    def post(self):
+        result = ""
+        self.parser.add_argument("audiofile", type=werkzeug.datastructures.FileStorage, location='files')
+        self.parser.add_argument('threshold')
+        self.parser.add_argument('title')
+        args = self.parser.parse_args()
+        audiofile = args.get("audiofile")
+        audiofile_path = os.path.join(MEDIA_DIR, audiofile.filename)
+        audiofile.save(audiofile_path)
+        threshold = args.get("threshold")
+        if len(os.listdir(SPEAKER_VERIFICATION_DATASET)) == 0 :
+            return "No data in speaker verification dataset",201
+        else:
+            for audiofile in os.listdir(SPEAKER_VERIFICATION_DATASET):
+                audiofile_path2 = os.path.join(SPEAKER_VERIFICATION_DATASET, audiofile)
+                result = result + "audiofile=" + audiofile + " :" + speaker_verification__Wav2Vec2ForXVector__wav2vec2_base_superb_sv(audiofile_path, audiofile_path2, threshold)+"\n"
+        return result, 201
+
+
+class ApiSpeakerVerificationWav2Vec2ConformerForXVector(Resource):
+
+    def __init__(self):
+        self.parser = reqparse.RequestParser()
+
+    def post(self):
+        result=""
+        self.parser.add_argument("audiofile", type=werkzeug.datastructures.FileStorage, location='files')
+        self.parser.add_argument('threshold')
+        self.parser.add_argument('title1')
+        args = self.parser.parse_args()
+        audiofile = args.get("audiofile")
+        audiofile_path = os.path.join(MEDIA_DIR, audiofile.filename)
+        audiofile.save(audiofile_path)
+        threshold = args.get("threshold")
+        if len(os.listdir(SPEAKER_VERIFICATION_DATASET)) == 0 :
+            return "No data in speaker verification dataset",201
+        else:
+            for audiofile in os.listdir(SPEAKER_VERIFICATION_DATASET):
+                audiofile_path2 = os.path.join(SPEAKER_VERIFICATION_DATASET, audiofile)
+                result = result + "audiofile=" + audiofile + " :" + speaker_verification__Wav2Vec2ForXVector__wav2vec2_base_superb_sv(audiofile_path, audiofile_path2, threshold)+"\n"
+        return result, 201

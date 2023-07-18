@@ -1,0 +1,285 @@
+# %%
+from deep_learning_features_audio import *
+from deep_learning_dict_api import AudioAnalysisAPI
+import pandas as pd
+from pathlib import Path
+from IPython.display import display, HTML
+from torchmetrics import ScaleInvariantSignalNoiseRatio, ScaleInvariantSignalDistortionRatio, SignalNoiseRatio, SignalDistortionRatio, PermutationInvariantTraining
+from torchmetrics.audio.pesq import PerceptualEvaluationSpeechQuality
+from torchmetrics.functional.audio import signal_distortion_ratio
+from torchmetrics.audio.stoi import ShortTimeObjectiveIntelligibility
+from datetime import datetime
+from deep_learning_dict_datasets import Datasets
+import numpy as np
+import json
+
+
+# %%
+# When running this tutorial in Google Colab, install the required packages
+# with the following.
+# !pip install torchaudio librosa boto3
+
+import torch
+import torchaudio
+import torchaudio.functional as TAF
+import torchaudio.transforms as T
+
+print(torch.__version__)
+print(torchaudio.__version__)
+
+# %%
+def speech_separation_evaluate_metric_with_model_on_librimix_2_channels(model, dataset, metrics, n_test, mix_type="test_mix_clean_file"):
+    task = "Speech Separation"
+    total_si_snr = torch.zeros(0)
+    total_si_sdr = torch.zeros(0)
+    total_snr = torch.zeros(0)
+    total_sdr = torch.zeros(0)
+    total_nb_pesq = torch.zeros(0)
+    total_wb_pesq = torch.zeros(0)
+    total_pit = torch.zeros(0)
+    total_stoi= torch.zeros(0)
+    experiments = {
+    }
+
+    result = {}
+    # os.walk(dataset_path)
+    print("===================================================>  Dataset: {}".format(dataset))
+    # print(Datasets[task])
+    print("Datasets[task][dataset] : {}".format(Datasets[task][dataset][mix_type]))
+    test_table = pd.read_table(Datasets[task][dataset][mix_type], sep=",")
+    # display(test_table)
+    # cols = test_table.iloc[:,1:4]
+    print("len(test_table): {}".format(len(test_table)))
+    # display(cols)
+    for i, row in enumerate(test_table.iterrows()):
+        preds = torch.zeros(0) 
+        target = torch.zeros(0)
+        print("====> Benchmarking: {}/{}   tot {}".format(i+1, n_test, test_table.shape[0]))
+        # print(i, row[1]['mixture_path'], , , row[1]['noise_path'])
+        mixture_path = row[1]['mixture_path']
+        source_1_path = row[1]['source_1_path']
+        source_2_path = row[1]['source_2_path']
+        
+        if mix_type == "test_mix_both_file":
+            noise_path = row[1]['noise_path']
+        
+        # Separate audio files with choosen model
+        source_1_path_prediction, source_2_path_prediction = AudioAnalysisAPI[model]['function'](audiofile_path=mixture_path)
+        
+        # Loading targets audio on tensors
+        mixture_waveform, mixture_sample_rate = torchaudio.load(mixture_path)
+        source_1_waveform, source_1_sample_rate = torchaudio.load(source_1_path)
+        source_2_waveform, source_2_sample_rate = torchaudio.load(source_2_path)
+        
+        # Loading predictions audio on tensors
+        source_1_prediction_waveform, source_1_prediction_sample_rate = torchaudio.load(source_1_path_prediction)
+        source_2_prediction_waveform, source_2_prediction_sample_rate = torchaudio.load(source_2_path_prediction)
+            
+        #If target sample rate and prediction sample rate are different resample audio file to compare them
+        if source_1_sample_rate != source_1_prediction_sample_rate:
+            
+            # selectiong maximum frequency because is not sure that a model works with the original frequency
+            resample_rate_src_1 = max(source_1_sample_rate, source_1_prediction_sample_rate)
+            resample_rate_src_2 = max(source_2_sample_rate, source_2_prediction_sample_rate)
+            resample_rate = max(resample_rate_src_1, resample_rate_src_2) 
+            
+            # Resampling to resample frequency
+            source_1_waveform_resampled = TAF.resample(source_1_waveform, source_1_sample_rate, resample_rate)
+            source_2_waveform_resampled = TAF.resample(source_2_waveform, source_2_sample_rate, resample_rate)
+            source_1_prediction_waveform_resampled = TAF.resample(source_1_prediction_waveform, source_1_prediction_sample_rate, resample_rate)
+            source_2_prediction_waveform_resampled = TAF.resample(source_2_prediction_waveform, source_2_prediction_sample_rate, resample_rate)
+        
+            # Concatenating predictions into torch tensor 
+            preds = torch.cat((preds, source_1_prediction_waveform_resampled), 0)
+            preds = torch.cat((preds, source_2_prediction_waveform_resampled), 0)
+            
+            # Concatenating targets into torch tensor 
+            target = torch.cat((target, source_1_waveform_resampled), 0)
+            target = torch.cat((target, source_2_waveform_resampled), 0)
+        else:
+            resample_rate = source_1_sample_rate
+
+            # Concatenating predictions into torch tensor 
+            preds = torch.cat((preds, source_1_prediction_waveform), 0)
+            preds = torch.cat((preds, source_2_prediction_waveform), 0)
+            
+            # Concatenating targets into torch tensor 
+            target = torch.cat((target, source_1_waveform), 0)
+            target = torch.cat((target, source_2_waveform), 0)
+        
+        experiments[str(i)] = {
+            "mixture_path":mixture_path,
+            "mixture_sample_rate":mixture_sample_rate,
+            "mixture_waveform.shape":mixture_waveform.shape,
+            "mixture_waveform":str(mixture_waveform),
+
+            "source_1_path":source_1_path,
+            "source_1_sample_rate":source_1_sample_rate,
+            "source_1_waveform.shape":source_1_waveform.shape,
+            "source_1_waveform":str(target[0]),
+
+            "source_1_path_prediction":source_1_path_prediction,
+            "source_1_prediction_sample_rate":source_1_prediction_sample_rate,
+            "source_1_prediction_waveform.shape":source_1_prediction_waveform.shape,
+            "source_1_prediction_waveform: {}":str(preds[0]),
+
+            "source_2_path":source_2_path,
+            "source_2_sample_rate":source_2_sample_rate,
+            "source_2_waveform.shape":source_2_waveform.shape,
+            "source_2_waveform":str(target[1]),
+
+            "source_2_path_prediction":source_2_path_prediction,
+            "source_2_prediction_sample_rate":source_2_prediction_sample_rate,
+            "source_2_prediction_waveform.shape":source_2_prediction_waveform.shape,
+            "source_2_prediction_waveform":str(preds[1]),
+
+        }
+
+
+        # print("mixture_path : {}".format(mixture_path))
+        # print("mixture_sample_rate:{}".format(mixture_sample_rate))
+        # print("mixture_waveform.shape:{}".format(mixture_waveform.shape))
+        # print("mixture_waveform:{}".format(mixture_waveform))
+        # print("source_1_path : {}".format(source_1_path))
+        # print("source_1_sample_rate:{}".format(source_1_sample_rate))
+        # print("source_1_waveform.shape:{}".format(source_1_waveform.shape))
+        # print("source_1_waveform:{}".format(target[0]))
+        # print("source_1_path_prediction : {}".format(source_1_path_prediction))
+        # print("source_1_prediction_sample_rate: {}".format(source_1_prediction_sample_rate))
+        # print("source_1_prediction_waveform.shape : {}".format(source_1_prediction_waveform.shape))
+        # print("source_1_prediction_waveform: {}".format(preds[0]))
+        # print("source_2_path : {}".format(source_2_path))
+        # print("source_2_sample_rate:{}".format(source_2_sample_rate))
+        # print("source_2_waveform.shape:{}".format(source_2_waveform.shape))
+        # print("source_2_waveform:{}".format(target[1]))
+        # print("source_2_path_prediction : {}".format(source_2_path_prediction))
+        # print("source_2_prediction_sample_rate: {}".format(source_2_prediction_sample_rate))
+        # print("source_2_prediction_waveform.shape : {}".format(source_2_prediction_waveform.shape))
+        # print("source_2_prediction_waveform: {}".format(preds[1]))
+        # if source_1_sample_rate != source_1_prediction_sample_rate:
+        #     print("resample_rate_src_1: {}".format(resample_rate_src_1))
+        #     print("resample_rate_src_2: {}".format(resample_rate_src_2))
+        #     print("resample_rate: {}".format(resample_rate))
+        #     print("source_1_waveform_resampled.shape: {}".format(target[0].shape))
+        #     print("source_2_waveform_resampled.shape: {}".format(target[1].shape))
+        #     print("source_1_prediction_waveform_resampled.shape : {}".format(preds[0].shape))
+        #     print("source_2_prediction_waveform_resampled.shape : {}".format(preds[1].shape))
+        #     print("preds.shape {}\ntarget.shape:{}".format(preds.shape, target.shape))
+        #     print("preds: {},\ntarget:{}".format(preds, target))
+        
+        for metric in metrics:
+        #print("Calculating metric:", metric)
+            if metric == "si-snr":
+                si_snr = ScaleInvariantSignalNoiseRatio()
+                si_snr_result = si_snr(preds, target)
+                si_snr_result = torch.reshape(si_snr_result, (1, 1))
+                total_si_snr = torch.cat((total_si_snr, si_snr_result))
+
+            if metric == "si-sdr":
+                si_sdr = ScaleInvariantSignalDistortionRatio()
+                si_sdr_result = si_sdr(preds, target)
+                si_sdr_result = torch.reshape(si_sdr_result, (1, 1))
+                total_si_sdr = torch.cat((total_si_sdr, si_sdr_result))                 
+
+            if metric == "snr":
+                snr = SignalNoiseRatio()
+                snr_result = snr(preds, target)
+                snr_result = torch.reshape(snr_result, (1, 1))
+                total_snr = torch.cat((total_snr, snr_result))
+                
+            if metric == "sdr":
+                sdr = SignalDistortionRatio()
+                sdr_result = sdr(preds, target)
+                sdr_result = torch.reshape(sdr_result, (1, 1))
+                total_sdr = torch.cat((total_sdr, sdr_result))
+
+            if metric == "pesq":
+                nb_pesq = PerceptualEvaluationSpeechQuality(resample_rate, 'nb')
+                nb_pesq_result = nb_pesq(preds, target)
+                nb_pesq_result = torch.reshape(nb_pesq_result, (1, 1))
+                total_nb_pesq = torch.cat((total_nb_pesq, nb_pesq_result))
+
+                if resample_rate > 8000: 
+                    wb_pesq = PerceptualEvaluationSpeechQuality(resample_rate, 'wb')
+                    wb_pesq_result = wb_pesq(preds, target)
+                    wb_pesq_result = torch.reshape(wb_pesq_result, (1, 1))
+                    total_wb_pesq = torch.cat((total_wb_pesq, wb_pesq_result))
+
+            if metric == "pit":
+                pit = PermutationInvariantTraining(signal_distortion_ratio, 'max')
+                pit_result = pit(preds, target)
+                pit_result = torch.reshape(pit_result, (1, 1))
+                total_pit = torch.cat((total_pit, pit_result))
+                
+
+            if metric == "stoi":
+                stoi_src = ShortTimeObjectiveIntelligibility(resample_rate, False)
+                stoi_result = stoi_src(preds, target)
+                stoi_result = torch.reshape(stoi_result, (1, 1))
+                total_stoi = torch.cat((total_stoi, stoi_result))
+                
+        if i == n_test - 1: 
+            break
+
+    
+    total_si_snr = torch.sum(total_si_snr)/n_test
+    total_si_sdr = torch.sum(total_si_sdr)/n_test
+    total_snr = torch.sum(total_snr)/n_test
+    total_sdr = torch.sum(total_sdr)/n_test
+    total_pit = torch.sum(total_pit)/n_test
+    total_wb_pesq = torch.sum(total_wb_pesq)/n_test
+    total_nb_pesq = torch.sum(total_nb_pesq)/n_test
+    total_stoi = torch.sum(total_stoi)/n_test
+
+    print("============================================================================================")
+    print("total_si_snr:{}".format(total_si_snr)) 
+    print("total_si_sdr:{}".format(total_si_sdr)) 
+    print("total_snr:{}".format(total_snr)) 
+    print("total_sdr:{}".format(total_sdr)) 
+    print("total_pit:{}".format(total_pit)) 
+    print("total_wb_pesq:{}".format(total_wb_pesq))  
+    print("total_nb_pesq:{}".format(total_nb_pesq))  
+    print("total_stoi:{}".format(total_stoi))  
+    # Creating the content of result file
+    result ={
+        "model": model, 
+        "dataset": dataset, 
+        "n_test": n_test,
+        "total_si_snr":str(total_si_snr),
+        "total_si_sdr":str(total_si_sdr),
+        "total_snr":str(total_snr),
+        "total_sdr":str(total_sdr),
+        "total_pit":str(total_pit),
+        "total_wb_pesq":str(total_wb_pesq),
+        "total_nb_pesq":str(total_nb_pesq),
+        "total_stoi":str(total_stoi),
+        "experiments": experiments,
+    }
+
+    # Creating filename
+    dateTimeObj = datetime.now()
+    print(dateTimeObj)
+    timestampStr = dateTimeObj.strftime("%d_%b_%Y__%H_%M_%S_%f")
+    result_filename = timestampStr + "_" + model.split("/")[-1] + "_" + dataset + "_" + str(n_test)+".json"
+    print('result_filename : ', result_filename)
+    with open(result_filename, 'w') as f:
+        json.dump(result, f)
+        
+    return result
+
+speech_separation_2_channels_models = ['/api/audioseparation/speech_separation_sepformer_wsj02mix']
+speech_separation_dataset = ["Libri2Mix8kMin", "Libri2Mix8kMax", "Libri2Mix16kMin", "Libri2Mix16kMax"]
+metrics = ["si-snr", "si-sdr", "sdr", "snr", "pesq", "stoi"]
+n_test = 3000
+type = "test_mix_clean_file" #"test_mix_both_file" "test_mix_single_file"
+# speech_separation_evaluate_metric_with_model_on_librimix_2_channels(
+#     speech_separation_2_channels_models[0], 
+#     speech_separation_dataset[0],
+#     [metrics[0], metrics[1], metrics[2], metrics[3], metrics[4], metrics[6]], 
+#     n_test=n_test )
+speech_separation_evaluate_metric_with_model_on_librimix_2_channels(speech_separation_2_channels_models[0], speech_separation_dataset[0], metrics, n_test=n_test, mix_type=type )
+speech_separation_evaluate_metric_with_model_on_librimix_2_channels(speech_separation_2_channels_models[1], speech_separation_dataset[1], metrics, n_test=n_test, mix_type=type )
+
+
+
+
