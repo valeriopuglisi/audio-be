@@ -8,4 +8,10 @@ separation_sepformer_whamr/*
 separation_sepformer_wsj02mix/*
 separation_sepformer_wsj03mix/*
 speaker_verification_dataset/*
-
+enhancement_metricganplus_voicebank/*
+enhancement_sepformer_wham/*
+enhancement_sepformer_whamr-16k/*
+enhancement_sepformer_whamr/*
+media/*
+model_checkpoints/*
+pipelines/*
