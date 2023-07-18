@@ -1,0 +1,16 @@
+evaluate==0.4.0
+Flask==2.3.2
+flask_restful==0.3.10
+ipython==8.14.0
+librosa==0.10.0.post2
+matplotlib==3.7.1
+numpy==1.24.3
+pandas==2.0.2
+pydub==0.25.1
+PyYAML==6.0
+PyYAML==6.0
+soundfile==0.12.1
+speechbrain==0.5.14
+torch==2.0.1
+torchaudio==2.0.2
+Werkzeug==2.3.6

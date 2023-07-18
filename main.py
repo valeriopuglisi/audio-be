@@ -104,4 +104,4 @@ api.add_resource(SpectralContrast, '/api/preprocess/spectral_contrast')
 # ----------------------------------------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
-    app.run(debug=True, port=65000)
+    app.run(debug=True, host="0.0.0.0")

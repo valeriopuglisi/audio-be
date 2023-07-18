@@ -17,4 +17,4 @@ model_checkpoints/*
 pipelines/*
 _sample_data/*
 voice_activity_detection_crdnn/*
-
+__pycache__/
