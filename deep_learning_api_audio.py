@@ -770,6 +770,7 @@ class ApiSpeakerVerificationData2VecAudioForXVectorLibrispeechEn(Resource):
         self.parser = reqparse.RequestParser()
 
     def post(self):
+        result=""
         self.parser.add_argument("audiofile", type=werkzeug.datastructures.FileStorage, location='files')
         self.parser.add_argument('threshold')
         self.parser.add_argument('title')
@@ -817,6 +818,7 @@ class ApiSpeakerVerificationWav2Vec2ConformerForXVector(Resource):
         self.parser = reqparse.RequestParser()
 
     def post(self):
+        result=""
         self.parser.add_argument("audiofile", type=werkzeug.datastructures.FileStorage, location='files')
         self.parser.add_argument('threshold')
         self.parser.add_argument('title1')
