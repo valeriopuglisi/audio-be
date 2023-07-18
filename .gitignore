@@ -1,0 +1,11 @@
+results/*
+pretrained_models/*
+pretrained_models_checkpoints/*
+reports/*
+wav2vec2_checkpoints/*
+separation_sepformer_wham/*
+separation_sepformer_whamr/*
+separation_sepformer_wsj02mix/*
+separation_sepformer_wsj03mix/*
+speaker_verification_dataset/*
+
